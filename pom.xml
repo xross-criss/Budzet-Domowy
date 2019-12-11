@@ -86,6 +86,17 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.1-901-1.jdbc4</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -99,21 +110,80 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>3.6.1</version>
+                <configuration>
+                    <changeLogFile>src/main/java/resources/db/changelog/master.xml</changeLogFile>
+                    <driver>com.mysql.cj.jdbc.Driver</driver>
+                    <url>${bdb.db.url}</url>
+                    <username>${bdb.db.user}</username>
+                    <password>${bdb.db.password}</password>
+                    <verbose>false</verbose>
+                    <logging>info</logging>
+                    <contexts>${bdb.db.contexts}</contexts>
+                    <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+                </configuration>
+            </plugin>
+            <!--            <plugin>
+                            <groupId>org.liquibase</groupId>
+                            <artifactId>liquibase-maven-plugin</artifactId>
+                            <version>3.6.1</version>
+                            <configuration>
+                                <changeLogFile>db/changelog/master.xml</changeLogFile>
+                                <driver>org.postgresql.Driver</driver>
+                                <url>${bdb.db.url}</url>
+                                <username>${bdb.db.user}</username>
+                                <password>${bdb.db.password}</password>
+                                <verbose>false</verbose>
+                                <logging>info</logging>
+                                <contexts>${bdb.db.contexts}</contexts>
+                                <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+                            </configuration>
+                        </plugin>-->
         </plugins>
     </build>
 
     <profiles>
         <profile>
-            <id>dev</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+            <id>H2Base</id>
             <dependencies>
                 <dependency>
                     <groupId>com.h2database</groupId>
                     <artifactId>h2</artifactId>
                 </dependency>
             </dependencies>
+        </profile>
+        <profile>
+            <id>postgres-dev</id>
+            <properties>
+                <bdb.db.url>
+                    jdbc:postgresql://192.168.99.100:32772/postgres?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=true
+                </bdb.db.url>
+                <bdb.db.user>postgres</bdb.db.user>
+                <bdb.db.password>LoremIpsum</bdb.db.password>
+                <bdb.db.contexts>dev</bdb.db.contexts>
+            </properties>
+        </profile>
+        <profile>
+            <id>mysql-dev</id>
+            <properties>
+                <bdb.db.url>
+                    jdbc:mysql://192.168.99.100:32774/test?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=true
+                </bdb.db.url>
+                <bdb.db.user>root</bdb.db.user>
+                <bdb.db.password>dupa</bdb.db.password>
+                <bdb.db.contexts>dev</bdb.db.contexts>
+            </properties>
         </profile>
     </profiles>
 
