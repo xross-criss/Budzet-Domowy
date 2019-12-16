@@ -8,6 +8,20 @@
 
     <changeSet id="1.0-init-tables" author="Krzysztof Kwiatkowski">
 
+        <createTable tableName="household">
+            <column name="id"
+                    type="INT"
+                    autoIncrement="true">
+                <constraints primaryKey="true"
+                             primaryKeyName="PK_household_id"/>
+            </column>
+
+            <column name="population"
+                    type="INT"/>
+            <column name="cost"
+                    type="NUMERIC(8,2)"/>
+        </createTable>
+
         <createTable tableName="user">
             <column name="id"
                     type="INT"
@@ -15,6 +29,14 @@
                 <constraints primaryKey="true"
                              primaryKeyName="PK_user_id"/>
             </column>
+            <column name="household"
+                    type="INT">
+                <constraints foreignKeyName="FK_USER_HOUSEHOLD_ID"
+                             references="household(id)"/>
+            </column>
+
+            <column name="role"
+                    type="VARCHAR(16)"/>
 
             <column name="login"
                     type="VARCHAR(32)"/>
@@ -30,19 +52,7 @@
                     type="TIMESTAMP"/>
         </createTable>
 
-        <createTable tableName="household">
-            <column name="id"
-                    type="INT"
-                    autoIncrement="true">
-                <constraints primaryKey="true"
-                             primaryKeyName="PK_household_id"/>
-            </column>
-
-            <column name="population"
-                    type="INT"/>
-            <column name="cost"
-                    type="NUMERIC(8,2)"/>
-        </createTable>
+        <!--
 
         <createTable tableName="household_user">
             <column name="user_id"
@@ -62,7 +72,7 @@
 
             <column name="role"
                     type="VARCHAR(16)"/>
-        </createTable>
+        </createTable>-->
 
         <createTable tableName="loan">
             <column name="id"
@@ -85,21 +95,22 @@
                     type="DATE"/>
             <column name="ending_date"
                     type="DATE"/>
-            <!--            <column name="ilość rat" w widoku-->
             <column name="amount"
+                    type="NUMERIC(8,2)"/>
+            <column name="installment_amount"
                     type="NUMERIC(8,2)"/>
         </createTable>
 
-        <createTable tableName="cash_flow">
+        <createTable tableName="cashflow">
             <column name="id"
                     type="INT"
                     autoIncrement="true">
                 <constraints primaryKey="true"
-                             primaryKeyName="PK_cash_flow_id"/>
+                             primaryKeyName="PK_cashflow_id"/>
             </column>
             <column name="household"
                     type="INT">
-                <constraints foreignKeyName="FK_CASH_FLOW_HOUSEHOLD_ID"
+                <constraints foreignKeyName="FK_CASHFLOW_HOUSEHOLD_ID"
                              references="household(id)"/>
             </column>
 
@@ -136,8 +147,10 @@
 
             <column name="amount"
                     type="NUMERIC(8,2)"/>
+            <column name="name"
+                    type="VARCHAR(64)"/>
             <column name="description"
-                    type="VARCHAR(512)"/>
+                    type="VARCHAR(64)"/>
             <column name="priority"
                     type="INT"/>
             <!--kiedy się uda zrealizować cel zakupowy będzie polem wyliczalnym bezpośrednio w obiektach aplikacji-->
@@ -159,7 +172,7 @@
             <column name="category"
                     type="VARCHAR(16)"/>
 
-            <column name="isMonthly"
+            <column name="is_monthly"
                     type="BOOLEAN"/>
             <column name="period"
                     type="INT"/>
@@ -169,8 +182,8 @@
                     type="NUMERIC(3,2)"/>
             <column name="amount"
                     type="NUMERIC(8,2)"/>
-            <column name="description"
-                    type="VARCHAR(512)"/>
+            <column name="name"
+                    type="VARCHAR(64)"/>
         </createTable>
 
         <createTable tableName="debt_card">
@@ -213,7 +226,7 @@
                              references="household(id)"/>
             </column>
 
-            <column name="category"
+            <column name="type"
                     type="VARCHAR(16)"/>
 
             <column name="description"
@@ -226,6 +239,10 @@
                     type="DATE"/>
             <column name="vehicle_tid"
                     type="DATE"/>
+            <column name="name"
+                    type="VARCHAR(64)"/>
+            <column name="vehicle_lp"
+                    type="VARCHAR(16)"/>
         </createTable>
 
         <createTable tableName="balance">

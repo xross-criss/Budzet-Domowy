@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="1.0-init-tables" author="Krzysztof Kwiatkowski">
+
+        <sql endDelimiter="/">
+            CREATE OR REPLACE VIEW vw_loan AS
+            SELECT l.id,
+            l.household,
+            l.amount,
+            l.annual_loan_percentage,
+            l.bank,
+            l.starting_date,
+            l.ending_date,
+            TIMESTAMPDIFF(MONTH, l.starting_date, l.ending_date) AS installment_count_all,
+            TIMESTAMPDIFF(MONTH, CURDATE(), l.ending_date) AS installment_count,
+            l.installment_amount
+            FROM loan l;
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>
