@@ -17,8 +17,8 @@
             l.bank,
             l.start_date,
             l.end_date,
-            TIMESTAMPDIFF(MONTH, l.start_date, l.end_date) AS installment_count_all,
-            TIMESTAMPDIFF(MONTH, CURDATE(), l.end_date) AS installment_count,
+            TIMESTAMPDIFF(MONTH, l.start_date, l.end_date) AS full_installment_duration,
+            TIMESTAMPDIFF(MONTH, CURDATE(), l.end_date) AS installment_duration_to_go,
             l.installment_amount
             FROM loan l;
         </sql>
