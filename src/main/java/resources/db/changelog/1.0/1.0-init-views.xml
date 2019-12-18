@@ -15,10 +15,10 @@
             l.amount,
             l.annual_loan_percentage,
             l.bank,
-            l.starting_date,
-            l.ending_date,
-            TIMESTAMPDIFF(MONTH, l.starting_date, l.ending_date) AS installment_count_all,
-            TIMESTAMPDIFF(MONTH, CURDATE(), l.ending_date) AS installment_count,
+            l.start_date,
+            l.end_date,
+            TIMESTAMPDIFF(MONTH, l.start_date, l.end_date) AS installment_count_all,
+            TIMESTAMPDIFF(MONTH, CURDATE(), l.end_date) AS installment_count,
             l.installment_amount
             FROM loan l;
         </sql>

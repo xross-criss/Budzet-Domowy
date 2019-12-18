@@ -91,9 +91,9 @@
                     type="VARCHAR(64)"/>
             <column name="annual_loan_percentage"
                     type="NUMERIC(3,2)"/>
-            <column name="starting_date"
+            <column name="start_date"
                     type="DATE"/>
-            <column name="ending_date"
+            <column name="end_date"
                     type="DATE"/>
             <column name="amount"
                     type="NUMERIC(8,2)"/>
@@ -176,7 +176,7 @@
                     type="BOOLEAN"/>
             <column name="period"
                     type="INT"/>
-            <column name="ending_date"
+            <column name="end_date"
                     type="DATE"/>
             <column name="investment_percentage"
                     type="NUMERIC(3,2)"/>
@@ -209,7 +209,7 @@
                     type="NUMERIC(3,2)"/>
             <column name="bank"
                     type="VARCHAR(64)"/>
-            <column name="description"
+            <column name="name"
                     type="VARCHAR(512)"/>
         </createTable>
 
