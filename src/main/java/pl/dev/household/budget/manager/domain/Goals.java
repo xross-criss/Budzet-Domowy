@@ -1,9 +1,7 @@
 package pl.dev.household.budget.manager.domain;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import pl.dev.household.budget.manager.dao.HouseholdDAO;
 import pl.dev.household.budget.manager.dictionaries.GoalCategory;
 
 import java.math.BigDecimal;
@@ -12,12 +10,15 @@ import java.math.BigDecimal;
 @Setter
 @ToString
 @NoArgsConstructor
+@AllArgsConstructor
 public class Goals {
 
-    private Integer id;
-    private Household household;
+    private Long id;
+    private HouseholdDAO household;
     private GoalCategory category;
     private BigDecimal amount;
+    private String name;
     private String description;
     private Integer priority;
+
 }

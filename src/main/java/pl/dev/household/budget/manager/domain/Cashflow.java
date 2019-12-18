@@ -1,9 +1,7 @@
 package pl.dev.household.budget.manager.domain;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import pl.dev.household.budget.manager.dao.HouseholdDAO;
 import pl.dev.household.budget.manager.dictionaries.CashflowCategory;
 
 import java.math.BigDecimal;
@@ -13,14 +11,16 @@ import java.util.Date;
 @Setter
 @ToString
 @NoArgsConstructor
+@AllArgsConstructor
 public class Cashflow {
 
-    private Integer id;
-    private Household household;
+    private Long id;
+    private HouseholdDAO household;
     private CashflowCategory category;
     private Date startDate;
     private Date endDate;
     private Integer interval;
     private BigDecimal amount;
     private String description;
+
 }

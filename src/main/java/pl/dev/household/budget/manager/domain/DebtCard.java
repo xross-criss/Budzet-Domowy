@@ -1,9 +1,7 @@
 package pl.dev.household.budget.manager.domain;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import pl.dev.household.budget.manager.dao.HouseholdDAO;
 
 import java.math.BigDecimal;
 
@@ -11,14 +9,15 @@ import java.math.BigDecimal;
 @Setter
 @ToString
 @NoArgsConstructor
+@AllArgsConstructor
 public class DebtCard {
 
-    private Integer id;
-    private Household household;
+    private Long id;
+    private HouseholdDAO household;
     private BigDecimal limit;
     private BigDecimal balance;
     private BigDecimal renewalPercentage;
     private BigDecimal annualPercentage;
-    private String bankName;
-    private String description;
+    private String bank;
+    private String name;
 }

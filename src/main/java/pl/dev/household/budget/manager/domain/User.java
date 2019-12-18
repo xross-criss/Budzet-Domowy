@@ -1,9 +1,6 @@
 package pl.dev.household.budget.manager.domain;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import pl.dev.household.budget.manager.dictionaries.UserRole;
 
 import java.util.Date;
@@ -12,6 +9,7 @@ import java.util.Date;
 @Setter
 @ToString
 @NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     private Integer id;
