@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class Goals {
 
-    private Long id;
+    private Integer id;
     private HouseholdDAO household;
     private GoalCategory category;
     private BigDecimal amount;

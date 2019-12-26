@@ -1,11 +1,15 @@
 package pl.dev.household.budget.manager.dao.view;
 
+import lombok.Getter;
+import lombok.Setter;
 import pl.dev.household.budget.manager.dao.HouseholdDAO;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "vw_loan")
 public class VWLoanDAO {

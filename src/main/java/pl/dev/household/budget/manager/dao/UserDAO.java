@@ -1,17 +1,21 @@
 package pl.dev.household.budget.manager.dao;
 
+import lombok.Getter;
+import lombok.Setter;
 import pl.dev.household.budget.manager.dictionaries.UserRole;
 
 import javax.persistence.*;
 import java.util.Date;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "user")
 public class UserDAO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "household")

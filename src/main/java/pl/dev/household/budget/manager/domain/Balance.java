@@ -15,7 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class Balance implements Serializable {
 
-    private Long id;
+    private Integer id;
     private HouseholdDAO household;
     private BalanceType type;
     private Date generationDate;

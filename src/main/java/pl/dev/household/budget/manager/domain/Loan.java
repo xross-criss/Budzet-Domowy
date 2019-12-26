@@ -13,7 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class Loan {
 
-    private Long id;
+    private Integer id;
     private HouseholdDAO household;
     private String bankName;
     private BigDecimal annualLoanPercentage;

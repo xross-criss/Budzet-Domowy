@@ -14,7 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class Cashflow {
 
-    private Long id;
+    private Integer id;
     private HouseholdDAO household;
     private CashflowCategory category;
     private Date startDate;

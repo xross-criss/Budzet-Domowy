@@ -14,7 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class Insurance {
 
-    private Long id;
+    private Integer id;
     private HouseholdDAO household;
     private InsuranceType type;
     private String description;

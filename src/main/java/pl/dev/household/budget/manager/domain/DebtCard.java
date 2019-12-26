@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class DebtCard {
 
-    private Long id;
+    private Integer id;
     private HouseholdDAO household;
     private BigDecimal limit;
     private BigDecimal balance;

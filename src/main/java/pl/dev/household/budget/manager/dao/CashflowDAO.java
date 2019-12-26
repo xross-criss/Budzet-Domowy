@@ -1,18 +1,22 @@
 package pl.dev.household.budget.manager.dao;
 
+import lombok.Getter;
+import lombok.Setter;
 import pl.dev.household.budget.manager.dictionaries.CashflowCategory;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "cashflow")
 public class CashflowDAO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "household")
