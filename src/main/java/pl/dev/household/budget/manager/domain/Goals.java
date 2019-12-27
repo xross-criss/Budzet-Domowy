@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 public class Goals {
 
     private Integer id;
-    private HouseholdDAO household;
+    private Household household;
     private GoalCategory category;
     private BigDecimal amount;
     private String name;

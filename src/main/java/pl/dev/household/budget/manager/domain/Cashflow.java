@@ -15,7 +15,7 @@ import java.util.Date;
 public class Cashflow {
 
     private Integer id;
-    private HouseholdDAO household;
+    private Household household;
     private CashflowCategory category;
     private Date startDate;
     private Date endDate;

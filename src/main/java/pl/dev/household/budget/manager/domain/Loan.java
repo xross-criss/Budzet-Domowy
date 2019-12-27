@@ -14,7 +14,7 @@ import java.util.Date;
 public class Loan {
 
     private Integer id;
-    private HouseholdDAO household;
+    private Household household;
     private String bankName;
     private BigDecimal annualLoanPercentage;
     private Date startDate;

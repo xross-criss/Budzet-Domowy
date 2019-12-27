@@ -15,7 +15,7 @@ import java.util.Date;
 public class Investment {
 
     private Integer id;
-    private HouseholdDAO household;
+    private Household household;
     private InsuranceType type;
     private Boolean isMonthly;
     private Integer period;     //    period of investment in months

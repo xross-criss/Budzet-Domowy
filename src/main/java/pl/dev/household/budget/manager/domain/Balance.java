@@ -1,7 +1,6 @@
 package pl.dev.household.budget.manager.domain;
 
 import lombok.*;
-import pl.dev.household.budget.manager.dao.HouseholdDAO;
 import pl.dev.household.budget.manager.dictionaries.BalanceType;
 
 import java.io.Serializable;
@@ -16,7 +15,7 @@ import java.util.Date;
 public class Balance implements Serializable {
 
     private Integer id;
-    private HouseholdDAO household;
+    private Household household;
     private BalanceType type;
     private Date generationDate;
     private BigDecimal burden;

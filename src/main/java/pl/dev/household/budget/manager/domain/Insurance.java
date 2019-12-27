@@ -15,7 +15,7 @@ import java.util.Date;
 public class Insurance {
 
     private Integer id;
-    private HouseholdDAO household;
+    private Household household;
     private InsuranceType type;
     private String description;
     private Integer interval;

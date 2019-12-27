@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 public class DebtCard {
 
     private Integer id;
-    private HouseholdDAO household;
+    private Household household;
     private BigDecimal limit;
     private BigDecimal balance;
     private BigDecimal renewalPercentage;
