@@ -23,7 +23,7 @@ public class UserDAO {
 
     @Enumerated(EnumType.STRING)
     @JoinColumn(name = "role")
-    private UserRole role;
+    private UserRole userRole;
 
     @JoinColumn(name = "login")
     private String login;
