@@ -1,12 +1,12 @@
 package pl.dev.household.budget.manager.services;
 
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.UserDAO;
 import pl.dev.household.budget.manager.dao.repository.UserRepository;
 import pl.dev.household.budget.manager.domain.User;
-import pl.dev.household.budget.manager.utils.UserUtils;
 
 import java.util.Optional;
 
@@ -14,7 +14,8 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    private final UserRepository userRepository;
+    private ModelMapper modelMapper;
+    private UserRepository userRepository;
 
     @Autowired
     public UserService(UserRepository userRepository) {
@@ -22,7 +23,7 @@ public class UserService {
     }
 
     public User getUser(Integer userId) {
-        return UserUtils.convertToDTO(userRepository.findById(userId));
+        return modelMapper.map(userRepository.findById(userId), User.class);
     }
 
     public User updateUser(Integer userId, User user) {
@@ -32,14 +33,14 @@ public class UserService {
             throw new RuntimeException("User cannot be updated!");
         }
 
-        UserDAO updatedUser = UserUtils.convertToDAO(user);
+        UserDAO updatedUser = modelMapper.map(user, UserDAO.class);
         userRepository.save(updatedUser);
 
         return getUser(userId);
     }
 
     public User registerUser(User user) {
-        UserDAO userDAO = UserUtils.convertToDAO(user);
+        UserDAO userDAO = modelMapper.map(user, UserDAO.class);
         userRepository.save(userDAO);
 
         return getUser(userDAO.getId());

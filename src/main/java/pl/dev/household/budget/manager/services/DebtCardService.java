@@ -1,12 +1,12 @@
 package pl.dev.household.budget.manager.services;
 
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.DebtCardDAO;
 import pl.dev.household.budget.manager.dao.repository.DebtCardRepository;
 import pl.dev.household.budget.manager.domain.DebtCard;
-import pl.dev.household.budget.manager.utils.DebtCardUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +16,8 @@ import java.util.stream.Collectors;
 @Service
 public class DebtCardService {
 
-    DebtCardRepository debtCardRepository;
+    private ModelMapper modelMapper;
+    private DebtCardRepository debtCardRepository;
 
     @Autowired
     public DebtCardService(DebtCardRepository debtCardRepository) {
@@ -26,19 +27,17 @@ public class DebtCardService {
     public List<DebtCard> getDebtCards(Integer householdId) {
         return debtCardRepository.findAllByHousehold_Id(householdId).stream()
                 .map(debtCard ->
-                        DebtCardUtils.convertToDTO(
-                                java.util.Optional.ofNullable(debtCard)
-                        )
+                        modelMapper.map(debtCard, DebtCard.class)
                 ).collect(Collectors.toList());
     }
 
     public DebtCard getDebtCard(Integer debtCardId) {
-        return DebtCardUtils.convertToDTO(debtCardRepository.findById(debtCardId));
+        return modelMapper.map(debtCardRepository.findById(debtCardId), DebtCard.class);
     }
 
 
     public DebtCard addDebtCard(DebtCard debtCard) {
-        Integer debtCardId = debtCardRepository.save(DebtCardUtils.convertToDAO(debtCard)).getId();
+        Integer debtCardId = debtCardRepository.save(modelMapper.map(debtCard, DebtCardDAO.class)).getId();
         return getDebtCard(debtCardId);
     }
 
@@ -49,7 +48,7 @@ public class DebtCardService {
             throw new RuntimeException("DebtCard cannot be updated!");
         }
 
-        DebtCardDAO updatedDebtCard = DebtCardUtils.convertToDAO(debtCard);
+        DebtCardDAO updatedDebtCard = modelMapper.map(debtCard, DebtCardDAO.class);
         debtCardRepository.save(updatedDebtCard);
 
         return getDebtCard(updatedDebtCard.getId());
