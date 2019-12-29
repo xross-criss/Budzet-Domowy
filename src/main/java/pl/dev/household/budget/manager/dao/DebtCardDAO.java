@@ -4,18 +4,20 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "debt_card")
-public class DebtCardDAO {
+public class DebtCardDAO implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Id
     @ManyToOne
     @JoinColumn(name = "household")
     private HouseholdDAO household;

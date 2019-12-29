@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("/api/insurance")
 public class InsuranceController {
 
-    InsuranceService insuranceService;
+    private InsuranceService insuranceService;
 
     @Autowired
     public InsuranceController(InsuranceService insuranceService) {

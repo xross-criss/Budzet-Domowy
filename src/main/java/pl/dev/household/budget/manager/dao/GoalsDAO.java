@@ -5,18 +5,20 @@ import lombok.Setter;
 import pl.dev.household.budget.manager.dictionaries.GoalCategory;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "goals")
-public class GoalsDAO {
+public class GoalsDAO implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Id
     @ManyToOne
     @JoinColumn(name = "household")
     private HouseholdDAO household;

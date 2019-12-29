@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("/api/goals")
 public class GoalsController {
 
-    GoalsService goalsService;
+    private GoalsService goalsService;
 
     @Autowired
     public GoalsController(GoalsService goalsService) {

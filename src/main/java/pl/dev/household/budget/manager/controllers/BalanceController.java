@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("/api/balance")
 public class BalanceController {
 
-    BalanceService balanceService;
+    private BalanceService balanceService;
 
     @Autowired
     public BalanceController(BalanceService balanceService) {

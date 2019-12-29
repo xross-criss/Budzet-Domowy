@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("/api/loan")
 public class LoanController {
 
-    LoanService loanService;
+    private LoanService loanService;
 
     @Autowired
     public LoanController(LoanService loanService) {

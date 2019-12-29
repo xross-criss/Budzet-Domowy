@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("/api/investment")
 public class InvestmentController {
 
-    InvestmentService investmentService;
+    private InvestmentService investmentService;
 
     @Autowired
     public InvestmentController(InvestmentService investmentService) {

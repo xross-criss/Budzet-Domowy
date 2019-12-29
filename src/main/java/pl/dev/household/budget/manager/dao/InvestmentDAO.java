@@ -5,6 +5,7 @@ import lombok.Setter;
 import pl.dev.household.budget.manager.dictionaries.InsuranceType;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -12,12 +13,13 @@ import java.util.Date;
 @Setter
 @Entity
 @Table(name = "investment")
-public class InvestmentDAO {
+public class InvestmentDAO implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Id
     @ManyToOne
     @JoinColumn(name = "household")
     private HouseholdDAO household;
