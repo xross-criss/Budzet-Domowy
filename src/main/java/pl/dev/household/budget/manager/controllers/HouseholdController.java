@@ -12,7 +12,7 @@ import pl.dev.household.budget.manager.services.HouseholdService;
 @RequestMapping("/api/household")
 public class HouseholdController {
 
-    private final HouseholdService householdService;
+    private HouseholdService householdService;
 
     @Autowired
     public HouseholdController(HouseholdService householdService) {

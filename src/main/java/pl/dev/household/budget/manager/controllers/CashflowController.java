@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("/api/cashflow")
 public class CashflowController {
 
-    private final CashflowService cashflowService;
+    private CashflowService cashflowService;
 
     @Autowired
     public CashflowController(CashflowService cashflowService) {
