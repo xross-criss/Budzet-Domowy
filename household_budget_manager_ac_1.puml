@@ -1,0 +1,18 @@
+@startuml
+start
+
+if(Sprawdzenie poprawności sumy kontrolnej identyfikującej) then (zgadza się)
+    If(:Zapytanie do bazy danych po sesję
+    (identyfikacja po sessionId);) then (znaleziono)
+        :Przedłużenie ważności sesji;
+    else (nie znaleziono)
+        :Zapytanie zwrócone z informacją:
+        "Nie znaleziono sesji";
+    endif
+else (nie zgadza się)
+    :Żądanie zwrócone z błędem
+    braku autoryzacji zapytania;
+endif
+
+stop
+@enduml
