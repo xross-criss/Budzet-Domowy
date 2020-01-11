@@ -5,6 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.repository.BalanceRepository;
+import pl.dev.household.budget.manager.dictionaries.BalanceType;
 import pl.dev.household.budget.manager.domain.Balance;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public class BalanceService {
         return null;
     }
 
-    public List<Balance> generate(Integer householdId) {
+    public List<Balance> generate(Integer householdId, BalanceType type) {
         //TODO
         return null;
     }

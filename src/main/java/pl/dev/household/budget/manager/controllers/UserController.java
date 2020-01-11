@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/{userId}")
-    public User updateHousehold(@RequestParam("userId") Integer userId, @RequestBody User user) {
+    public User updateUser(@RequestParam("userId") Integer userId, @RequestBody User user) {
         return userService.updateUser(userId, user);
     }
 
