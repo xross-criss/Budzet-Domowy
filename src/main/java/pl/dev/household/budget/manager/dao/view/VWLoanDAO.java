@@ -19,7 +19,6 @@ public class VWLoanDAO implements Serializable {
     @JoinColumn(name = "id")
     private Integer id;
 
-    @Id
     @ManyToOne
     @JoinColumn(name = "household")
     private HouseholdDAO household;

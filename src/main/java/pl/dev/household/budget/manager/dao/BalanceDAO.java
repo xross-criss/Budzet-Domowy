@@ -19,7 +19,6 @@ public class BalanceDAO implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Id
     @ManyToOne
     @JoinColumn(name = "household")
     private HouseholdDAO household;

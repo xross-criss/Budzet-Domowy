@@ -1,6 +1,6 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: @bdb.db.driver@
     url: @bdb.db.url@
     username: @bdb.db.user@
     password: @bdb.db.password@
