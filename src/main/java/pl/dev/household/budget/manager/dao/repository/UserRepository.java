@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface UserRepository extends JpaRepository<UserDAO, Integer> {
 
-    public List<UserDAO> findAllByHousehold_Id(Integer householdId);
+    List<UserDAO> findAllByHousehold_Id(Integer householdId);
+    UserDAO findOneByLogin(String login);
 
 }
