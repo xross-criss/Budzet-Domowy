@@ -167,7 +167,7 @@
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>3.6.1</version>
                 <configuration>
-                    <changeLogFile>src/main/java/resources/db/changelog/master.xml</changeLogFile>
+                    <changeLogFile>src/main/resources/db/changelog/master.xml</changeLogFile>
                     <driver>com.mysql.cj.jdbc.Driver</driver>
                     <url>${bdb.db.url}</url>
                     <username>${bdb.db.user}</username>
