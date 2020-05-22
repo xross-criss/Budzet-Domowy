@@ -8,7 +8,9 @@ import pl.dev.household.budget.manager.dao.UserDAO;
 import pl.dev.household.budget.manager.dao.repository.UserRepository;
 import pl.dev.household.budget.manager.domain.User;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -44,5 +46,9 @@ public class UserService {
         userRepository.save(userDAO);
 
         return getUser(userDAO.getId());
+    }
+
+    public List<User> getAllUsersForHousehold(Integer householdId) {
+        return userRepository.findAllByHousehold_Id(householdId).stream().map(user -> modelMapper.map(user, User.class)).peek(user -> user.setPassword("*******")).collect(Collectors.toList());
     }
 }
