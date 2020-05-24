@@ -1,7 +1,6 @@
-package pl.dev.household.budget.manager.domain.view;
+package pl.dev.household.budget.manager.domain;
 
 import lombok.*;
-import pl.dev.household.budget.manager.domain.Household;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -11,17 +10,15 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class VWLoan {
+public class LoanDTO {
 
     private Integer id;
-    private Household household;
+    private HouseholdDTO householdDTO;
     private String bankName;
     private BigDecimal annualLoanPercentage;
     private Date startDate;
     private Date endDate;
     private BigDecimal amount;
-    private Integer fullInstallmentDuration;
-    private Integer installmentDurationToGo;
     private BigDecimal installmentAmount;
 
 }

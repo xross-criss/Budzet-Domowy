@@ -4,9 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.dev.household.budget.manager.dao.GoalsDAO;
+import pl.dev.household.budget.manager.dao.Goals;
 import pl.dev.household.budget.manager.dao.repository.GoalsRepository;
-import pl.dev.household.budget.manager.domain.Goals;
+import pl.dev.household.budget.manager.domain.GoalsDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,28 +24,28 @@ public class GoalsService {
         this.goalsRepository = goalsRepository;
     }
 
-    public List<Goals> getGoals(Integer householdId) {
+    public List<GoalsDTO> getGoals(Integer householdId) {
         return goalsRepository.findAllByHousehold_Id(householdId).stream()
-                .map(goal -> modelMapper.map(goal, Goals.class))
+                .map(goal -> modelMapper.map(goal, GoalsDTO.class))
                 .collect(Collectors.toList());
     }
 
-    public Goals getGoal(Integer goalId) {
-        return modelMapper.map(goalsRepository.findById(goalId), Goals.class);
+    public GoalsDTO getGoal(Integer goalId) {
+        return modelMapper.map(goalsRepository.findById(goalId), GoalsDTO.class);
     }
 
-    public Goals addGoal(Goals goal) {
-        Integer goalId = goalsRepository.save(modelMapper.map(goal, GoalsDAO.class)).getId();
+    public GoalsDTO addGoal(GoalsDTO goal) {
+        Integer goalId = goalsRepository.save(modelMapper.map(goal, Goals.class)).getId();
         return getGoal(goalId);
     }
 
-    public Goals updateGoal(Integer householdId, Goals goal) {
-        Optional<GoalsDAO> oldGoal = goalsRepository.findById(goal.getId());
+    public GoalsDTO updateGoal(Integer householdId, GoalsDTO goal) {
+        Optional<Goals> oldGoal = goalsRepository.findById(goal.getId());
         if (oldGoal.isEmpty() || !oldGoal.get().getId().equals(goal.getId())) {
             throw new RuntimeException("Goals cannot be updated!");
         }
 
-        GoalsDAO updatedGoal = modelMapper.map(goal, GoalsDAO.class);
+        Goals updatedGoal = modelMapper.map(goal, Goals.class);
         goalsRepository.save(updatedGoal);
 
         return getGoal(updatedGoal.getId());

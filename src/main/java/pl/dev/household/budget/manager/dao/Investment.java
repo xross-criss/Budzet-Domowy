@@ -13,7 +13,7 @@ import java.util.Date;
 @Setter
 @Entity
 @Table(name = "investment")
-public class InvestmentDAO implements Serializable {
+public class Investment implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,28 +21,28 @@ public class InvestmentDAO implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "household")
-    private HouseholdDAO household;
+    private Household household;
 
     @Enumerated(EnumType.STRING)
-    @JoinColumn(name = "category")
+    @Column(name = "category")
     private InsuranceType type;
 
-    @JoinColumn(name = "is_monthly")
+    @Column(name = "is_monthly")
     private Boolean isMonthly;
 
-    @JoinColumn(name = "period")
+    @Column(name = "period")
     private Integer period;
 
-    @JoinColumn(name = "end_date")
+    @Column(name = "end_date")
     private Date endDate;
 
-    @JoinColumn(name = "investment_percentage")
+    @Column(name = "investment_percentage")
     private BigDecimal investmentPercentage;
 
-    @JoinColumn(name = "amount")
+    @Column(name = "amount")
     private BigDecimal amount;
 
-    @JoinColumn(name = "name")
+    @Column(name = "name")
     private String name;
 
 }

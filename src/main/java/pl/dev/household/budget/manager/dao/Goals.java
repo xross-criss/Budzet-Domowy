@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @Setter
 @Entity
 @Table(name = "goals")
-public class GoalsDAO implements Serializable {
+public class Goals implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,22 +20,22 @@ public class GoalsDAO implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "household")
-    private HouseholdDAO household;
+    private Household household;
 
     @Enumerated(EnumType.STRING)
-    @JoinColumn(name = "category")
+    @Column(name = "category")
     private GoalCategory category;
 
-    @JoinColumn(name = "amount")
+    @Column(name = "amount")
     private BigDecimal amount;
 
-    @JoinColumn(name = "name")
+    @Column(name = "name")
     private String name;
 
-    @JoinColumn(name = "description")
+    @Column(name = "description")
     private String description;
 
-    @JoinColumn(name = "priority")
+    @Column(name = "priority")
     private Integer priority;
 
 }

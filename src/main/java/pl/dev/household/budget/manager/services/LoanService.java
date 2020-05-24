@@ -4,9 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.dev.household.budget.manager.dao.LoanDAO;
+import pl.dev.household.budget.manager.dao.Loan;
 import pl.dev.household.budget.manager.dao.repository.LoanRepository;
-import pl.dev.household.budget.manager.domain.Loan;
+import pl.dev.household.budget.manager.domain.LoanDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,28 +24,28 @@ public class LoanService {
         this.loanRepository = loanRepository;
     }
 
-    public List<Loan> getLoans(Integer householdId) {
+    public List<LoanDTO> getLoans(Integer householdId) {
         return loanRepository.findAllByHousehold_Id(householdId).stream()
-                .map(loan -> modelMapper.map(loan, Loan.class))
+                .map(loan -> modelMapper.map(loan, LoanDTO.class))
                 .collect(Collectors.toList());
     }
 
-    public Loan getLoan(Integer loanId) {
-        return modelMapper.map(loanRepository.findById(loanId), Loan.class);
+    public LoanDTO getLoan(Integer loanId) {
+        return modelMapper.map(loanRepository.findById(loanId), LoanDTO.class);
     }
 
-    public Loan addLoan(Loan loan) {
-        Integer loanId = loanRepository.save(modelMapper.map(loan, LoanDAO.class)).getId();
+    public LoanDTO addLoan(LoanDTO loanDTO) {
+        Integer loanId = loanRepository.save(modelMapper.map(loanDTO, Loan.class)).getId();
         return getLoan(loanId);
     }
 
-    public Loan updateLoan(Integer householdId, Loan loan) {
-        Optional<LoanDAO> oldLoan = loanRepository.findById(loan.getId());
-        if (oldLoan.isEmpty() || !oldLoan.get().getId().equals(loan.getId())) {
+    public LoanDTO updateLoan(Integer householdId, LoanDTO loanDTO) {
+        Optional<Loan> oldLoan = loanRepository.findById(loanDTO.getId());
+        if (oldLoan.isEmpty() || !oldLoan.get().getId().equals(loanDTO.getId())) {
             throw new RuntimeException("Loan cannot be updated!");
         }
 
-        LoanDAO updatedLoan = modelMapper.map(loan, LoanDAO.class);
+        Loan updatedLoan = modelMapper.map(loanDTO, Loan.class);
         loanRepository.save(updatedLoan);
 
         return getLoan(updatedLoan.getId());

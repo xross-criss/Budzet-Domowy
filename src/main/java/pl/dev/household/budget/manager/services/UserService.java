@@ -4,9 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.dev.household.budget.manager.dao.UserDAO;
+import pl.dev.household.budget.manager.dao.User;
 import pl.dev.household.budget.manager.dao.repository.UserRepository;
-import pl.dev.household.budget.manager.domain.User;
+import pl.dev.household.budget.manager.domain.UserDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,31 +24,35 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User getUser(Integer userId) {
-        return modelMapper.map(userRepository.findById(userId), User.class);
+    public UserDTO getUser(Integer userId) {
+        return modelMapper.map(userRepository.findById(userId), UserDTO.class);
     }
 
-    public User updateUser(Integer userId, User user) {
-        Optional<UserDAO> oldUser = userRepository.findById(userId);
+    public UserDTO updateUser(Integer userId, UserDTO userDTO) {
+        Optional<User> oldUser = userRepository.findById(userId);
 
-        if (oldUser.isEmpty() || !oldUser.get().getId().equals(user.getId())) {
+        if (oldUser.isEmpty() || !oldUser.get().getId().equals(userDTO.getId())) {
             throw new RuntimeException("User cannot be updated!");
         }
 
-        UserDAO updatedUser = modelMapper.map(user, UserDAO.class);
+        User updatedUser = modelMapper.map(userDTO, User.class);
         userRepository.save(updatedUser);
 
         return getUser(userId);
     }
 
-    public User registerUser(User user) {
-        UserDAO userDAO = modelMapper.map(user, UserDAO.class);
-        userRepository.save(userDAO);
+    public UserDTO registerUser(UserDTO userDTO) {
+        User user = modelMapper.map(userDTO, User.class);
+        userRepository.save(user);
 
-        return getUser(userDAO.getId());
+        return getUser(user.getId());
     }
 
-    public List<User> getAllUsersForHousehold(Integer householdId) {
-        return userRepository.findAllByHousehold_Id(householdId).stream().map(user -> modelMapper.map(user, User.class)).peek(user -> user.setPassword("*******")).collect(Collectors.toList());
+    public List<UserDTO> getAllUsersForHousehold(Integer householdId) {
+        return userRepository.findAllByHousehold_Id(householdId).stream().map(user -> modelMapper.map(user, UserDTO.class)).peek(userDTO -> userDTO.setPassword("*******")).collect(Collectors.toList());
+    }
+
+    public UserDTO login(UserDTO userDTO) {
+        return null;
     }
 }

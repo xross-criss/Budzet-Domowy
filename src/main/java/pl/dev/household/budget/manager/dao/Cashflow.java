@@ -13,7 +13,7 @@ import java.util.Date;
 @Setter
 @Entity
 @Table(name = "cashflow")
-public class CashflowDAO implements Serializable {
+public class Cashflow implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,24 +21,24 @@ public class CashflowDAO implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "household")
-    private HouseholdDAO household;
+    private Household household;
 
     @Enumerated(EnumType.STRING)
-    @JoinColumn(name = "category")
+    @Column(name = "category")
     private CashflowCategory category;
 
-    @JoinColumn(name = "start_date")
+    @Column(name = "start_date")
     private Date startDate;
 
-    @JoinColumn(name = "end_date")
+    @Column(name = "end_date")
     private Date endDate;
 
-    @JoinColumn(name = "interval")
+    @Column(name = "interval")
     private Integer interval;
 
-    @JoinColumn(name = "amount")
+    @Column(name = "amount")
     private BigDecimal amount;
 
-    @JoinColumn(name = "description")
+    @Column(name = "description")
     private String description;
 }

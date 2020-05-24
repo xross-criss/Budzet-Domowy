@@ -11,10 +11,10 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class Cashflow {
+public class CashflowDTO {
 
     private Integer id;
-    private Household household;
+    private HouseholdDTO householdDTO;
     private CashflowCategory category;
     private Date startDate;
     private Date endDate;

@@ -12,10 +12,10 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class Balance implements Serializable {
+public class BalanceDTO implements Serializable {
 
     private Integer id;
-    private Household household;
+    private HouseholdDTO householdDTO;
     private BalanceType type;
     private Date generationDate;
     private BigDecimal burden;

@@ -12,7 +12,7 @@ import java.util.Date;
 @Setter
 @Entity
 @Table(name = "loan")
-public class LoanDAO implements Serializable {
+public class Loan implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,24 +20,24 @@ public class LoanDAO implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "household")
-    private HouseholdDAO household;
+    private Household household;
 
-    @JoinColumn(name = "bank")
+    @Column(name = "bank")
     private String bankName;
 
-    @JoinColumn(name = "annual_loan_percentage")
+    @Column(name = "annual_loan_percentage")
     private BigDecimal annualLoanPercentage;
 
-    @JoinColumn(name = "start_date")
+    @Column(name = "start_date")
     private Date startDate;
 
-    @JoinColumn(name = "end_date")
+    @Column(name = "end_date")
     private Date endDate;
 
-    @JoinColumn(name = "amount")
+    @Column(name = "amount")
     private BigDecimal amount;
 
-    @JoinColumn(name = "installment_amount")
+    @Column(name = "installment_amount")
     private BigDecimal installmentAmount;
 
 }

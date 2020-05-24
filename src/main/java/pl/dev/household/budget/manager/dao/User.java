@@ -12,7 +12,7 @@ import java.util.Date;
 @Setter
 @Entity
 @Table(name = "user")
-public class UserDAO implements Serializable {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,28 +20,28 @@ public class UserDAO implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "household")
-    private HouseholdDAO household;
+    private Household household;
 
     @Enumerated(EnumType.STRING)
-    @JoinColumn(name = "role")
+    @Column(name = "role")
     private UserRole userRole;
 
-    @JoinColumn(name = "login")
+    @Column(name = "login")
     private String login;
 
-    @JoinColumn(name = "password")
+    @Column(name = "password")
     private String password;
 
-    @JoinColumn(name = "name")
+    @Column(name = "name")
     private String name;
 
-    @JoinColumn(name = "email")
+    @Column(name = "email")
     private String email;
 
-    @JoinColumn(name = "registration_date")
+    @Column(name = "registration_date")
     private Date registrationDate;
 
-    @JoinColumn(name = "last_failed_login")
+    @Column(name = "last_failed_login")
     private Date lastFailedLogin;
 
 }

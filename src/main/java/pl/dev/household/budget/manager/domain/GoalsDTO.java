@@ -10,10 +10,10 @@ import java.math.BigDecimal;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class Goals {
+public class GoalsDTO {
 
     private Integer id;
-    private Household household;
+    private HouseholdDTO householdDTO;
     private GoalCategory category;
     private BigDecimal amount;
     private String name;

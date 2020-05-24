@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.repository.BalanceRepository;
 import pl.dev.household.budget.manager.dictionaries.BalanceType;
-import pl.dev.household.budget.manager.domain.Balance;
+import pl.dev.household.budget.manager.domain.BalanceDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,19 +23,19 @@ public class BalanceService {
         this.balanceRepository = balanceRepository;
     }
 
-    public List<Balance> getBalancesForHousehold(Integer householdId) {
+    public List<BalanceDTO> getBalancesForHousehold(Integer householdId) {
         return balanceRepository.findAllByHousehold_Id(householdId).stream()
                 .map(balance ->
-                        modelMapper.map(balance, Balance.class)
+                        modelMapper.map(balance, BalanceDTO.class)
                 ).collect(Collectors.toList());
     }
 
-    public List<Balance> generateAndReturnBalances(Integer householdId) {
+    public List<BalanceDTO> generateAndReturnBalances(Integer householdId) {
         //TODO
         return null;
     }
 
-    public List<Balance> generate(Integer householdId, BalanceType type) {
+    public List<BalanceDTO> generate(Integer householdId, BalanceType type) {
         //TODO
         return null;
     }

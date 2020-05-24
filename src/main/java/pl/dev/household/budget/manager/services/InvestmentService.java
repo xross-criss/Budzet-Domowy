@@ -4,9 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.dev.household.budget.manager.dao.InvestmentDAO;
+import pl.dev.household.budget.manager.dao.Investment;
 import pl.dev.household.budget.manager.dao.repository.InvestmentRepository;
-import pl.dev.household.budget.manager.domain.Investment;
+import pl.dev.household.budget.manager.domain.InvestmentDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,28 +24,28 @@ public class InvestmentService {
         this.investmentRepository = investmentRepository;
     }
 
-    public List<Investment> getInvestments(Integer householdId) {
+    public List<InvestmentDTO> getInvestments(Integer householdId) {
         return investmentRepository.findAllByHousehold_Id(householdId).stream()
-                .map(investment -> modelMapper.map(investment, Investment.class))
+                .map(investment -> modelMapper.map(investment, InvestmentDTO.class))
                 .collect(Collectors.toList());
     }
 
-    public Investment getInvestment(Integer investmentId) {
-        return modelMapper.map(investmentRepository.findById(investmentId), Investment.class);
+    public InvestmentDTO getInvestment(Integer investmentId) {
+        return modelMapper.map(investmentRepository.findById(investmentId), InvestmentDTO.class);
     }
 
-    public Investment addInvestment(Investment investment) {
-        Integer investmentId = investmentRepository.save(modelMapper.map(investment, InvestmentDAO.class)).getId();
+    public InvestmentDTO addInvestment(InvestmentDTO investmentDTO) {
+        Integer investmentId = investmentRepository.save(modelMapper.map(investmentDTO, Investment.class)).getId();
         return getInvestment(investmentId);
     }
 
-    public Investment updateInvestment(Integer householdId, Investment investment) {
-        Optional<InvestmentDAO> oldInvestment = investmentRepository.findById(investment.getId());
-        if (oldInvestment.isEmpty() || !oldInvestment.get().getId().equals(investment.getId())) {
+    public InvestmentDTO updateInvestment(Integer householdId, InvestmentDTO investmentDTO) {
+        Optional<Investment> oldInvestment = investmentRepository.findById(investmentDTO.getId());
+        if (oldInvestment.isEmpty() || !oldInvestment.get().getId().equals(investmentDTO.getId())) {
             throw new RuntimeException("Investment cannot be updated!");
         }
 
-        InvestmentDAO updatedInvestment = modelMapper.map(investment, InvestmentDAO.class);
+        Investment updatedInvestment = modelMapper.map(investmentDTO, Investment.class);
         investmentRepository.save(updatedInvestment);
 
         return getInvestment(updatedInvestment.getId());

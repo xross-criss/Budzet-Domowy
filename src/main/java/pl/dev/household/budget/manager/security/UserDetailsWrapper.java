@@ -2,7 +2,7 @@ package pl.dev.household.budget.manager.security;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import pl.dev.household.budget.manager.dao.UserDAO;
+import pl.dev.household.budget.manager.dao.User;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -12,13 +12,13 @@ import java.util.Collections;
  */
 public class UserDetailsWrapper implements UserDetails {
 
-    private UserDAO user;
+    private User user;
 
-    public UserDetailsWrapper(UserDAO user) {
+    public UserDetailsWrapper(User user) {
         this.user = user;
     }
 
-    public UserDAO getUser() {
+    public User getUser() {
         return user;
     }
 

@@ -1,7 +1,6 @@
 package pl.dev.household.budget.manager.domain;
 
 import lombok.*;
-import pl.dev.household.budget.manager.dao.HouseholdDAO;
 import pl.dev.household.budget.manager.dictionaries.InsuranceType;
 
 import java.math.BigDecimal;
@@ -12,10 +11,10 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class Insurance {
+public class InsuranceDTO {
 
     private Integer id;
-    private Household household;
+    private HouseholdDTO householdDTO;
     private InsuranceType type;
     private String description;
     private Integer interval;

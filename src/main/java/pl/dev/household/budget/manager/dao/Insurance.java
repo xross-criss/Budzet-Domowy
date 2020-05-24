@@ -13,7 +13,7 @@ import java.util.Date;
 @Setter
 @Entity
 @Table(name = "insurance")
-public class InsuranceDAO implements Serializable {
+public class Insurance implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,31 +21,31 @@ public class InsuranceDAO implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "household")
-    private HouseholdDAO household;
+    private Household household;
 
     @Enumerated(EnumType.STRING)
-    @JoinColumn(name = "type")
+    @Column(name = "type")
     private InsuranceType type;
 
-    @JoinColumn(name = "description")
+    @Column(name = "description")
     private String description;
 
-    @JoinColumn(name = "interval")
+    @Column(name = "interval")
     private Integer interval;
 
-    @JoinColumn(name = "cost")
+    @Column(name = "cost")
     private BigDecimal cost;
 
-    @JoinColumn(name = "end_date")
+    @Column(name = "end_date")
     private Date endDate;
 
-    @JoinColumn(name = "vehicle_tid")
+    @Column(name = "vehicle_tid")
     private String vehicleTID;
 
-    @JoinColumn(name = "name")
+    @Column(name = "name")
     private String name;
 
-    @JoinColumn(name = "vehicle_lp")
+    @Column(name = "vehicle_lp")
     private String vehicleLP;
 
 }

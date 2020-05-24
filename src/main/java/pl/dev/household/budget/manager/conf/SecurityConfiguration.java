@@ -3,6 +3,7 @@ package pl.dev.household.budget.manager.conf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -42,7 +43,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService)
+        auth.parentAuthenticationManager(authenticationManagerBean())
+                .userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder());
     }
 
@@ -76,8 +78,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/register").permitAll()
-                .antMatchers("/api/authenticate").permitAll()
-                .antMatchers("/api/authenticate/**").permitAll()
+                .antMatchers("/api/user/authenticate").permitAll()
+                .antMatchers("/api/user/authenticate/**").permitAll()
                 .antMatchers("/api/home").permitAll()
                 .antMatchers("/api/**").authenticated()
                 .antMatchers("/protected/**").authenticated()
@@ -87,6 +89,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private SecurityConfigurerAdapter securityConfigurerAdapter() {
         return new XAuthTokenConfigurer(userDetailsService, tokenProvider);
+    }
+
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
 }

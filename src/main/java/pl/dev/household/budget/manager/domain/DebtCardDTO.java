@@ -9,10 +9,10 @@ import java.math.BigDecimal;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class DebtCard {
+public class DebtCardDTO {
 
     private Integer id;
-    private Household household;
+    private HouseholdDTO householdDTO;
     private BigDecimal limit;
     private BigDecimal balance;
     private BigDecimal renewalPercentage;

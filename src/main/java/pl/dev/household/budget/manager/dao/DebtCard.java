@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Setter
 @Entity
 @Table(name = "debt_card")
-public class DebtCardDAO implements Serializable {
+public class DebtCard implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,24 +19,24 @@ public class DebtCardDAO implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "household")
-    private HouseholdDAO household;
+    private Household household;
 
-    @JoinColumn(name = "limit")
+    @Column(name = "limit")
     private BigDecimal limit;
 
-    @JoinColumn(name = "balance")
+    @Column(name = "balance")
     private BigDecimal balance;
 
-    @JoinColumn(name = "renewal_percentage")
+    @Column(name = "renewal_percentage")
     private BigDecimal renewalPercentage;
 
-    @JoinColumn(name = "annual_percentage")
+    @Column(name = "annual_percentage")
     private BigDecimal annualPercentage;
 
-    @JoinColumn(name = "bank")
+    @Column(name = "bank")
     private String bank;
 
-    @JoinColumn(name = "name")
+    @Column(name = "name")
     private String name;
 
 }

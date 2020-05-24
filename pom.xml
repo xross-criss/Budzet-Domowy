@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>pl.dev.household.budget</groupId>
+    <groupId>pl.dev.householdDTO.budget</groupId>
     <artifactId>manager</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
@@ -19,7 +19,7 @@
 
     <properties>
         <java.version>1.11</java.version>
-        <start-class>pl.dev.household.budget.manager.Application</start-class>
+        <start-class>pl.dev.householdDTO.budget.manager.Application</start-class>
     </properties>
 
     <dependencies>
@@ -170,7 +170,7 @@
                     <changeLogFile>src/main/resources/db/changelog/master.xml</changeLogFile>
                     <driver>com.mysql.cj.jdbc.Driver</driver>
                     <url>${bdb.db.url}</url>
-                    <username>${bdb.db.user}</username>
+                    <username>${bdb.db.userDTO}</username>
                     <password>${bdb.db.password}</password>
                     <verbose>false</verbose>
                     <logging>info</logging>
@@ -186,7 +186,7 @@
                                 <changeLogFile>db/changelog/master.xml</changeLogFile>
                                 <driver>org.postgresql.Driver</driver>
                                 <url>${bdb.db.url}</url>
-                                <username>${bdb.db.user}</username>
+                                <username>${bdb.db.userDTO}</username>
                                 <password>${bdb.db.password}</password>
                                 <verbose>false</verbose>
                                 <logging>info</logging>
@@ -204,7 +204,7 @@
                 <bdb.db.url>
                     jdbc:postgresql://192.168.99.100:32772/postgres?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=true
                 </bdb.db.url>
-                <bdb.db.user>postgres</bdb.db.user>
+                <bdb.db.userDTO>postgres</bdb.db.userDTO>
                 <bdb.db.password>LoremIpsum</bdb.db.password>
                 <bdb.db.contexts>dev</bdb.db.contexts>
             </properties>
@@ -216,7 +216,7 @@
                 <bdb.db.url>
                     jdbc:mysql://192.168.99.100:32774/test?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=true
                 </bdb.db.url>
-                <bdb.db.user>root</bdb.db.user>
+                <bdb.db.userDTO>root</bdb.db.userDTO>
                 <bdb.db.password>dupa</bdb.db.password>
                 <bdb.db.contexts>dev</bdb.db.contexts>
             </properties>
@@ -228,7 +228,7 @@
                 <bdb.db.url>
                     jdbc:mysql://172.16.16.1:3306/dev_budzet?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=true
                 </bdb.db.url>
-                <bdb.db.user>dev_budzet</bdb.db.user>
+                <bdb.db.userDTO>dev_budzet</bdb.db.userDTO>
                 <bdb.db.password>dev_budzet</bdb.db.password>
                 <bdb.db.contexts>dev</bdb.db.contexts>
             </properties>

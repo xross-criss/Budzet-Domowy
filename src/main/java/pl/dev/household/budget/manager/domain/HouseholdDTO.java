@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class Household {
+public class HouseholdDTO {
 
     private Integer id;
     private Integer population;

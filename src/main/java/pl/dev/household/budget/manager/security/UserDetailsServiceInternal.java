@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import pl.dev.household.budget.manager.dao.UserDAO;
+import pl.dev.household.budget.manager.dao.User;
 import pl.dev.household.budget.manager.dao.repository.UserRepository;
 
 @Component("userDetailsServiceInternal")
@@ -24,12 +24,12 @@ public class UserDetailsServiceInternal {
 
     @Transactional
     public UserDetails loadUserByUsername(final String login) {
-        UserDAO userFromDatabase = userRepository.findOneByLogin(login);
+        User userFromDatabase = userRepository.findOneByLogin(login);
         checkUser(userFromDatabase, login);
         return new UserDetailsWrapper(userFromDatabase);
     }
 
-    private void checkUser(UserDAO userFromDatabase, String login) {
+    private void checkUser(User userFromDatabase, String login) {
         if (userFromDatabase == null) {
             throw new UsernameNotFoundException("User " + login + " was not found in the database");
         }

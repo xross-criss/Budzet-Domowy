@@ -10,10 +10,10 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class UserDTO {
 
     private Integer id;
-    private Household household;
+    private HouseholdDTO householdDTO;
     private UserRole userRole;
     private String login;
     private String password;

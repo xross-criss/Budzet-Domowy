@@ -4,9 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.dev.household.budget.manager.dao.CashflowDAO;
+import pl.dev.household.budget.manager.dao.Cashflow;
 import pl.dev.household.budget.manager.dao.repository.CashflowRepository;
-import pl.dev.household.budget.manager.domain.Cashflow;
+import pl.dev.household.budget.manager.domain.CashflowDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,30 +24,30 @@ public class CashflowService {
         this.cashflowRepository = cashflowRepository;
     }
 
-    public List<Cashflow> getCashflows(Integer householdId) {
+    public List<CashflowDTO> getCashflows(Integer householdId) {
         return cashflowRepository.findAllByHousehold_Id(householdId).stream()
                 .map(cashflow ->
-                        modelMapper.map(cashflow, Cashflow.class)
+                        modelMapper.map(cashflow, CashflowDTO.class)
                 ).collect(Collectors.toList());
     }
 
-    public Cashflow getCashflow(Integer cashflowId) {
-        return modelMapper.map(cashflowRepository.findById(cashflowId), Cashflow.class);
+    public CashflowDTO getCashflow(Integer cashflowId) {
+        return modelMapper.map(cashflowRepository.findById(cashflowId), CashflowDTO.class);
     }
 
-    public Cashflow addCashflow(Cashflow cashflow) {
-        Integer cashflowId = cashflowRepository.save(modelMapper.map(cashflow, CashflowDAO.class)).getId();
+    public CashflowDTO addCashflow(CashflowDTO cashflowDTO) {
+        Integer cashflowId = cashflowRepository.save(modelMapper.map(cashflowDTO, Cashflow.class)).getId();
         return getCashflow(cashflowId);
     }
 
 
-    public Cashflow updateCashflow(Integer householdId, Cashflow cashflow) {
-        Optional<CashflowDAO> oldCashflow = cashflowRepository.findById(cashflow.getId());
-        if (oldCashflow.isEmpty() || !oldCashflow.get().getId().equals(cashflow.getId())) {
+    public CashflowDTO updateCashflow(Integer householdId, CashflowDTO cashflowDTO) {
+        Optional<Cashflow> oldCashflow = cashflowRepository.findById(cashflowDTO.getId());
+        if (oldCashflow.isEmpty() || !oldCashflow.get().getId().equals(cashflowDTO.getId())) {
             throw new RuntimeException("Household cannot be updated!");
         }
 
-        CashflowDAO updatedCashflow = modelMapper.map(cashflow, CashflowDAO.class);
+        Cashflow updatedCashflow = modelMapper.map(cashflowDTO, Cashflow.class);
         cashflowRepository.save(updatedCashflow);
 
         return getCashflow(updatedCashflow.getId());

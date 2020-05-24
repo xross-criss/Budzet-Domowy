@@ -2,7 +2,7 @@ package pl.dev.household.budget.manager.dao.view;
 
 import lombok.Getter;
 import lombok.Setter;
-import pl.dev.household.budget.manager.dao.HouseholdDAO;
+import pl.dev.household.budget.manager.dao.Household;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,7 +13,7 @@ import java.util.Date;
 @Setter
 @Entity
 @Table(name = "vw_loan")
-public class VWLoanDAO implements Serializable {
+public class VWLoan implements Serializable {
 
     @Id
     @JoinColumn(name = "id")
@@ -21,7 +21,7 @@ public class VWLoanDAO implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "household")
-    private HouseholdDAO household;
+    private Household household;
 
     @JoinColumn(name = "bank")
     private String bankName;

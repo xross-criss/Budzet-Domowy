@@ -13,7 +13,7 @@ import java.util.Date;
 @Setter
 @Entity
 @Table(name = "balance")
-public class BalanceDAO implements Serializable {
+public class Balance implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,22 +21,22 @@ public class BalanceDAO implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "household")
-    private HouseholdDAO household;
+    private Household household;
 
     @Enumerated(EnumType.STRING)
-    @JoinColumn(name = "type")
+    @Column(name = "type")
     private BalanceType type;
 
-    @JoinColumn(name = "generation_date")
+    @Column(name = "generation_date")
     private Date generationDate;
 
-    @JoinColumn(name = "burden")
+    @Column(name = "burden")
     private BigDecimal burden;
 
-    @JoinColumn(name = "income")
+    @Column(name = "income")
     private BigDecimal income;
 
-    @JoinColumn(name = "balance")
+    @Column(name = "balance")
     private BigDecimal balance;
 
 }

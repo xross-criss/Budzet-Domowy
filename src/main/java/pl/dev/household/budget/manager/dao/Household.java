@@ -10,16 +10,16 @@ import java.math.BigDecimal;
 @Setter
 @Entity
 @Table(name = "household")
-public class HouseholdDAO {
+public class Household {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @JoinColumn(name = "population")
+    @Column(name = "population")
     private Integer population;
 
-    @JoinColumn(name = "cost")
+    @Column(name = "cost")
     private BigDecimal cost;
 
 }

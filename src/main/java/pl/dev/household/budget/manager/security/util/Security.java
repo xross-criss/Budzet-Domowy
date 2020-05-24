@@ -3,7 +3,7 @@ package pl.dev.household.budget.manager.security.util;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import pl.dev.household.budget.manager.dao.UserDAO;
+import pl.dev.household.budget.manager.dao.User;
 import pl.dev.household.budget.manager.security.UserDetailsWrapper;
 
 import java.util.Optional;
@@ -17,7 +17,7 @@ public class Security {
 
     }
 
-    public static UserDAO currentUser() {
+    public static User currentUser() {
         return Optional.ofNullable(SecurityContextHolder.getContext())
                 .map(SecurityContext::getAuthentication)
                 .map(Authentication::getPrincipal)

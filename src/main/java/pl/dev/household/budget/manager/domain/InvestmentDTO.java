@@ -1,8 +1,6 @@
 package pl.dev.household.budget.manager.domain;
 
 import lombok.*;
-import pl.dev.household.budget.manager.dao.HouseholdDAO;
-import pl.dev.household.budget.manager.dictionaries.InsuranceType;
 import pl.dev.household.budget.manager.dictionaries.InvestmentCategory;
 
 import java.math.BigDecimal;
@@ -13,10 +11,10 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class Investment {
+public class InvestmentDTO {
 
     private Integer id;
-    private Household household;
+    private HouseholdDTO householdDTO;
     private InvestmentCategory type;
     private Boolean isMonthly;
     private Integer period;     //    period of investment in months
