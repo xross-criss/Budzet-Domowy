@@ -2,15 +2,17 @@ package pl.dev.household.budget.manager.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.dev.household.budget.manager.domain.GoalsDTO;
+import pl.dev.household.budget.manager.security.util.Security;
 import pl.dev.household.budget.manager.services.GoalsService;
 
 import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/goals")
+@RequestMapping("/api")
 public class GoalsController {
 
     private GoalsService goalsService;
@@ -19,19 +21,19 @@ public class GoalsController {
         this.goalsService = goalsService;
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/{householdId}")
-    public List<GoalsDTO> getGoals(@RequestParam("householdId") Integer householdId) {
-        return goalsService.getGoals(householdId);
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/goals")
+    public ResponseEntity<List<GoalsDTO>> getGoals() {
+        return ResponseEntity.ok(goalsService.getGoals(Security.currentUser().getHousehold().getId()));
     }
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public GoalsDTO addGoals(@RequestBody GoalsDTO goal) {
-        return goalsService.addGoal(goal);
+    public ResponseEntity<GoalsDTO> addGoals(@RequestBody GoalsDTO goal) {
+        return ResponseEntity.ok(goalsService.addGoal(goal));
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/{householdId}")
-    public GoalsDTO updateGoals(@RequestParam("householdId") Integer householdId, @RequestBody GoalsDTO goal) {
-        return goalsService.updateGoal(householdId, goal);
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/goals")
+    public ResponseEntity<GoalsDTO> updateGoals(@RequestBody GoalsDTO goal) {
+        return ResponseEntity.ok(goalsService.updateGoal(Security.currentUser().getHousehold().getId(), goal));
     }
 
 }
