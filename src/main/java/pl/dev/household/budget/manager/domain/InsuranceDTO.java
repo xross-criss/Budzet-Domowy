@@ -4,6 +4,7 @@ import lombok.*;
 import pl.dev.household.budget.manager.dictionaries.InsuranceType;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -19,7 +20,7 @@ public class InsuranceDTO {
     private String description;
     private Integer interval;
     private BigDecimal cost;
-    private Date endDate;
+    private LocalDate endDate;
     private String name;
     private String vehicleTID;  //    vehicle technical inspection date
     private String vehicleLP;   //    vehicle license plate

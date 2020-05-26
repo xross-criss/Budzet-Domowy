@@ -7,6 +7,7 @@ import pl.dev.household.budget.manager.dictionaries.InsuranceType;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -37,7 +38,7 @@ public class Insurance implements Serializable {
     private BigDecimal cost;
 
     @Column(name = "end_date")
-    private Date endDate;
+    private LocalDate endDate;
 
     @Column(name = "vehicle_tid")
     private String vehicleTID;

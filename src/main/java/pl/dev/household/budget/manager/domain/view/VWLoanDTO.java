@@ -4,6 +4,7 @@ import lombok.*;
 import pl.dev.household.budget.manager.domain.HouseholdDTO;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -17,8 +18,8 @@ public class VWLoanDTO {
     private HouseholdDTO householdDTO;
     private String bankName;
     private BigDecimal annualLoanPercentage;
-    private Date startDate;
-    private Date endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private BigDecimal amount;
     private Integer fullInstallmentDuration;
     private Integer installmentDurationToGo;

@@ -7,6 +7,7 @@ import pl.dev.household.budget.manager.dictionaries.InsuranceType;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -34,7 +35,7 @@ public class Investment implements Serializable {
     private Integer period;
 
     @Column(name = "end_date")
-    private Date endDate;
+    private LocalDate endDate;
 
     @Column(name = "investment_percentage")
     private BigDecimal investmentPercentage;

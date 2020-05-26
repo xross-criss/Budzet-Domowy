@@ -4,6 +4,7 @@ import lombok.*;
 import pl.dev.household.budget.manager.dictionaries.InvestmentCategory;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -18,7 +19,7 @@ public class InvestmentDTO {
     private InvestmentCategory type;
     private Boolean isMonthly;
     private Integer period;     //    period of investment in months
-    private Date endDate;
+    private LocalDate endDate;
     private BigDecimal investmentPercentage;
     private BigDecimal amount;
     private String name;

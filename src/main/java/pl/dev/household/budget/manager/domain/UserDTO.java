@@ -3,6 +3,7 @@ package pl.dev.household.budget.manager.domain;
 import lombok.*;
 import pl.dev.household.budget.manager.dictionaries.UserRole;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -19,7 +20,7 @@ public class UserDTO {
     private String password;
     private String name;
     private String email;
-    private Date registrationDate;
-    private Date lastFailedLogin;
+    private LocalDate registrationDate;
+    private LocalDate lastFailedLogin;
 
 }

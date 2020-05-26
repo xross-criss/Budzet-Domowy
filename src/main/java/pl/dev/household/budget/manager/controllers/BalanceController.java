@@ -29,8 +29,8 @@ public class BalanceController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/balance/generate")
-    public ResponseEntity<List<BalanceDTO>> generateAndReturnBalances() {
-        return ResponseEntity.ok(balanceService.generateAndReturnBalances(Security.currentUser().getHousehold().getId()));
+    public ResponseEntity<BalanceDTO> generateAndReturnBalances() {
+        return ResponseEntity.ok(balanceService.generateAndReturnBalance(Security.currentUser().getHousehold().getId()));
     }
 
 }

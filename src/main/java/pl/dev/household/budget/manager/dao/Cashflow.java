@@ -7,6 +7,7 @@ import pl.dev.household.budget.manager.dictionaries.CashflowCategory;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -28,10 +29,10 @@ public class Cashflow implements Serializable {
     private CashflowCategory category;
 
     @Column(name = "start_date")
-    private Date startDate;
+    private LocalDate startDate;
 
     @Column(name = "end_date")
-    private Date endDate;
+    private LocalDate endDate;
 
     @Column(name = "interval")
     private Integer interval;

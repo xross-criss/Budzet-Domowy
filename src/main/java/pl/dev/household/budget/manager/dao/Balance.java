@@ -7,6 +7,7 @@ import pl.dev.household.budget.manager.dictionaries.BalanceType;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -28,7 +29,7 @@ public class Balance implements Serializable {
     private BalanceType type;
 
     @Column(name = "generation_date")
-    private Date generationDate;
+    private LocalDate generationDate;
 
     @Column(name = "burden")
     private BigDecimal burden;

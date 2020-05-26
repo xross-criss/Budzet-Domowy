@@ -7,6 +7,7 @@ import pl.dev.household.budget.manager.dao.Household;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -30,10 +31,10 @@ public class VWLoan implements Serializable {
     private BigDecimal annualLoanPercentage;
 
     @JoinColumn(name = "start_date")
-    private Date startDate;
+    private LocalDate startDate;
 
     @JoinColumn(name = "end_date")
-    private Date endDate;
+    private LocalDate endDate;
 
     @JoinColumn(name = "amount")
     private BigDecimal amount;

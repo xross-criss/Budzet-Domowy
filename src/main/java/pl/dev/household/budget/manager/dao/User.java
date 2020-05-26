@@ -6,6 +6,7 @@ import pl.dev.household.budget.manager.dictionaries.UserRole;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -39,9 +40,9 @@ public class User implements Serializable {
     private String email;
 
     @Column(name = "registration_date")
-    private Date registrationDate;
+    private LocalDate registrationDate;
 
     @Column(name = "last_failed_login")
-    private Date lastFailedLogin;
+    private LocalDate lastFailedLogin;
 
 }
