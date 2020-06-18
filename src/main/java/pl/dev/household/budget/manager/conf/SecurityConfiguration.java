@@ -15,6 +15,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import pl.dev.household.budget.manager.security.Http401UnauthorizedEntryPoint;
 import pl.dev.household.budget.manager.security.xauth.TokenProvider;
 
@@ -22,7 +24,7 @@ import pl.dev.household.budget.manager.security.xauth.TokenProvider;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
     @SuppressWarnings("SpringAutowiredFieldsWarningInspection")
     @Autowired
@@ -60,12 +62,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/console/**");
     }
 
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:3000", "https://localhost:3000", "http://89.67.88.222:3000");
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPoint)
+                .and()
+                .cors()
                 .and()
                 .csrf()
                 .disable()

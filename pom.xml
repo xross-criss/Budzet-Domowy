@@ -170,7 +170,7 @@
                     <changeLogFile>src/main/resources/db/changelog/master.xml</changeLogFile>
                     <driver>com.mysql.cj.jdbc.Driver</driver>
                     <url>${bdb.db.url}</url>
-                    <username>${bdb.db.userDTO}</username>
+                    <username>${bdb.db.user}</username>
                     <password>${bdb.db.password}</password>
                     <verbose>false</verbose>
                     <logging>info</logging>
