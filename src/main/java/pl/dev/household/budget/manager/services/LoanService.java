@@ -2,7 +2,6 @@ package pl.dev.household.budget.manager.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.Loan;
 import pl.dev.household.budget.manager.dao.repository.LoanRepository;
@@ -19,8 +18,8 @@ public class LoanService {
     private ModelMapper modelMapper;
     private LoanRepository loanRepository;
 
-    @Autowired
-    public LoanService(LoanRepository loanRepository) {
+    public LoanService(ModelMapper modelMapper, LoanRepository loanRepository) {
+        this.modelMapper = modelMapper;
         this.loanRepository = loanRepository;
     }
 

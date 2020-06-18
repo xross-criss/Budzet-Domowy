@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/balance")
 public class BalanceController {
 
     private BalanceService balanceService;
@@ -23,12 +23,12 @@ public class BalanceController {
         this.balanceService = balanceService;
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/balance")
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<BalanceDTO>> getBalances() {
         return ResponseEntity.ok(balanceService.getBalancesForHousehold(Security.currentUser().getHousehold().getId()));
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/balance/generate")
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/generate")
     public ResponseEntity<BalanceDTO> generateAndReturnBalances() {
         return ResponseEntity.ok(balanceService.generateAndReturnBalance(Security.currentUser().getHousehold().getId()));
     }

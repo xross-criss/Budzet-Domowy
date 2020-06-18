@@ -12,7 +12,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/investment")
 public class InvestmentController {
 
     private InvestmentService investmentService;
@@ -21,7 +21,7 @@ public class InvestmentController {
         this.investmentService = investmentService;
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/investment")
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<InvestmentDTO>> getInvestments() {
         return ResponseEntity.ok(investmentService.getInvestments(Security.currentUser().getHousehold().getId()));
     }
@@ -31,7 +31,7 @@ public class InvestmentController {
         return ResponseEntity.ok(investmentService.addInvestment(investmentDTO));
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/investment")
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<InvestmentDTO> updateInvestment(@RequestBody InvestmentDTO investmentDTO) {
         return ResponseEntity.ok(investmentService.updateInvestment(Security.currentUser().getHousehold().getId(), investmentDTO));
     }

@@ -12,7 +12,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/cashflow")
 public class CashflowController {
 
     private CashflowService cashflowService;
@@ -21,7 +21,7 @@ public class CashflowController {
         this.cashflowService = cashflowService;
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/cashflow")
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<CashflowDTO>> getCashflows() {
         return ResponseEntity.ok(cashflowService.getCashflows(Security.currentUser().getHousehold().getId()));
     }
@@ -31,7 +31,7 @@ public class CashflowController {
         return ResponseEntity.ok(cashflowService.addCashflow(cashflowDTO));
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/cashflow")
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CashflowDTO> updateCashflow(@RequestBody CashflowDTO cashflowDTO) {
         return ResponseEntity.ok(cashflowService.updateCashflow(Security.currentUser().getHousehold().getId(), cashflowDTO));
     }

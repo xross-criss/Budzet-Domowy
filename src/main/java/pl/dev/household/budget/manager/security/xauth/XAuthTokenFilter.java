@@ -49,7 +49,9 @@ public class XAuthTokenFilter extends GenericFilterBean {
                     httpServletResponse.addHeader(XAUTH_TOKEN_HEADER_NAME, tokenProvider.createToken(details));
                 }
             }
-            filterChain.doFilter(servletRequest, servletResponse);
+            if (filterChain != null) {
+                filterChain.doFilter(servletRequest, servletResponse);
+            }
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }

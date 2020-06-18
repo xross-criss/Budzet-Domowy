@@ -31,7 +31,8 @@ public class BalanceService {
     private CashflowRepository cashflowRepository;
     private HouseholdRepository householdRepository;
 
-    public BalanceService(BalanceRepository balanceRepository, CashflowRepository cashflowRepository, HouseholdRepository householdRepository) {
+    public BalanceService(ModelMapper modelMapper, BalanceRepository balanceRepository, CashflowRepository cashflowRepository, HouseholdRepository householdRepository) {
+        this.modelMapper = modelMapper;
         this.balanceRepository = balanceRepository;
         this.cashflowRepository = cashflowRepository;
         this.householdRepository = householdRepository;

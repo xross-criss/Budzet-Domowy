@@ -6,9 +6,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import pl.dev.household.budget.manager.domain.AuthenticateRequestDTO;
 import pl.dev.household.budget.manager.security.UserDetailsServiceInternal;
@@ -18,7 +18,7 @@ import pl.dev.household.budget.manager.security.xauth.TokenProvider;
 
 @Slf4j
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/authenticate")
 public class AuthenticatonController {
 
     private TokenProvider tokenProvider;
@@ -31,7 +31,7 @@ public class AuthenticatonController {
         this.userDetailsService = userDetailsService;
     }
 
-    @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
+    @PostMapping
     public ResponseEntity<String> authorize(@RequestBody AuthenticateRequestDTO credentials) {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(credentials.getLogin(), credentials.getPassword());
         Authentication authentication = this.authenticationManager.authenticate(token);

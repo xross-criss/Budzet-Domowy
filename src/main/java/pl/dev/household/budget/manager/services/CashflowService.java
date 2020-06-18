@@ -2,7 +2,6 @@ package pl.dev.household.budget.manager.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.Cashflow;
 import pl.dev.household.budget.manager.dao.repository.CashflowRepository;
@@ -19,8 +18,8 @@ public class CashflowService {
     private ModelMapper modelMapper;
     private CashflowRepository cashflowRepository;
 
-    @Autowired
-    public CashflowService(CashflowRepository cashflowRepository) {
+    public CashflowService(ModelMapper modelMapper, CashflowRepository cashflowRepository) {
+        this.modelMapper = modelMapper;
         this.cashflowRepository = cashflowRepository;
     }
 

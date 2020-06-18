@@ -78,11 +78,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/register").permitAll()
-                .antMatchers("/api/user/authenticate").permitAll()
-                .antMatchers("/api/user/authenticate/**").permitAll()
+                .antMatchers("/api/authenticate").permitAll()
+                .antMatchers("/api/authenticate/**").permitAll()
                 .antMatchers("/api/home").permitAll()
-                .antMatchers("/api/**").authenticated()
-                .antMatchers("/protected/**").authenticated()
+                .antMatchers("/api/**").permitAll()
                 .and()
                 .apply(securityConfigurerAdapter());
     }

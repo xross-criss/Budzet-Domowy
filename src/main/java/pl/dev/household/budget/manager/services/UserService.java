@@ -2,7 +2,6 @@ package pl.dev.household.budget.manager.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.User;
 import pl.dev.household.budget.manager.dao.repository.UserRepository;
@@ -19,8 +18,8 @@ public class UserService {
     private ModelMapper modelMapper;
     private UserRepository userRepository;
 
-    @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(ModelMapper modelMapper, UserRepository userRepository) {
+        this.modelMapper = modelMapper;
         this.userRepository = userRepository;
     }
 

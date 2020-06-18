@@ -2,7 +2,6 @@ package pl.dev.household.budget.manager.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.Goals;
 import pl.dev.household.budget.manager.dao.repository.GoalsRepository;
@@ -19,8 +18,8 @@ public class GoalsService {
     private ModelMapper modelMapper;
     private GoalsRepository goalsRepository;
 
-    @Autowired
-    public GoalsService(GoalsRepository goalsRepository) {
+    public GoalsService(ModelMapper modelMapper, GoalsRepository goalsRepository) {
+        this.modelMapper = modelMapper;
         this.goalsRepository = goalsRepository;
     }
 

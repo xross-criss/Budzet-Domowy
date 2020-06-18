@@ -12,7 +12,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/goals")
 public class GoalsController {
 
     private GoalsService goalsService;
@@ -21,7 +21,7 @@ public class GoalsController {
         this.goalsService = goalsService;
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/goals")
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<GoalsDTO>> getGoals() {
         return ResponseEntity.ok(goalsService.getGoals(Security.currentUser().getHousehold().getId()));
     }
@@ -31,7 +31,7 @@ public class GoalsController {
         return ResponseEntity.ok(goalsService.addGoal(goal));
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/goals")
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GoalsDTO> updateGoals(@RequestBody GoalsDTO goal) {
         return ResponseEntity.ok(goalsService.updateGoal(Security.currentUser().getHousehold().getId(), goal));
     }
