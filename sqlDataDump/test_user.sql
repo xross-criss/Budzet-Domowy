@@ -1,0 +1,2 @@
+INSERT INTO test.user (id, household, role, login, password, name, email, registration_date, last_failed_login) VALUES (1, 1, 'FAMILY_GUY', 'test', '098f6bcd4621d373cade4e832627b4f6', 'Testowy Krzysiek', 'krzysiek.testowy@test.pl', '2020-01-20 20:06:00', '2020-01-21 20:06:00');
+INSERT INTO test.user (id, household, role, login, password, name, email, registration_date, last_failed_login) VALUES (2, 1, 'MEMBER', 'test_member', '098f6bcd4621d373cade4e832627b4f6', 'Testowy uzytkownik', 'uzytkownik.testowy@test.pl', '2020-01-21 20:06:00', '2020-01-21 20:06:00');

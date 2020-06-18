@@ -1,0 +1,4 @@
+INSERT INTO test.cashflow (id, household, category, start_date, end_date, `interval`, amount, description) VALUES (1, 1, 'INCOME', '2020-02-01', '2021-02-01', 1, 6000.00, 'pensja standardowa');
+INSERT INTO test.cashflow (id, household, category, start_date, end_date, `interval`, amount, description) VALUES (2, 1, 'INCOME', '2020-02-01', '2021-02-01', 1, 4000.00, 'pensja dodatkowa');
+INSERT INTO test.cashflow (id, household, category, start_date, end_date, `interval`, amount, description) VALUES (3, 1, 'EXPENSE', '2020-02-01', '2021-02-01', 1, 3000.00, 'na zycie');
+INSERT INTO test.cashflow (id, household, category, start_date, end_date, `interval`, amount, description) VALUES (4, 1, 'EXPENSE', '2020-02-01', '2021-02-01', 1, 1000.00, 'na uczelnie');
