@@ -11,7 +11,7 @@
         <sql endDelimiter="/">
             CREATE OR REPLACE VIEW vw_loan AS
             SELECT l.id,
-            l.householdDTO,
+            l.household,
             l.amount,
             l.annual_loan_percentage,
             l.bank,
@@ -20,7 +20,7 @@
             TIMESTAMPDIFF(MONTH, l.start_date, l.end_date) AS full_installment_duration,
             TIMESTAMPDIFF(MONTH, CURDATE(), l.end_date) AS installment_duration_to_go,
             l.installment_amount
-            FROM loanDTO l;
+            FROM loan l;
         </sql>
 
     </changeSet>

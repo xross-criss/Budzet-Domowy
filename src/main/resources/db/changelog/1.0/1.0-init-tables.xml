@@ -8,7 +8,7 @@
 
     <changeSet id="1.0-init-tables" author="Krzysztof Kwiatkowski">
 
-        <createTable tableName="householdDTO">
+        <createTable tableName="household">
             <column name="id"
                     type="INT"
                     autoIncrement="true">
@@ -22,17 +22,17 @@
                     type="NUMERIC(8,2)"/>
         </createTable>
 
-        <createTable tableName="userDTO">
+        <createTable tableName="user">
             <column name="id"
                     type="INT"
                     autoIncrement="true">
                 <constraints primaryKey="true"
                              primaryKeyName="PK_user_id"/>
             </column>
-            <column name="householdDTO"
+            <column name="household"
                     type="INT">
                 <constraints foreignKeyName="FK_USER_HOUSEHOLD_ID"
-                             references="householdDTO(id)"/>
+                             references="household(id)"/>
             </column>
 
             <column name="role"
@@ -60,31 +60,31 @@
                 <constraints primaryKey="true"
                              primaryKeyName="PK_HOUSEHOLD_USER_USER_ID"
                              foreignKeyName="FK_HOUSEHOLD_USER_USER_ID"
-                             references="userDTO(id)"/>
+                             references="user(id)"/>
             </column>
             <column name="household_id"
                     type="INT">
                 <constraints primaryKey="true"
                              primaryKeyName="PK_HOUSEHOLD_USER_HOUSEHOLD_ID"
                              foreignKeyName="FK_HOUSEHOLD_USER_HOUSEHOLD_ID"
-                             references="householdDTO(id)"/>
+                             references="household(id)"/>
             </column>
 
             <column name="role"
                     type="VARCHAR(16)"/>
         </createTable>-->
 
-        <createTable tableName="loanDTO">
+        <createTable tableName="loan">
             <column name="id"
                     type="INT"
                     autoIncrement="true">
                 <constraints primaryKey="true"
                              primaryKeyName="PK_loan_id"/>
             </column>
-            <column name="householdDTO"
+            <column name="household"
                     type="INT">
                 <constraints foreignKeyName="FK_LOAN_HOUSEHOLD_ID"
-                             references="householdDTO(id)"/>
+                             references="household(id)"/>
             </column>
 
             <column name="bank"
@@ -101,17 +101,17 @@
                     type="NUMERIC(8,2)"/>
         </createTable>
 
-        <createTable tableName="cashflowDTO">
+        <createTable tableName="cashflow">
             <column name="id"
                     type="INT"
                     autoIncrement="true">
                 <constraints primaryKey="true"
                              primaryKeyName="PK_cashflow_id"/>
             </column>
-            <column name="householdDTO"
+            <column name="household"
                     type="INT">
                 <constraints foreignKeyName="FK_CASHFLOW_HOUSEHOLD_ID"
-                             references="householdDTO(id)"/>
+                             references="household(id)"/>
             </column>
 
             <column name="category"
@@ -136,10 +136,10 @@
                 <constraints primaryKey="true"
                              primaryKeyName="PK_goals_id"/>
             </column>
-            <column name="householdDTO"
+            <column name="household"
                     type="INT">
                 <constraints foreignKeyName="FK_GOALS_HOUSEHOLD_ID"
-                             references="householdDTO(id)"/>
+                             references="household(id)"/>
             </column>
 
             <column name="category"
@@ -156,17 +156,17 @@
             <!--kiedy się uda zrealizować cel zakupowy będzie polem wyliczalnym bezpośrednio w obiektach aplikacji-->
         </createTable>
 
-        <createTable tableName="investmentDTO">
+        <createTable tableName="investment">
             <column name="id"
                     type="INT"
                     autoIncrement="true">
                 <constraints primaryKey="true"
                              primaryKeyName="PK_investment_id"/>
             </column>
-            <column name="householdDTO"
+            <column name="household"
                     type="INT">
                 <constraints foreignKeyName="FK_INVESTMENT_HOUSEHOLD_ID"
-                             references="householdDTO(id)"/>
+                             references="household(id)"/>
             </column>
 
             <column name="category"
@@ -193,10 +193,10 @@
                 <constraints primaryKey="true"
                              primaryKeyName="PK_debt_card_id"/>
             </column>
-            <column name="householdDTO"
+            <column name="household"
                     type="INT">
                 <constraints foreignKeyName="FK_DEBT_CARD_HOUSEHOLD_ID"
-                             references="householdDTO(id)"/>
+                             references="household(id)"/>
             </column>
 
             <column name="limit"
@@ -213,17 +213,17 @@
                     type="VARCHAR(512)"/>
         </createTable>
 
-        <createTable tableName="insuranceDTO">
+        <createTable tableName="insurance">
             <column name="id"
                     type="INT"
                     autoIncrement="true">
                 <constraints primaryKey="true"
                              primaryKeyName="PK_debt_card_id"/>
             </column>
-            <column name="householdDTO"
+            <column name="household"
                     type="INT">
                 <constraints foreignKeyName="FK_INSURANCE_HOUSEHOLD_ID"
-                             references="householdDTO(id)"/>
+                             references="household(id)"/>
             </column>
 
             <column name="type"
@@ -252,10 +252,10 @@
                 <constraints primaryKey="true"
                              primaryKeyName="PK_goals_id"/>
             </column>
-            <column name="householdDTO"
+            <column name="household"
                     type="INT">
                 <constraints foreignKeyName="FK_BALANCE_HOUSEHOLD_ID"
-                             references="householdDTO(id)"/>
+                             references="household(id)"/>
             </column>
 
             <column name="type"
