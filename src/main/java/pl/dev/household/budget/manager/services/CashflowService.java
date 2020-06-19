@@ -5,10 +5,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.Cashflow;
 import pl.dev.household.budget.manager.dao.repository.CashflowRepository;
+import pl.dev.household.budget.manager.dictionaries.CashflowCategory;
 import pl.dev.household.budget.manager.domain.CashflowDTO;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,6 +30,14 @@ public class CashflowService {
                 .map(cashflow ->
                         modelMapper.map(cashflow, CashflowDTO.class)
                 ).collect(Collectors.toList());
+    }
+
+    public List<CashflowDTO> getCashflowsWithType(Integer householdId, CashflowCategory cashflowCategory) {
+        return cashflowRepository.findAllByHousehold_Id(householdId).stream()
+                .map(cashflow ->
+                        modelMapper.map(cashflow, CashflowDTO.class)
+                ).filter(getCashflowWithCategoryPredicate(cashflowCategory))
+                .collect(Collectors.toList());
     }
 
     public CashflowDTO getCashflow(Integer cashflowId) {
@@ -50,5 +60,9 @@ public class CashflowService {
         cashflowRepository.save(updatedCashflow);
 
         return getCashflow(updatedCashflow.getId());
+    }
+
+    private Predicate<CashflowDTO> getCashflowWithCategoryPredicate(CashflowCategory cashflowCategory) {
+        return cashflowDTO -> cashflowDTO.getCategory().equals(cashflowCategory);
     }
 }
