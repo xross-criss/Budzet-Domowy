@@ -72,6 +72,7 @@ public class BalanceService {
         checkIfBalanceExists(previousMonthBalance);
 
         HashMap<BalanceMapType, BigDecimal> resolvedCashflowBalance = resolveCashflowBalance(
+                householdDTO,
                 cashflowRepository.findAllByHousehold_Id(householdDTO.getId()).stream()
                         .filter(checkIfMonthIsPeriodic())
                         .collect(Collectors.toList()),
@@ -90,8 +91,8 @@ public class BalanceService {
         return modelMapper.map(finalBalance, BalanceDTO.class);
     }
 
-    private HashMap<BalanceMapType, BigDecimal> resolveCashflowBalance(List<Cashflow> cashflowList, BalanceDTO previousMonthBalance) {
-        BigDecimal balanceResult = previousMonthBalance.getBalance();
+    private HashMap<BalanceMapType, BigDecimal> resolveCashflowBalance(HouseholdDTO householdDTO, List<Cashflow> cashflowList, BalanceDTO previousMonthBalance) {
+        BigDecimal balanceResult = previousMonthBalance.getBalance().subtract(householdDTO.getCost()); //odejmuje koszty własne gospodarstwa domowego
         BigDecimal income = BigDecimal.valueOf(0);
         BigDecimal burden = BigDecimal.valueOf(0);
 
