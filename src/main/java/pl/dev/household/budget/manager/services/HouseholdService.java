@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.Household;
 import pl.dev.household.budget.manager.dao.repository.HouseholdRepository;
 import pl.dev.household.budget.manager.domain.HouseholdDTO;
+import pl.dev.household.budget.manager.utils.HouseholdMapper;
 
 import java.util.Optional;
 
@@ -22,7 +23,7 @@ public class HouseholdService {
     }
 
     public HouseholdDTO getHousehold(Integer householdId) {
-        return modelMapper.map(householdRepository.findById(householdId), HouseholdDTO.class);
+        return HouseholdMapper.mapHousehold(householdRepository.findById(householdId).get());
     }
 
     public HouseholdDTO updateHousehold(Integer householdId, HouseholdDTO householdDTO) {

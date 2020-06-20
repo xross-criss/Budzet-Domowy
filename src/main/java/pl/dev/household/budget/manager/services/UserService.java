@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.User;
 import pl.dev.household.budget.manager.dao.repository.UserRepository;
 import pl.dev.household.budget.manager.domain.UserDTO;
+import pl.dev.household.budget.manager.utils.UserMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +25,7 @@ public class UserService {
     }
 
     public UserDTO getUser(Integer userId) {
-        return modelMapper.map(userRepository.findById(userId), UserDTO.class);
+        return UserMapper.mapUser(userRepository.findById(userId).get());
     }
 
     public UserDTO updateUser(Integer userId, UserDTO userDTO) {
@@ -49,9 +50,5 @@ public class UserService {
 
     public List<UserDTO> getAllUsersForHousehold(Integer householdId) {
         return userRepository.findAllByHousehold_Id(householdId).stream().map(user -> modelMapper.map(user, UserDTO.class)).peek(userDTO -> userDTO.setPassword("*******")).collect(Collectors.toList());
-    }
-
-    public UserDTO login(UserDTO userDTO) {
-        return null;
     }
 }

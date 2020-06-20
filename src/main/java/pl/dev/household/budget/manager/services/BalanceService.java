@@ -74,7 +74,8 @@ public class BalanceService {
         HashMap<BalanceMapType, BigDecimal> resolvedCashflowBalance = resolveCashflowBalance(
                 cashflowRepository.findAllByHousehold_Id(householdDTO.getId()).stream()
                         .filter(checkIfMonthIsPeriodic())
-                        .collect(Collectors.toList())
+                        .collect(Collectors.toList()),
+                previousMonthBalance
         );
 
         Balance finalBalance = new Balance();
@@ -89,18 +90,21 @@ public class BalanceService {
         return modelMapper.map(finalBalance, BalanceDTO.class);
     }
 
-    private HashMap<BalanceMapType, BigDecimal> resolveCashflowBalance(List<Cashflow> cashflowList) {
-        BigDecimal balanceResult = BigDecimal.valueOf(0);
+    private HashMap<BalanceMapType, BigDecimal> resolveCashflowBalance(List<Cashflow> cashflowList, BalanceDTO previousMonthBalance) {
+        BigDecimal balanceResult = previousMonthBalance.getBalance();
         BigDecimal income = BigDecimal.valueOf(0);
         BigDecimal burden = BigDecimal.valueOf(0);
 
         for (Cashflow cashflow : cashflowList) {
             if (cashflow.getCategory().equals(CashflowCategory.INCOME)) {
-                balanceResult = balanceResult.add(cashflow.getAmount());
+                income = income.add(cashflow.getAmount());
             } else {
-                balanceResult = balanceResult.min(cashflow.getAmount());
+                burden = burden.add(cashflow.getAmount());
             }
         }
+
+        balanceResult = balanceResult.add(income);
+        balanceResult = balanceResult.subtract(burden);
 
         HashMap<BalanceMapType, BigDecimal> balanceMap = new HashMap<>();
         balanceMap.put(BalanceMapType.BALANCE, balanceResult);
@@ -111,7 +115,7 @@ public class BalanceService {
     }
 
     private void checkIfBalanceExists(BalanceDTO previousMonthBalance) {
-        if (previousMonthBalance == null || previousMonthBalance.getBalance() == null) {
+        if (previousMonthBalance == null) {
             previousMonthBalance.setBalance(BigDecimal.valueOf(0));
             previousMonthBalance.setBurden(BigDecimal.valueOf(0));
             previousMonthBalance.setIncome(BigDecimal.valueOf(0));
