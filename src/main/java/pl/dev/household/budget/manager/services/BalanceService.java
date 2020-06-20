@@ -92,9 +92,9 @@ public class BalanceService {
     }
 
     private HashMap<BalanceMapType, BigDecimal> resolveCashflowBalance(HouseholdDTO householdDTO, List<Cashflow> cashflowList, BalanceDTO previousMonthBalance) {
-        BigDecimal balanceResult = previousMonthBalance.getBalance().subtract(householdDTO.getCost()); //odejmuje koszty własne gospodarstwa domowego
+        BigDecimal balanceResult = previousMonthBalance.getBalance();
         BigDecimal income = BigDecimal.valueOf(0);
-        BigDecimal burden = BigDecimal.valueOf(0);
+        BigDecimal burden = householdDTO.getCost(); // koszty podstawowe gospodarstwa domowego
 
         for (Cashflow cashflow : cashflowList) {
             if (cashflow.getCategory().equals(CashflowCategory.INCOME)) {
