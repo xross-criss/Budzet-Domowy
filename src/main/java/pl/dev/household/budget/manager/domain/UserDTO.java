@@ -14,7 +14,7 @@ import java.util.Date;
 public class UserDTO {
 
     private Integer id;
-    private HouseholdDTO householdDTO;
+    private HouseholdDTO household;
     private UserRole userRole;
     private String login;
     private String password;

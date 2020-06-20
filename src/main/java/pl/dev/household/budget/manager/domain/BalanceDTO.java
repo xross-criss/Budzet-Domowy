@@ -16,7 +16,7 @@ import java.util.Date;
 public class BalanceDTO implements Serializable {
 
     private Integer id;
-    private HouseholdDTO householdDTO;
+    private HouseholdDTO household;
     private BalanceType type;
     private LocalDate generationDate;
     private BigDecimal burden;

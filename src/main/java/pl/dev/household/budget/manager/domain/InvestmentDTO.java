@@ -15,7 +15,7 @@ import java.util.Date;
 public class InvestmentDTO {
 
     private Integer id;
-    private HouseholdDTO householdDTO;
+    private HouseholdDTO household;
     private InvestmentCategory type;
     private Boolean isMonthly;
     private Integer period;     //    period of investment in months

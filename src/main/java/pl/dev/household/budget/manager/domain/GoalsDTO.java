@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 public class GoalsDTO {
 
     private Integer id;
-    private HouseholdDTO householdDTO;
+    private HouseholdDTO household;
     private GoalCategory category;
     private BigDecimal amount;
     private String name;

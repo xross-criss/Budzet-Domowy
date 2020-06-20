@@ -15,7 +15,7 @@ import java.util.Date;
 public class InsuranceDTO {
 
     private Integer id;
-    private HouseholdDTO householdDTO;
+    private HouseholdDTO household;
     private InsuranceType type;
     private String description;
     private Integer interval;

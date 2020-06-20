@@ -15,7 +15,7 @@ import java.util.Date;
 public class CashflowDTO {
 
     private Integer id;
-    private HouseholdDTO householdDTO;
+    private HouseholdDTO household;
     private CashflowCategory category;
     private LocalDate startDate;
     private LocalDate endDate;
