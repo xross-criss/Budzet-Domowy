@@ -6,7 +6,10 @@ import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.Loan;
 import pl.dev.household.budget.manager.dao.repository.LoanRepository;
 import pl.dev.household.budget.manager.domain.LoanDTO;
+import pl.dev.household.budget.manager.domain.ReportIntDTO;
 
+import java.math.BigDecimal;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -48,5 +51,27 @@ public class LoanService {
         loanRepository.save(updatedLoan);
 
         return getLoan(updatedLoan.getId());
+    }
+
+    public ReportIntDTO countLoansBalance(Integer householdId) {
+        ReportIntDTO report = new ReportIntDTO();
+        BigDecimal burdenTmp = BigDecimal.valueOf(0);
+
+        List<Loan> loansList = aggregateLoans(householdId);
+
+        if (loansList != null && !loansList.isEmpty()) {
+            for (Loan loan : loansList) {
+                burdenTmp = burdenTmp.add(loan.getInstallmentAmount());
+            }
+        }
+
+        report.setBurden(burdenTmp);
+        return report;
+    }
+
+    private List<Loan> aggregateLoans(Integer householdId) {
+        return loanRepository.findAllByHousehold_Id(householdId).stream()
+                .filter(investment -> investment.getEndDate().isBefore(YearMonth.now().atEndOfMonth()))
+                .collect(Collectors.toList());
     }
 }

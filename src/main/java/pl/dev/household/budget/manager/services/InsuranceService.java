@@ -6,9 +6,16 @@ import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.Insurance;
 import pl.dev.household.budget.manager.dao.repository.InsuranceRepository;
 import pl.dev.household.budget.manager.domain.InsuranceDTO;
+import pl.dev.household.budget.manager.domain.ReportIntDTO;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -48,5 +55,39 @@ public class InsuranceService {
         insuranceRepository.save(updatedInsurance);
 
         return getInsurance(updatedInsurance.getId());
+    }
+
+    public ReportIntDTO countInsuranceBalance(Integer householdId) {
+        ReportIntDTO report = new ReportIntDTO();
+        BigDecimal burdenTmp = BigDecimal.valueOf(0);
+
+        List<Insurance> insurancesList = aggregateInsurances(householdId);
+
+        if (insurancesList != null && !insurancesList.isEmpty()) {
+            for (Insurance insurance : insurancesList) {
+                burdenTmp = burdenTmp.add(
+                        insurance.getCost()
+                                .divide(BigDecimal.valueOf(insurance.getInterval()))
+                                .setScale(2, RoundingMode.CEILING));
+            }
+        }
+
+        report.setBurden(burdenTmp);
+        return report;
+    }
+
+    public List<InsuranceDTO> aggregateInsurancesForCurrentMonth(Integer householdId) {
+        return aggregateInsurances(householdId).stream().map(insurance -> modelMapper.map(insurance, InsuranceDTO.class)).collect(Collectors.toList());
+    }
+
+    private List<Insurance> aggregateInsurances(Integer householdId) {
+        return insuranceRepository.findAllByHousehold_Id(householdId).stream()
+                .filter(insurance -> insurance.getEndDate().isBefore(YearMonth.now().atEndOfMonth()))
+                .filter(checkIfMonthIsPeriodicForInsurance())
+                .collect(Collectors.toList());
+    }
+
+    private static Predicate<Insurance> checkIfMonthIsPeriodicForInsurance() {
+        return p -> Period.between(p.getEndDate().minusMonths(12), LocalDate.now()).getMonths() % p.getInterval() == 0;
     }
 }

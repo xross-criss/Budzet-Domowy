@@ -4,7 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.dev.household.budget.manager.domain.CashflowDTO;
 import pl.dev.household.budget.manager.domain.InvestmentDTO;
+import pl.dev.household.budget.manager.domain.ReportIntDTO;
 import pl.dev.household.budget.manager.security.util.Security;
 import pl.dev.household.budget.manager.services.InvestmentService;
 
@@ -36,4 +38,13 @@ public class InvestmentController {
         return ResponseEntity.ok(investmentService.updateInvestment(Security.currentUser().getHousehold().getId(), investmentDTO));
     }
 
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/report")
+    public ResponseEntity<ReportIntDTO> generateCurrentMonthBalanceReport() {
+        return ResponseEntity.ok(investmentService.countInvestmentBalance(Security.currentUser().getHousehold().getId()));
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/currmonth")
+    public ResponseEntity<List<InvestmentDTO>> getCurrentMonthCashflows() {
+        return ResponseEntity.ok(investmentService.aggregateInvestmentsForCurrentMonth(Security.currentUser().getHousehold().getId()));
+    }
 }

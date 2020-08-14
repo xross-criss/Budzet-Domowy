@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.dev.household.budget.manager.dictionaries.CashflowCategory;
 import pl.dev.household.budget.manager.domain.CashflowDTO;
+import pl.dev.household.budget.manager.domain.ReportIntDTO;
 import pl.dev.household.budget.manager.security.util.Security;
 import pl.dev.household.budget.manager.services.CashflowService;
 
@@ -40,6 +41,16 @@ public class CashflowController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CashflowDTO> updateCashflow(@RequestBody CashflowDTO cashflowDTO) {
         return ResponseEntity.ok(cashflowService.updateCashflow(Security.currentUser().getHousehold().getId(), cashflowDTO));
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/report")
+    public ResponseEntity<ReportIntDTO> generateCurrentMonthBalanceReport() {
+        return ResponseEntity.ok(cashflowService.countCashflowBalance(Security.currentUser().getHousehold().getId()));
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/currmonth")
+    public ResponseEntity<List<CashflowDTO>> getCurrentMonthCashflows() {
+        return ResponseEntity.ok(cashflowService.aggregateCashflowForCurrentMonth(Security.currentUser().getHousehold().getId()));
     }
 
 }

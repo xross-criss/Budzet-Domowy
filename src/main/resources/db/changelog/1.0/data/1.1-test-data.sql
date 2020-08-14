@@ -1,0 +1,8 @@
+INSERT INTO test.debt_card (id, household, `limit`, balance, renewal_percentage, annual_percentage, bank, name) VALUES (1, 1, 10000.00, 8000.00, 2.50, 8.50, 'MBank', 'karta debetowa');
+INSERT INTO test.goals (id, household, category, amount, name, description, priority) VALUES (1, 1, 'SAVINGS', 80000.00, 'mieszkaniowe', 'na poczet wpłaty własnej na mieszkanie', 1);
+INSERT INTO test.goals (id, household, category, amount, name, description, priority) VALUES (2, 1, 'SHOPPING', 4000.00, 'rower', 'na zakup roweru', 1);
+INSERT INTO test.insurance (id, household, type, description, `interval`, cost, end_date, vehicle_tid, name, vehicle_lp) VALUES (1, 1, 'LIFE', 'ubezpieczenie na życie i zdrowie AXA', 1, 80.00, '2025-07-30', null, 'życie AXA', null);
+INSERT INTO test.insurance (id, household, type, description, `interval`, cost, end_date, vehicle_tid, name, vehicle_lp) VALUES (2, 1, 'CAR', null, 4, 420.00, '2021-07-30', '2020-04-15', 'Toyota', 'TSK12345');
+INSERT INTO test.investment (id, household, category, `interval`, start_date, end_date, investment_percentage, amount, name) VALUES (1, 1, 'INVESTMENT', 12, '2020-07-01', '2021-07-01', 3.00, 10000.00, 'lokata długoterminowa 12m');
+INSERT INTO test.investment (id, household, category, `interval`, start_date, end_date, investment_percentage, amount, name) VALUES (2, 1, 'INVESTMENT', 1, '2020-06-01', '2025-08-01', 0.10, 10000.00, 'lokata dynamiczna');
+INSERT INTO test.loan (id, household, bank, annual_loan_percentage, start_date, end_date, amount, installment_amount) VALUES (1, 1, 'INGBank', 8.50, '2020-08-01', '2022-08-01', 10000.00, 499.00);

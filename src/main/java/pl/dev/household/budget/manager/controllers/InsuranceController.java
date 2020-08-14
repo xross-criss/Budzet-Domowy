@@ -4,7 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.dev.household.budget.manager.domain.CashflowDTO;
 import pl.dev.household.budget.manager.domain.InsuranceDTO;
+import pl.dev.household.budget.manager.domain.ReportIntDTO;
 import pl.dev.household.budget.manager.security.util.Security;
 import pl.dev.household.budget.manager.services.InsuranceService;
 
@@ -34,6 +36,16 @@ public class InsuranceController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<InsuranceDTO> updateInsurance(@RequestBody InsuranceDTO insuranceDTO) {
         return ResponseEntity.ok(insuranceService.updateInsurance(Security.currentUser().getHousehold().getId(), insuranceDTO));
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/report")
+    public ResponseEntity<ReportIntDTO> generateCurrentMonthBalanceReport() {
+        return ResponseEntity.ok(insuranceService.countInsuranceBalance(Security.currentUser().getHousehold().getId()));
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/currmonth")
+    public ResponseEntity<List<InsuranceDTO>> getCurrentMonthCashflows() {
+        return ResponseEntity.ok(insuranceService.aggregateInsurancesForCurrentMonth(Security.currentUser().getHousehold().getId()));
     }
 
 }

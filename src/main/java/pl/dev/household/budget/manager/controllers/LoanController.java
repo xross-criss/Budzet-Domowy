@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.dev.household.budget.manager.domain.LoanDTO;
+import pl.dev.household.budget.manager.domain.ReportIntDTO;
 import pl.dev.household.budget.manager.security.util.Security;
 import pl.dev.household.budget.manager.services.LoanService;
 
@@ -34,6 +35,11 @@ public class LoanController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LoanDTO> updateLoan(@RequestBody LoanDTO loanDTO) {
         return ResponseEntity.ok(loanService.updateLoan(Security.currentUser().getHousehold().getId(), loanDTO));
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/report")
+    public ResponseEntity<ReportIntDTO> generateCurrentMonthBalanceReport() {
+        return ResponseEntity.ok(loanService.countLoansBalance(Security.currentUser().getHousehold().getId()));
     }
 
 }

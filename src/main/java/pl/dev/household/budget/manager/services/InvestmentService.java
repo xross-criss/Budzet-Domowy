@@ -6,9 +6,15 @@ import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.Investment;
 import pl.dev.household.budget.manager.dao.repository.InvestmentRepository;
 import pl.dev.household.budget.manager.domain.InvestmentDTO;
+import pl.dev.household.budget.manager.domain.ReportIntDTO;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -48,5 +54,36 @@ public class InvestmentService {
         investmentRepository.save(updatedInvestment);
 
         return getInvestment(updatedInvestment.getId());
+    }
+
+    public ReportIntDTO countInvestmentBalance(Integer householdId) {
+        ReportIntDTO report = new ReportIntDTO();
+        BigDecimal incomeTmp = BigDecimal.valueOf(0);
+
+        List<Investment> investmentsList = aggregateInvestments(householdId);
+
+        if (investmentsList != null && !investmentsList.isEmpty()) {
+            for (Investment investment : investmentsList) {
+                incomeTmp = incomeTmp.add(investment.getAmount());
+            }
+        }
+
+        report.setIncome(incomeTmp);
+        return report;
+    }
+
+    public List<InvestmentDTO> aggregateInvestmentsForCurrentMonth(Integer householdId) {
+        return aggregateInvestments(householdId).stream().map(investment -> modelMapper.map(investment, InvestmentDTO.class)).collect(Collectors.toList());
+    }
+
+    private List<Investment> aggregateInvestments(Integer householdId) {
+        return investmentRepository.findAllByHousehold_Id(householdId).stream()
+                .filter(investment -> investment.getEndDate().isBefore(YearMonth.now().atEndOfMonth()))
+                .filter(checkIfMonthIsPeriodicForInvestments())
+                .collect(Collectors.toList());
+    }
+
+    private static Predicate<Investment> checkIfMonthIsPeriodicForInvestments() {
+        return p -> Period.between(p.getStartDate(), LocalDate.now()).getMonths() % p.getInterval() == 0;
     }
 }

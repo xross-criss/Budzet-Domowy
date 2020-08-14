@@ -2,6 +2,7 @@ package pl.dev.household.budget.manager.dao;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.repository.cdi.Eager;
 import pl.dev.household.budget.manager.dictionaries.UserRole;
 
 import javax.persistence.*;
@@ -19,7 +20,7 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "household")
     private Household household;
 

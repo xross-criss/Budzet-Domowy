@@ -4,22 +4,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.Balance;
-import pl.dev.household.budget.manager.dao.Cashflow;
+import pl.dev.household.budget.manager.dao.Loan;
 import pl.dev.household.budget.manager.dao.repository.BalanceRepository;
-import pl.dev.household.budget.manager.dao.repository.CashflowRepository;
 import pl.dev.household.budget.manager.dao.repository.HouseholdRepository;
 import pl.dev.household.budget.manager.dictionaries.BalanceMapType;
 import pl.dev.household.budget.manager.dictionaries.BalanceType;
-import pl.dev.household.budget.manager.dictionaries.CashflowCategory;
 import pl.dev.household.budget.manager.domain.BalanceDTO;
 import pl.dev.household.budget.manager.domain.HouseholdDTO;
+import pl.dev.household.budget.manager.domain.ReportIntDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.Period;
+import java.time.YearMonth;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,7 +26,6 @@ public class BalanceService {
 
     private ModelMapper modelMapper;
     private BalanceRepository balanceRepository;
-    private CashflowRepository cashflowRepository;
     private HouseholdRepository householdRepository;
 
     public BalanceService(ModelMapper modelMapper, BalanceRepository balanceRepository, CashflowRepository cashflowRepository, HouseholdRepository householdRepository) {
