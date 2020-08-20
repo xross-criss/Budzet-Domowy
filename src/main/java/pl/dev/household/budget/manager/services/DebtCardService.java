@@ -69,8 +69,7 @@ public class DebtCardService {
                 if (!debtCard.getBalance().equals(debtCard.getLimit())) {
                     BigDecimal amount = ((debtCard.getLimit().subtract(debtCard.getBalance()))
                             .multiply(debtCard.getAnnualPercentage()))
-                            .divide(BigDecimal.valueOf(12))
-                            .setScale(2, RoundingMode.CEILING);
+                            .divide(BigDecimal.valueOf(12), 2, RoundingMode.HALF_UP);
                     burdenTmp = burdenTmp.add(amount);
                 }
 

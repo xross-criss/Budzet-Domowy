@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pl.dev.household.budget.manager.domain.BalanceDTO;
 import pl.dev.household.budget.manager.security.util.Security;
@@ -29,8 +30,18 @@ public class BalanceController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/generate")
-    public ResponseEntity<BalanceDTO> generateAndReturnBalances() {
+    public ResponseEntity<BalanceDTO> generateSaveAndReturnBalance() {
         return ResponseEntity.ok(balanceService.generateAndReturnBalance(Security.currentUser().getHousehold().getId()));
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/gen")
+    public ResponseEntity<BalanceDTO> generateAndReturnBalance() {
+        return ResponseEntity.ok(balanceService.generateAndReturnBalance(Security.currentUser().getHousehold().getId()));
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/month")
+    public ResponseEntity<List<BalanceDTO>> getBalancesForHouseholdNoMonthAgo(@RequestParam(name = "no") int no) {
+        return ResponseEntity.ok(balanceService.getBalancesForHouseholdNoMonthAgo(Security.currentUser().getHousehold().getId(), no));
     }
 
 }

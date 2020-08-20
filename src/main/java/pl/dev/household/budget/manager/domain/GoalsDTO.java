@@ -16,6 +16,7 @@ public class GoalsDTO {
     private HouseholdDTO household;
     private GoalCategory category;
     private BigDecimal amount;
+    private Integer percent;
     private String name;
     private String description;
     private Integer priority;

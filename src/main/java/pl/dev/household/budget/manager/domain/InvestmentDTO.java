@@ -17,8 +17,8 @@ public class InvestmentDTO {
     private Integer id;
     private HouseholdDTO household;
     private InvestmentCategory type;
-    private Boolean isMonthly;
-    private Integer period;     //    period of investment in months
+    private Integer interval;     //    interval of investment in months
+    private LocalDate startDate;
     private LocalDate endDate;
     private BigDecimal investmentPercentage;
     private BigDecimal amount;

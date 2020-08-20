@@ -3,6 +3,7 @@ package pl.dev.household.budget.manager.dao;
 import lombok.Getter;
 import lombok.Setter;
 import pl.dev.household.budget.manager.dictionaries.InsuranceType;
+import pl.dev.household.budget.manager.dictionaries.InvestmentCategory;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -26,13 +27,13 @@ public class Investment implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category")
-    private InsuranceType type;
+    private InvestmentCategory type;
 
-    @Column(name = "is_monthly")
-    private Boolean isMonthly;
+    @Column(name = "interval")
+    private Integer interval;
 
-    @Column(name = "period")
-    private Integer period;
+    @Column(name = "start_date")
+    private LocalDate startDate;
 
     @Column(name = "end_date")
     private LocalDate endDate;

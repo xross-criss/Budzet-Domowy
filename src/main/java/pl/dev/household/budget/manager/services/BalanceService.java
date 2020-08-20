@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.Balance;
-import pl.dev.household.budget.manager.dao.Loan;
 import pl.dev.household.budget.manager.dao.repository.BalanceRepository;
 import pl.dev.household.budget.manager.dao.repository.HouseholdRepository;
 import pl.dev.household.budget.manager.dictionaries.BalanceMapType;
@@ -12,10 +11,10 @@ import pl.dev.household.budget.manager.dictionaries.BalanceType;
 import pl.dev.household.budget.manager.domain.BalanceDTO;
 import pl.dev.household.budget.manager.domain.HouseholdDTO;
 import pl.dev.household.budget.manager.domain.ReportIntDTO;
+import pl.dev.household.budget.manager.utils.HouseholdMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.YearMonth;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,12 +26,30 @@ public class BalanceService {
     private ModelMapper modelMapper;
     private BalanceRepository balanceRepository;
     private HouseholdRepository householdRepository;
+    private CashflowService cashflowService;
+    private DebtCardService debtCardService;
+    private LoanService loanService;
+    private InsuranceService insuranceService;
+    private InvestmentService investmentService;
 
-    public BalanceService(ModelMapper modelMapper, BalanceRepository balanceRepository, CashflowRepository cashflowRepository, HouseholdRepository householdRepository) {
+    public BalanceService(
+            ModelMapper modelMapper,
+            BalanceRepository balanceRepository,
+            HouseholdRepository householdRepository,
+            CashflowService cashflowService,
+            DebtCardService debtCardService,
+            LoanService loanService,
+            InsuranceService insuranceService,
+            InvestmentService investmentService
+    ) {
         this.modelMapper = modelMapper;
         this.balanceRepository = balanceRepository;
-        this.cashflowRepository = cashflowRepository;
         this.householdRepository = householdRepository;
+        this.cashflowService = cashflowService;
+        this.debtCardService = debtCardService;
+        this.loanService = loanService;
+        this.insuranceService = insuranceService;
+        this.investmentService = investmentService;
     }
 
     public List<BalanceDTO> getBalancesForHousehold(Integer householdId) {
@@ -49,10 +66,10 @@ public class BalanceService {
     }
 
     public BalanceDTO generateAndReturnBalance(Integer householdId) {
-        return generate(householdId, BalanceType.GENERATED);
+        return generateAndSave(householdId, BalanceType.GENERATED);
     }
 
-    public BalanceDTO generate(Integer householdId, BalanceType type) {
+    public BalanceDTO generateAndSave(Integer householdId, BalanceType type) {
         LocalDate date = LocalDate.now();
 
         HouseholdDTO householdDTO = householdRepository.findById(householdId).map(household -> modelMapper.map(household, HouseholdDTO.class)).get();
@@ -60,6 +77,14 @@ public class BalanceService {
 /*        if (type.equals(BalanceType.SUMMARY)) {
             date = date.minusMonths(1);
         }*/
+
+        BalanceDTO balanceDTO = aggregateAndGenerate(householdDTO, type, date);
+        balanceDTO = modelMapper.map(balanceRepository.save(modelMapper.map(balanceDTO, Balance.class)), BalanceDTO.class);
+        return balanceDTO;
+    }
+
+    public BalanceDTO aggregateAndGenerate(Integer householdId, BalanceType type, LocalDate date) {
+        HouseholdDTO householdDTO = HouseholdMapper.mapHousehold(householdRepository.findById(householdId).get());
 
         return aggregateAndGenerate(householdDTO, type, date);
     }
@@ -70,9 +95,6 @@ public class BalanceService {
 
         HashMap<BalanceMapType, BigDecimal> resolvedCashflowBalance = resolveCashflowBalance(
                 householdDTO,
-                cashflowRepository.findAllByHousehold_Id(householdDTO.getId()).stream()
-                        .filter(checkIfMonthIsPeriodic())
-                        .collect(Collectors.toList()),
                 previousMonthBalance
         );
 
@@ -84,22 +106,28 @@ public class BalanceService {
         finalBalance.setIncome(resolvedCashflowBalance.get(BalanceMapType.INCOME));
         finalBalance.setBalance(resolvedCashflowBalance.get(BalanceMapType.BALANCE));
 
-        finalBalance = balanceRepository.save(finalBalance);
         return modelMapper.map(finalBalance, BalanceDTO.class);
     }
 
-    private HashMap<BalanceMapType, BigDecimal> resolveCashflowBalance(HouseholdDTO householdDTO, List<Cashflow> cashflowList, BalanceDTO previousMonthBalance) {
+    private HashMap<BalanceMapType, BigDecimal> resolveCashflowBalance(HouseholdDTO householdDTO, BalanceDTO previousMonthBalance) {
+
         BigDecimal balanceResult = previousMonthBalance.getBalance();
         BigDecimal income = BigDecimal.valueOf(0);
         BigDecimal burden = householdDTO.getCost(); // koszty podstawowe gospodarstwa domowego
 
-        for (Cashflow cashflow : cashflowList) {
-            if (cashflow.getCategory().equals(CashflowCategory.INCOME)) {
-                income = income.add(cashflow.getAmount());
-            } else {
-                burden = burden.add(cashflow.getAmount());
-            }
-        }
+        ReportIntDTO cashflowReport = cashflowService.countCashflowBalance(householdDTO.getId());
+        ReportIntDTO debtCardsReport = debtCardService.countDebtCardBalance(householdDTO.getId());
+        ReportIntDTO insurancesReport = insuranceService.countInsuranceBalance(householdDTO.getId());
+        ReportIntDTO investmentsReport = investmentService.countInvestmentBalance(householdDTO.getId());
+        ReportIntDTO loansReport = loanService.countLoansBalance(householdDTO.getId());
+
+        income = income.add(cashflowReport.getIncome());
+        burden = burden.add(cashflowReport.getBurden());
+        burden = burden.add(debtCardsReport.getBurden());
+        burden = burden.add(insurancesReport.getBurden());
+        income = income.add(investmentsReport.getIncome());
+        burden = burden.add(loansReport.getBurden());
+
 
         balanceResult = balanceResult.add(income);
         balanceResult = balanceResult.subtract(burden);
@@ -121,18 +149,28 @@ public class BalanceService {
     }
 
     private BalanceDTO getSummaryBalanceByMonth(Integer householdId, LocalDate month) {
-        return balanceRepository.findByHouseholdIdAndGenerationDateBetween(
+        final List<Balance> byHouseholdIdAndGenerationDateBetween = balanceRepository.findByHouseholdIdAndGenerationDateBetween(
                 householdId,
                 month.minusMonths(1).plusDays(1),
                 month.plusMonths(1).minusDays(1)
-        ).stream()
+        );
+        if (byHouseholdIdAndGenerationDateBetween.isEmpty()) {
+            return null;
+        }
+        return modelMapper.map(byHouseholdIdAndGenerationDateBetween.get(0), BalanceDTO.class);
+    }
+
+    public List<BalanceDTO> getBalancesForHouseholdNoMonthAgo(Integer householdId, int no) {
+        LocalDate startDate = LocalDate.now().minusMonths(no).withDayOfMonth(1).minusDays(1);
+        LocalDate endDate = LocalDate.now().minusMonths(no).withDayOfMonth(1).plusMonths(1);
+
+        return balanceRepository.findByHouseholdIdAndGenerationDateBetween(
+                householdId,
+                startDate,
+                endDate
+        )
+                .stream()
                 .map(balance -> modelMapper.map(balance, BalanceDTO.class))
-                .collect(Collectors.toList())
-                .get(0);
+                .collect(Collectors.toList());
     }
-
-    public static Predicate<Cashflow> checkIfMonthIsPeriodic() {
-        return p -> Period.between(p.getStartDate(), LocalDate.now()).getMonths() % p.getInterval() == 0;
-    }
-
 }
