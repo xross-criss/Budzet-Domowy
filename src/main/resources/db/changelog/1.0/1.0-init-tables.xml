@@ -172,10 +172,10 @@
             <column name="category"
                     type="VARCHAR(16)"/>
 
-            <column name="is_monthly"
-                    type="BOOLEAN"/>
-            <column name="period"
+            <column name="interval"
                     type="INT"/>
+            <column name="start_date"
+                    type="DATE"/>
             <column name="end_date"
                     type="DATE"/>
             <column name="investment_percentage"

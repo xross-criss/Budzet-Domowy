@@ -8,15 +8,7 @@
 
     <changeSet id="1.0-init-data" author="Krzysztof Kwiatkowski">
 
-        <loadData tableName="household" file="src/main/resources/src/main/resources/db/changelog/1.0/data/household.csv" separator=";" />
-        <loadData tableName="user" file="src/main/resources/db/changelog/1.0/data/user.csv" separator=";">
-            <column name="registration_date" header="created_date" type="timestamp" />
-            <column name="last_failed_login" header="registration_date" type="timestamp" />
-        </loadData>
-        <loadData tableName="cashflow" file="src/main/resources/db/changelog/1.0/data/cashflow.csv" separator=";">
-            <column name="start_date" header="created_date" type="timestamp" />
-            <column name="end_date" header="registration_date" type="timestamp" />
-        </loadData>
+        <sqlFile path="src/main/resources/db/changelog/1.0/data/1.0-test-data.sql"/>
 
     </changeSet>
 
