@@ -15,8 +15,7 @@ import pl.dev.household.budget.manager.utils.HouseholdMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -164,13 +163,49 @@ public class BalanceService {
         LocalDate startDate = LocalDate.now().minusMonths(no).withDayOfMonth(1).minusDays(1);
         LocalDate endDate = LocalDate.now().minusMonths(no).withDayOfMonth(1).plusMonths(1);
 
-        return balanceRepository.findByHouseholdIdAndGenerationDateBetween(
-                householdId,
-                startDate,
-                endDate
-        )
-                .stream()
-                .map(balance -> modelMapper.map(balance, BalanceDTO.class))
-                .collect(Collectors.toList());
+        return sortBalanceList(
+                balanceRepository.findByHouseholdIdAndGenerationDateBetween(
+                        householdId,
+                        startDate,
+                        endDate
+                )
+                        .stream()
+                        .map(balance -> modelMapper.map(balance, BalanceDTO.class))
+                        .collect(Collectors.toList())
+        );
+    }
+
+    private List<BalanceDTO> sortBalanceList(List<BalanceDTO> balanceDTOList) {
+        Map<BalanceType, List<BalanceDTO>> sortMap = new HashMap<>();
+        sortMap.put(BalanceType.PREDICTION, new ArrayList<>());
+        sortMap.put(BalanceType.GENERATED, new ArrayList<>());
+        sortMap.put(BalanceType.SUMMARY, new ArrayList<>());
+
+        for (BalanceDTO balanceDTO : balanceDTOList) {
+            if (balanceDTO.getType().equals(BalanceType.PREDICTION)) {
+                List<BalanceDTO> tmp = sortMap.get(BalanceType.PREDICTION);
+                tmp.add(balanceDTO);
+                sortMap.replace(BalanceType.PREDICTION, tmp);
+            } else if (balanceDTO.getType().equals(BalanceType.GENERATED)) {
+                List<BalanceDTO> tmp = sortMap.get(BalanceType.GENERATED);
+                tmp.add(balanceDTO);
+                sortMap.replace(BalanceType.GENERATED, tmp);
+            } else {
+                List<BalanceDTO> tmp = sortMap.get(BalanceType.SUMMARY);
+                tmp.add(balanceDTO);
+                sortMap.replace(BalanceType.SUMMARY, tmp);
+            }
+        }
+
+        List<BalanceDTO> tmp = sortMap.get(BalanceType.GENERATED);
+        tmp.sort(Comparator.comparing(BalanceDTO::getGenerationDate));
+        sortMap.replace(BalanceType.GENERATED, tmp);
+
+        List<BalanceDTO> list = new ArrayList<>();
+        list.addAll(sortMap.get(BalanceType.PREDICTION));
+        list.addAll(sortMap.get(BalanceType.GENERATED));
+        list.addAll(sortMap.get(BalanceType.SUMMARY));
+
+        return list;
     }
 }
