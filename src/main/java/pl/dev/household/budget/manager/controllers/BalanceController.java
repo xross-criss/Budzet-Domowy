@@ -1,13 +1,14 @@
 package pl.dev.household.budget.manager.controllers;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pl.dev.household.budget.manager.domain.Balance;
+import pl.dev.household.budget.manager.domain.BalanceDTO;
+import pl.dev.household.budget.manager.security.util.Security;
 import pl.dev.household.budget.manager.services.BalanceService;
 
 import java.util.List;
@@ -17,21 +18,30 @@ import java.util.List;
 @RequestMapping("/api/balance")
 public class BalanceController {
 
-    BalanceService balanceService;
+    private BalanceService balanceService;
 
-    @Autowired
     public BalanceController(BalanceService balanceService) {
         this.balanceService = balanceService;
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/{householdId}")
-    public List<Balance> getBalances(@RequestParam("householdId") Integer householdId) {
-        return balanceService.getBalancesForHousehold(householdId);
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<BalanceDTO>> getBalances() {
+        return ResponseEntity.ok(balanceService.getBalancesForHousehold(Security.currentUser().getHousehold().getId()));
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/{householdId}/generate")
-    public List<Balance> generateAndReturnBalances(@RequestParam("householdId") Integer householdId) {
-        return balanceService.generateAndReturnBalances(householdId);
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/generate")
+    public ResponseEntity<BalanceDTO> generateSaveAndReturnBalance() {
+        return ResponseEntity.ok(balanceService.generateAndReturnBalance(Security.currentUser().getHousehold().getId()));
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/gen")
+    public ResponseEntity<BalanceDTO> generateAndReturnBalance() {
+        return ResponseEntity.ok(balanceService.generateAndReturnBalance(Security.currentUser().getHousehold().getId()));
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/month")
+    public ResponseEntity<List<BalanceDTO>> getBalancesForHouseholdNoMonthAgo(@RequestParam(name = "no") int no) {
+        return ResponseEntity.ok(balanceService.getBalancesForHouseholdNoMonthAgo(Security.currentUser().getHousehold().getId(), no));
     }
 
 }

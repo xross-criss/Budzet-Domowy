@@ -1,0 +1,36 @@
+@startuml
+actor u as "user" #red
+participant f as "frontend"
+participant api as "API"  #99FF99
+participant s as "Security"
+participant db as "Database"
+
+'Alice->Bob: Authentication Request
+u->f: generuj bilans
+f->api: generuj bilans
+api->s: zautoryzuj
+
+alt authorized
+    s->db: pobierz użytkownika
+    db-->s: pobierz użytkownika
+    s->s: sprawdzenie użytkownika
+
+    s-->api: zautoryzuj
+
+    api->api: przygotowanie danych
+    api->db: pobierz dane
+    db->api: odesłanie danych
+    api->api: wylicz
+    api->api: generuj raport
+    api->db: zapisz wygenerowany raport
+    db->api: zwróc obiekt z nadanym Id
+    api->f: wysłanie raportu
+    f->u: prezentacja danych
+
+else unauthorized
+    s-->api: zautoryzuj
+    api->f: błąd autoryzacji
+    f->u: wyświetl komunikat
+end
+
+@endumlóó

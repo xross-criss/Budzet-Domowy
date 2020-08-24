@@ -1,0 +1,25 @@
+@startuml
+start
+
+if(Sprawdzenie poprawności sumy kontrolnej identyfikującej) then (zgadza się)
+    If(:Zapytanie do bazy danych po sesję
+    (identyfikacja po sessionId);) then (znaleziono)
+        If(:Zapytanie do bazy danych
+        z "loginem" nowego użytkownika;) then (znaleziono)
+            :Przypisanie użytkownika do
+            gospodarstwa domowego użytkownika z sesji;
+        else (nie znaleziono)
+            :Zapytanie zwrócone z informacją:
+            "Nie znaleziono użytkownika";
+        endif
+    else (nie znaleziono)
+        :Zapytanie zwrócone z informacją:
+        "Nie znaleziono sesji";
+    endif
+else (nie zgadza się)
+    :Żądanie zwrócone z błędem
+    braku autoryzacji zapytania;
+endif
+
+stop
+@enduml

@@ -1,0 +1,41 @@
+@startuml
+start
+
+if(Sprawdzenie poprawności sumy kontrolnej identyfikującej) then (zgadza się)
+    if(:Zapytanie do bazy danych po sesję
+    (identyfikacja po sessionId);) then (znaleziono)
+        if(:Zapytanie do bazy danych
+        z loginem użytkownika;) then (znaleziono)
+            :Autoryzacja użytkownika;
+        else (nie znaleziono)
+            :Zapytanie zwrócone z informacją:
+            "Nie znaleziono użytkownika";
+        endif
+    else (nie znaleziono)
+        :Zapytanie zwrócone z informacją:
+        "Nie znaleziono sesji";
+    endif
+else (nie zgadza się)
+    :Żądanie zwrócone z błędem
+    braku autoryzacji zapytania;
+endif
+
+:Pobierz i wyświetl informacje o gospodarstwie domowym;
+if(:System sprawdza czy użytkownik ma przypisane gospodarstwo domowe;) then (ma)
+    :Pobierz i wyświetl informację o gospodarstwie domowym;
+else (nie ma)
+    :Utwórz nowe gospodarstwo domowe;
+    :Przypisz utworzone gospodarstwo do użytkownika sesji;
+endif
+
+:Wprowadź nowe dane (zmiany, bądź dodaj nowy element);
+:Pobierz i wyświetl informacje z raportami bilansów
+           (nie uwzględniając nowych danych);
+:Wygeneruj raport;
+:Pobierz i wyświetl informacje z raportami bilansów
+                      (uwzględniając zmiany);
+:Użytkownik wylogowuje się
+     System kasuje sesje;
+
+stop
+@enduml

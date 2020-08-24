@@ -2,13 +2,17 @@ package pl.dev.household.budget.manager.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.dev.household.budget.manager.dao.UserDAO;
+import pl.dev.household.budget.manager.dao.Household;
+import pl.dev.household.budget.manager.dao.User;
+import pl.dev.household.budget.manager.dao.repository.HouseholdRepository;
 import pl.dev.household.budget.manager.dao.repository.UserRepository;
-import pl.dev.household.budget.manager.domain.User;
+import pl.dev.household.budget.manager.domain.UserDTO;
+import pl.dev.household.budget.manager.utils.UserMapper;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -16,33 +20,58 @@ public class UserService {
 
     private ModelMapper modelMapper;
     private UserRepository userRepository;
+    private HouseholdRepository householdRepository;
 
-    @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(ModelMapper modelMapper, UserRepository userRepository, HouseholdRepository householdRepository) {
+        this.modelMapper = modelMapper;
         this.userRepository = userRepository;
+        this.householdRepository = householdRepository;
     }
 
-    public User getUser(Integer userId) {
-        return modelMapper.map(userRepository.findById(userId), User.class);
+    public UserDTO getUser(Integer userId) {
+        return UserMapper.mapUser(userRepository.findById(userId).get());
     }
 
-    public User updateUser(Integer userId, User user) {
-        Optional<UserDAO> oldUser = userRepository.findById(userId);
+    public UserDTO updateUser(Integer userId, UserDTO userDTO) {
+        Optional<User> oldUser = Optional.of(userRepository.findById(userId)).orElse(null);
 
-        if (oldUser.isEmpty() || !oldUser.get().getId().equals(user.getId())) {
+        if (oldUser.isEmpty()) {
             throw new RuntimeException("User cannot be updated!");
         }
 
-        UserDAO updatedUser = modelMapper.map(user, UserDAO.class);
+        User updatedUser = modelMapper.map(userDTO, User.class);
         userRepository.save(updatedUser);
 
         return getUser(userId);
     }
 
-    public User registerUser(User user) {
-        UserDAO userDAO = modelMapper.map(user, UserDAO.class);
-        userRepository.save(userDAO);
+    public UserDTO registerUser(UserDTO userDTO) {
+        User user = modelMapper.map(userDTO, User.class);
+        userRepository.save(user);
 
-        return getUser(userDAO.getId());
+        return getUser(user.getId());
+    }
+
+    public List<UserDTO> getAllUsersForHousehold(Integer householdId) {
+        return userRepository.findAllByHousehold_Id(householdId).stream().map(user -> modelMapper.map(user, UserDTO.class)).peek(userDTO -> userDTO.setPassword("*******")).collect(Collectors.toList());
+    }
+
+    public void addUserToHousehold(Integer householdId, String login) {
+        User dbUser = userRepository.findOneByLogin(login);
+
+        if (dbUser.getHousehold() == null) {
+            Optional<Household> household = Optional.of(householdRepository.findById(householdId)).orElse(null);
+            household.ifPresent(dbUser::setHousehold);
+            userRepository.save(dbUser);
+        }
+    }
+
+    public void removeUserFromHousehold(Integer householdId, String login) {
+        User dbUser = userRepository.findOneByLogin(login);
+
+        if (dbUser.getHousehold() != null && dbUser.getHousehold().getId().equals(householdId)) {
+            dbUser.setHousehold(null);
+            userRepository.save(dbUser);
+        }
     }
 }

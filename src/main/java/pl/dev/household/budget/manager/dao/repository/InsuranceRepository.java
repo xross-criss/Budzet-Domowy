@@ -1,12 +1,12 @@
 package pl.dev.household.budget.manager.dao.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.dev.household.budget.manager.dao.InsuranceDAO;
+import pl.dev.household.budget.manager.dao.Insurance;
 
 import java.util.List;
 
-public interface InsuranceRepository extends JpaRepository<InsuranceDAO, Integer> {
+public interface InsuranceRepository extends JpaRepository<Insurance, Integer> {
 
-    public List<InsuranceDAO> findAllByHousehold_Id(Integer householdId);
+    public List<Insurance> findAllByHousehold_Id(Integer householdId);
 
 }

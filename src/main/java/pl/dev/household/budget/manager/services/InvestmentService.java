@@ -2,14 +2,19 @@ package pl.dev.household.budget.manager.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.dev.household.budget.manager.dao.InvestmentDAO;
+import pl.dev.household.budget.manager.dao.Investment;
+import pl.dev.household.budget.manager.dao.repository.HouseholdRepository;
 import pl.dev.household.budget.manager.dao.repository.InvestmentRepository;
-import pl.dev.household.budget.manager.domain.Investment;
+import pl.dev.household.budget.manager.domain.InvestmentDTO;
+import pl.dev.household.budget.manager.domain.ReportIntDTO;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.YearMonth;
 import java.util.List;
-import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -18,36 +23,67 @@ public class InvestmentService {
 
     private ModelMapper modelMapper;
     private InvestmentRepository investmentRepository;
+    private HouseholdRepository householdRepository;
 
-    @Autowired
-    public InvestmentService(InvestmentRepository investmentRepository) {
+    public InvestmentService(ModelMapper modelMapper, InvestmentRepository investmentRepository, HouseholdRepository householdRepository) {
+        this.modelMapper = modelMapper;
         this.investmentRepository = investmentRepository;
+        this.householdRepository = householdRepository;
     }
 
-    public List<Investment> getInvestments(Integer householdId) {
+    public List<InvestmentDTO> getInvestments(Integer householdId) {
         return investmentRepository.findAllByHousehold_Id(householdId).stream()
-                .map(investment -> modelMapper.map(investment, Investment.class))
+                .map(investment -> modelMapper.map(investment, InvestmentDTO.class))
                 .collect(Collectors.toList());
     }
 
-    public Investment getInvestment(Integer investmentId) {
-        return modelMapper.map(investmentRepository.findById(investmentId), Investment.class);
+    public InvestmentDTO getInvestment(Integer investmentId) {
+        return modelMapper.map(investmentRepository.findById(investmentId), InvestmentDTO.class);
     }
 
-    public Investment addInvestment(Investment investment) {
-        Integer investmentId = investmentRepository.save(modelMapper.map(investment, InvestmentDAO.class)).getId();
+    public InvestmentDTO addInvestment(InvestmentDTO investmentDTO) {
+        Integer investmentId = investmentRepository.save(modelMapper.map(investmentDTO, Investment.class)).getId();
         return getInvestment(investmentId);
     }
 
-    public Investment updateInvestment(Integer householdId, Investment investment) {
-        Optional<InvestmentDAO> oldInvestment = investmentRepository.findById(investment.getId());
-        if (oldInvestment.isEmpty() || !oldInvestment.get().getId().equals(investment.getId())) {
-            throw new RuntimeException("Investment cannot be updated!");
+    public void updateInvestment(Integer householdId, InvestmentDTO investmentDTO) {
+        Investment updatedInvestment = modelMapper.map(investmentDTO, Investment.class);
+
+        if (updatedInvestment.getHousehold() == null) {
+            updatedInvestment.setHousehold(householdRepository.findById(householdId).get());
         }
 
-        InvestmentDAO updatedInvestment = modelMapper.map(investment, InvestmentDAO.class);
         investmentRepository.save(updatedInvestment);
+    }
 
-        return getInvestment(updatedInvestment.getId());
+    public ReportIntDTO countInvestmentBalance(Integer householdId) {
+        ReportIntDTO report = new ReportIntDTO();
+        BigDecimal incomeTmp = BigDecimal.valueOf(0);
+
+        List<Investment> investmentsList = aggregateInvestments(householdId);
+
+        if (investmentsList != null && !investmentsList.isEmpty()) {
+            for (Investment investment : investmentsList) {
+                incomeTmp = incomeTmp.add(investment.getAmount());
+            }
+        }
+
+        report.setIncome(incomeTmp);
+        return report;
+    }
+
+    public List<InvestmentDTO> aggregateInvestmentsForCurrentMonth(Integer householdId) {
+        return aggregateInvestments(householdId).stream().map(investment -> modelMapper.map(investment, InvestmentDTO.class)).collect(Collectors.toList());
+    }
+
+    private List<Investment> aggregateInvestments(Integer householdId) {
+        return investmentRepository.findAllByHousehold_Id(householdId).stream()
+                .filter(investment -> investment.getEndDate().isBefore(YearMonth.now().atEndOfMonth()))
+                .filter(checkIfMonthIsPeriodicForInvestments())
+                .collect(Collectors.toList());
+    }
+
+    private static Predicate<Investment> checkIfMonthIsPeriodicForInvestments() {
+        return p -> Period.between(p.getStartDate(), LocalDate.now()).getMonths() % p.getPeriod() == 0;
     }
 }

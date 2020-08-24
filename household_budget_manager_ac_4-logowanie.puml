@@ -1,0 +1,23 @@
+@startuml
+start
+
+if(Sprawdzenie poprawności sumy kontrolnej identyfikującej) then (zgadza się)
+    if(:Zapytanie do bazy danych
+    z "loginem" użytkownika;) then (znaleziono)
+        if(:Sprawdzenie poprawności hasła użytkownika;) then (zgadza się)
+            :Utworzenie sesji dla danego użytkownika;
+        else (nie zgadza się)
+            :zwraca błąd:
+            "Niepoprawne hasło";
+        endif
+    else (nie znaleziono)
+        :Zapytanie zwrócone z informacją:
+        "Nie znaleziono użytkownika";
+    endif
+else (nie zgadza się)
+    :Żądanie zwrócone z błędem
+    braku autoryzacji zapytania;
+endif
+
+stop
+@enduml

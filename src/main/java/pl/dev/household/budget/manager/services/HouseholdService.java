@@ -2,11 +2,11 @@ package pl.dev.household.budget.manager.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.dev.household.budget.manager.dao.HouseholdDAO;
+import pl.dev.household.budget.manager.dao.Household;
 import pl.dev.household.budget.manager.dao.repository.HouseholdRepository;
-import pl.dev.household.budget.manager.domain.Household;
+import pl.dev.household.budget.manager.domain.HouseholdDTO;
+import pl.dev.household.budget.manager.utils.HouseholdMapper;
 
 import java.util.Optional;
 
@@ -17,30 +17,30 @@ public class HouseholdService {
     private ModelMapper modelMapper;
     private HouseholdRepository householdRepository;
 
-    @Autowired
-    public HouseholdService(HouseholdRepository householdRepository) {
+    public HouseholdService(ModelMapper modelMapper, HouseholdRepository householdRepository) {
+        this.modelMapper = modelMapper;
         this.householdRepository = householdRepository;
     }
 
-    public Household getHousehold(Integer householdId) {
-        return modelMapper.map(householdRepository.findById(householdId), Household.class);
+    public HouseholdDTO getHousehold(Integer householdId) {
+        return HouseholdMapper.mapHousehold(householdRepository.findById(householdId).get());
     }
 
-    public Household updateHousehold(Integer householdId, Household household) {
+    public HouseholdDTO updateHousehold(Integer householdId, HouseholdDTO householdDTO) {
 
-        Optional<HouseholdDAO> oldHousehold = householdRepository.findById(householdId);
-        if (oldHousehold.isEmpty() || !oldHousehold.get().getId().equals(household.getId())) {
+        Optional<Household> oldHousehold = householdRepository.findById(householdId);
+        if (oldHousehold.isEmpty() || !oldHousehold.get().getId().equals(householdDTO.getId())) {
             throw new RuntimeException("Household cannot be updated!");
         }
 
-        HouseholdDAO updatedHousehold = modelMapper.map(household, HouseholdDAO.class);
+        Household updatedHousehold = modelMapper.map(householdDTO, Household.class);
         householdRepository.save(updatedHousehold);
 
         return getHousehold(householdId);
     }
 
-    public Household addHousehold(Household household) {
-        HouseholdDAO newHousehold = modelMapper.map(household, HouseholdDAO.class);
+    public HouseholdDTO addHousehold(HouseholdDTO householdDTO) {
+        Household newHousehold = modelMapper.map(householdDTO, Household.class);
         householdRepository.save(newHousehold);
 
         return getHousehold(newHousehold.getId());

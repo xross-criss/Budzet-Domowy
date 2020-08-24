@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="1.0-init-tables" author="Krzysztof Kwiatkowski">
+
+        <createTable tableName="household">
+            <column name="id"
+                    type="INT"
+                    autoIncrement="true">
+                <constraints primaryKey="true"
+                             primaryKeyName="PK_household_id"/>
+            </column>
+
+            <column name="population"
+                    type="INT"/>
+            <column name="cost"
+                    type="NUMERIC(8,2)"/>
+        </createTable>
+
+        <createTable tableName="user">
+            <column name="id"
+                    type="INT"
+                    autoIncrement="true">
+                <constraints primaryKey="true"
+                             primaryKeyName="PK_user_id"/>
+            </column>
+            <column name="household"
+                    type="INT">
+                <constraints foreignKeyName="FK_USER_HOUSEHOLD_ID"
+                             references="household(id)"/>
+            </column>
+
+            <column name="role"
+                    type="VARCHAR(16)"/>
+
+            <column name="login"
+                    type="VARCHAR(32)"/>
+            <column name="password"
+                    type="VARCHAR(256)"/>
+            <column name="name"
+                    type="VARCHAR(64)"/>
+            <column name="email"
+                    type="VARCHAR(128)"/>
+            <column name="registration_date"
+                    type="TIMESTAMP"/>
+            <column name="last_failed_login"
+                    type="TIMESTAMP"/>
+        </createTable>
+
+        <!--
+
+        <createTable tableName="household_user">
+            <column name="user_id"
+                    type="INT">
+                <constraints primaryKey="true"
+                             primaryKeyName="PK_HOUSEHOLD_USER_USER_ID"
+                             foreignKeyName="FK_HOUSEHOLD_USER_USER_ID"
+                             references="user(id)"/>
+            </column>
+            <column name="household_id"
+                    type="INT">
+                <constraints primaryKey="true"
+                             primaryKeyName="PK_HOUSEHOLD_USER_HOUSEHOLD_ID"
+                             foreignKeyName="FK_HOUSEHOLD_USER_HOUSEHOLD_ID"
+                             references="household(id)"/>
+            </column>
+
+            <column name="role"
+                    type="VARCHAR(16)"/>
+        </createTable>-->
+
+        <createTable tableName="loan">
+            <column name="id"
+                    type="INT"
+                    autoIncrement="true">
+                <constraints primaryKey="true"
+                             primaryKeyName="PK_loan_id"/>
+            </column>
+            <column name="household"
+                    type="INT">
+                <constraints foreignKeyName="FK_LOAN_HOUSEHOLD_ID"
+                             references="household(id)"/>
+            </column>
+
+            <column name="bank"
+                    type="VARCHAR(64)"/>
+            <column name="annual_loan_percentage"
+                    type="NUMERIC(3,2)"/>
+            <column name="start_date"
+                    type="DATE"/>
+            <column name="end_date"
+                    type="DATE"/>
+            <column name="amount"
+                    type="NUMERIC(8,2)"/>
+            <column name="installment_amount"
+                    type="NUMERIC(8,2)"/>
+        </createTable>
+
+        <createTable tableName="cashflow">
+            <column name="id"
+                    type="INT"
+                    autoIncrement="true">
+                <constraints primaryKey="true"
+                             primaryKeyName="PK_cashflow_id"/>
+            </column>
+            <column name="household"
+                    type="INT">
+                <constraints foreignKeyName="FK_CASHFLOW_HOUSEHOLD_ID"
+                             references="household(id)"/>
+            </column>
+
+            <column name="category"
+                    type="VARCHAR(16)"/>
+
+            <column name="start_date"
+                    type="DATE"/>
+            <column name="end_date"
+                    type="DATE"/>
+            <column name="period"
+                    type="INT"/>
+            <column name="amount"
+                    type="NUMERIC(8,2)"/>
+            <column name="description"
+                    type="VARCHAR(512)"/>
+        </createTable>
+
+        <createTable tableName="goals">
+            <column name="id"
+                    type="INT"
+                    autoIncrement="true">
+                <constraints primaryKey="true"
+                             primaryKeyName="PK_goals_id"/>
+            </column>
+            <column name="household"
+                    type="INT">
+                <constraints foreignKeyName="FK_GOALS_HOUSEHOLD_ID"
+                             references="household(id)"/>
+            </column>
+
+            <column name="category"
+                    type="VARCHAR(16)"/>
+
+            <column name="amount"
+                    type="NUMERIC(8,2)"/>
+            <column name="name"
+                    type="VARCHAR(64)"/>
+            <column name="description"
+                    type="VARCHAR(64)"/>
+            <column name="priority"
+                    type="INT"/>
+            <!--kiedy się uda zrealizować cel zakupowy będzie polem wyliczalnym bezpośrednio w obiektach aplikacji-->
+        </createTable>
+
+        <createTable tableName="investment">
+            <column name="id"
+                    type="INT"
+                    autoIncrement="true">
+                <constraints primaryKey="true"
+                             primaryKeyName="PK_investment_id"/>
+            </column>
+            <column name="household"
+                    type="INT">
+                <constraints foreignKeyName="FK_INVESTMENT_HOUSEHOLD_ID"
+                             references="household(id)"/>
+            </column>
+
+            <column name="category"
+                    type="VARCHAR(16)"/>
+
+            <column name="period"
+                    type="INT"/>
+            <column name="start_date"
+                    type="DATE"/>
+            <column name="end_date"
+                    type="DATE"/>
+            <column name="investment_percentage"
+                    type="NUMERIC(3,2)"/>
+            <column name="amount"
+                    type="NUMERIC(8,2)"/>
+            <column name="name"
+                    type="VARCHAR(64)"/>
+        </createTable>
+
+        <createTable tableName="debt_card">
+            <column name="id"
+                    type="INT"
+                    autoIncrement="true">
+                <constraints primaryKey="true"
+                             primaryKeyName="PK_debt_card_id"/>
+            </column>
+            <column name="household"
+                    type="INT">
+                <constraints foreignKeyName="FK_DEBT_CARD_HOUSEHOLD_ID"
+                             references="household(id)"/>
+            </column>
+
+            <column name="limit"
+                    type="NUMERIC(8,2)"/>
+            <column name="balance"
+                    type="NUMERIC(8,2)"/>
+            <column name="renewal_percentage"
+                    type="NUMERIC(3,2)"/>
+            <column name="annual_percentage"
+                    type="NUMERIC(3,2)"/>
+            <column name="bank"
+                    type="VARCHAR(64)"/>
+            <column name="name"
+                    type="VARCHAR(512)"/>
+        </createTable>
+
+        <createTable tableName="insurance">
+            <column name="id"
+                    type="INT"
+                    autoIncrement="true">
+                <constraints primaryKey="true"
+                             primaryKeyName="PK_debt_card_id"/>
+            </column>
+            <column name="household"
+                    type="INT">
+                <constraints foreignKeyName="FK_INSURANCE_HOUSEHOLD_ID"
+                             references="household(id)"/>
+            </column>
+
+            <column name="type"
+                    type="VARCHAR(16)"/>
+
+            <column name="description"
+                    type="VARCHAR(512)"/>
+            <column name="period"
+                    type="INT"/>
+            <column name="cost"
+                    type="NUMERIC(8,2)"/>
+            <column name="end_date"
+                    type="DATE"/>
+            <column name="vehicle_tid"
+                    type="DATE"/>
+            <column name="name"
+                    type="VARCHAR(64)"/>
+            <column name="vehicle_lp"
+                    type="VARCHAR(16)"/>
+        </createTable>
+
+        <createTable tableName="balance">
+            <column name="id"
+                    type="INT"
+                    autoIncrement="true">
+                <constraints primaryKey="true"
+                             primaryKeyName="PK_goals_id"/>
+            </column>
+            <column name="household"
+                    type="INT">
+                <constraints foreignKeyName="FK_BALANCE_HOUSEHOLD_ID"
+                             references="household(id)"/>
+            </column>
+
+            <column name="type"
+                    type="VARCHAR(16)"/>
+
+            <column name="generation_date"
+                    type="DATE"/>
+            <column name="burden"
+                    type="NUMERIC(8,2)"/>
+            <column name="income"
+                    type="NUMERIC(8,2)"/>
+            <column name="balance"
+                    type="NUMERIC(8,2)"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

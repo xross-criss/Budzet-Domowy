@@ -1,11 +1,13 @@
 package pl.dev.household.budget.manager.controllers;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.dev.household.budget.manager.domain.Cashflow;
-import pl.dev.household.budget.manager.domain.Household;
+import pl.dev.household.budget.manager.dictionaries.CashflowCategory;
+import pl.dev.household.budget.manager.domain.CashflowDTO;
+import pl.dev.household.budget.manager.domain.ReportIntDTO;
+import pl.dev.household.budget.manager.security.util.Security;
 import pl.dev.household.budget.manager.services.CashflowService;
 
 import java.util.List;
@@ -17,24 +19,38 @@ public class CashflowController {
 
     private CashflowService cashflowService;
 
-    @Autowired
     public CashflowController(CashflowService cashflowService) {
         this.cashflowService = cashflowService;
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/{householdId}")
-    public List<Cashflow> getCashflows(@RequestParam("householdId") Integer householdId) {
-        return cashflowService.getCashflows(householdId);
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<CashflowDTO>> getCashflows() {
+        return ResponseEntity.ok(cashflowService.getCashflows(Security.currentUser().getHousehold().getId()));
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/category")
+    public ResponseEntity<List<CashflowDTO>> getCashflowsWithCategory(@RequestParam(name = "cat") String cat) {
+        return ResponseEntity.ok(cashflowService.getCashflowsWithType(Security.currentUser().getHousehold().getId(), CashflowCategory.valueOf(cat)));
     }
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public Cashflow addCashflow(@RequestBody Cashflow cashflow) {
-        return cashflowService.addCashflow(cashflow);
+    public ResponseEntity<CashflowDTO> addCashflow(@RequestBody CashflowDTO cashflowDTO) {
+        return ResponseEntity.ok(cashflowService.addCashflow(cashflowDTO));
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/{householdId}")
-    public Cashflow updateCashflow(@RequestParam("householdId") Integer householdId, @RequestBody Cashflow cashflow) {
-        return cashflowService.updateCashflow(householdId, cashflow);
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public void updateCashflow(@RequestBody CashflowDTO cashflowDTO) {
+        cashflowService.updateCashflow(Security.currentUser().getHousehold().getId(), cashflowDTO);
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/report")
+    public ResponseEntity<ReportIntDTO> generateCurrentMonthBalanceReport() {
+        return ResponseEntity.ok(cashflowService.countCashflowBalance(Security.currentUser().getHousehold().getId()));
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/currmonth")
+    public ResponseEntity<List<CashflowDTO>> getCurrentMonthCashflows() {
+        return ResponseEntity.ok(cashflowService.aggregateCashflowForCurrentMonth(Security.currentUser().getHousehold().getId()));
     }
 
 }

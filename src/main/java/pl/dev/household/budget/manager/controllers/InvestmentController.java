@@ -1,11 +1,13 @@
 package pl.dev.household.budget.manager.controllers;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.dev.household.budget.manager.domain.Insurance;
-import pl.dev.household.budget.manager.domain.Investment;
+import pl.dev.household.budget.manager.domain.CashflowDTO;
+import pl.dev.household.budget.manager.domain.InvestmentDTO;
+import pl.dev.household.budget.manager.domain.ReportIntDTO;
+import pl.dev.household.budget.manager.security.util.Security;
 import pl.dev.household.budget.manager.services.InvestmentService;
 
 import java.util.List;
@@ -15,26 +17,34 @@ import java.util.List;
 @RequestMapping("/api/investment")
 public class InvestmentController {
 
-    InvestmentService investmentService;
+    private InvestmentService investmentService;
 
-    @Autowired
     public InvestmentController(InvestmentService investmentService) {
         this.investmentService = investmentService;
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/{householdId}")
-    public List<Investment> getInvestments(@RequestParam("householdId") Integer householdId) {
-        return investmentService.getInvestments(householdId);
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<InvestmentDTO>> getInvestments() {
+        return ResponseEntity.ok(investmentService.getInvestments(Security.currentUser().getHousehold().getId()));
     }
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public Investment addInvestment(@RequestBody Investment investment) {
-        return investmentService.addInvestment(investment);
+    public ResponseEntity<InvestmentDTO> addInvestment(@RequestBody InvestmentDTO investmentDTO) {
+        return ResponseEntity.ok(investmentService.addInvestment(investmentDTO));
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/{householdId}")
-    public Investment updateInvestment(@RequestParam("householdId") Integer householdId, @RequestBody Investment investment) {
-        return investmentService.updateInvestment(householdId, investment);
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public void updateInvestment(@RequestBody InvestmentDTO investmentDTO) {
+        investmentService.updateInvestment(Security.currentUser().getHousehold().getId(), investmentDTO);
     }
 
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/report")
+    public ResponseEntity<ReportIntDTO> generateCurrentMonthBalanceReport() {
+        return ResponseEntity.ok(investmentService.countInvestmentBalance(Security.currentUser().getHousehold().getId()));
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/currmonth")
+    public ResponseEntity<List<InvestmentDTO>> getCurrentMonthCashflows() {
+        return ResponseEntity.ok(investmentService.aggregateInvestmentsForCurrentMonth(Security.currentUser().getHousehold().getId()));
+    }
 }
