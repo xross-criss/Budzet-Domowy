@@ -34,8 +34,8 @@ public class Cashflow implements Serializable {
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    @Column(name = "interval")
-    private Integer interval;
+    @Column(name = "period")
+    private Integer period;
 
     @Column(name = "amount")
     private BigDecimal amount;

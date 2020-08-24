@@ -39,8 +39,8 @@ public class CashflowController {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CashflowDTO> updateCashflow(@RequestBody CashflowDTO cashflowDTO) {
-        return ResponseEntity.ok(cashflowService.updateCashflow(Security.currentUser().getHousehold().getId(), cashflowDTO));
+    public void updateCashflow(@RequestBody CashflowDTO cashflowDTO) {
+        cashflowService.updateCashflow(Security.currentUser().getHousehold().getId(), cashflowDTO);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/report")

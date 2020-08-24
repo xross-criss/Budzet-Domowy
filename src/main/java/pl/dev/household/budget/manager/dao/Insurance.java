@@ -31,8 +31,8 @@ public class Insurance implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "interval")
-    private Integer interval;
+    @Column(name = "period")
+    private Integer period;
 
     @Column(name = "cost")
     private BigDecimal cost;

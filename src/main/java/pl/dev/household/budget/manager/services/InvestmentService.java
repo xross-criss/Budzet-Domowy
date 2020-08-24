@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.Investment;
+import pl.dev.household.budget.manager.dao.repository.HouseholdRepository;
 import pl.dev.household.budget.manager.dao.repository.InvestmentRepository;
 import pl.dev.household.budget.manager.domain.InvestmentDTO;
 import pl.dev.household.budget.manager.domain.ReportIntDTO;
@@ -13,7 +14,6 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.YearMonth;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -23,10 +23,12 @@ public class InvestmentService {
 
     private ModelMapper modelMapper;
     private InvestmentRepository investmentRepository;
+    private HouseholdRepository householdRepository;
 
-    public InvestmentService(ModelMapper modelMapper, InvestmentRepository investmentRepository) {
+    public InvestmentService(ModelMapper modelMapper, InvestmentRepository investmentRepository, HouseholdRepository householdRepository) {
         this.modelMapper = modelMapper;
         this.investmentRepository = investmentRepository;
+        this.householdRepository = householdRepository;
     }
 
     public List<InvestmentDTO> getInvestments(Integer householdId) {
@@ -44,16 +46,14 @@ public class InvestmentService {
         return getInvestment(investmentId);
     }
 
-    public InvestmentDTO updateInvestment(Integer householdId, InvestmentDTO investmentDTO) {
-        Optional<Investment> oldInvestment = investmentRepository.findById(investmentDTO.getId());
-        if (oldInvestment.isEmpty() || !oldInvestment.get().getId().equals(investmentDTO.getId())) {
-            throw new RuntimeException("Investment cannot be updated!");
+    public void updateInvestment(Integer householdId, InvestmentDTO investmentDTO) {
+        Investment updatedInvestment = modelMapper.map(investmentDTO, Investment.class);
+
+        if (updatedInvestment.getHousehold() == null) {
+            updatedInvestment.setHousehold(householdRepository.findById(householdId).get());
         }
 
-        Investment updatedInvestment = modelMapper.map(investmentDTO, Investment.class);
         investmentRepository.save(updatedInvestment);
-
-        return getInvestment(updatedInvestment.getId());
     }
 
     public ReportIntDTO countInvestmentBalance(Integer householdId) {
@@ -84,6 +84,6 @@ public class InvestmentService {
     }
 
     private static Predicate<Investment> checkIfMonthIsPeriodicForInvestments() {
-        return p -> Period.between(p.getStartDate(), LocalDate.now()).getMonths() % p.getInterval() == 0;
+        return p -> Period.between(p.getStartDate(), LocalDate.now()).getMonths() % p.getPeriod() == 0;
     }
 }

@@ -34,8 +34,8 @@ public class InvestmentController {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<InvestmentDTO> updateInvestment(@RequestBody InvestmentDTO investmentDTO) {
-        return ResponseEntity.ok(investmentService.updateInvestment(Security.currentUser().getHousehold().getId(), investmentDTO));
+    public void updateInvestment(@RequestBody InvestmentDTO investmentDTO) {
+        investmentService.updateInvestment(Security.currentUser().getHousehold().getId(), investmentDTO);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/report")

@@ -5,7 +5,6 @@ import pl.dev.household.budget.manager.domain.HouseholdDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -18,7 +17,9 @@ public class VWLoanDTO {
     private HouseholdDTO household;
     private String bankName;
     private BigDecimal annualLoanPercentage;
+
     private LocalDate startDate;
+
     private LocalDate endDate;
     private BigDecimal amount;
     private Integer fullInstallmentDuration;

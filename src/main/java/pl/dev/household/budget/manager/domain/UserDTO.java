@@ -4,7 +4,6 @@ import lombok.*;
 import pl.dev.household.budget.manager.dictionaries.UserRole;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Getter
 @Setter

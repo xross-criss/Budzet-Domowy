@@ -67,7 +67,7 @@ public class InsuranceService {
             for (Insurance insurance : insurancesList) {
                 burdenTmp = burdenTmp.add(
                         insurance.getCost()
-                                .divide(BigDecimal.valueOf(insurance.getInterval()))
+                                .divide(BigDecimal.valueOf(insurance.getPeriod()))
                                 .setScale(2, RoundingMode.CEILING));
             }
         }
@@ -88,6 +88,6 @@ public class InsuranceService {
     }
 
     private static Predicate<Insurance> checkIfMonthIsPeriodicForInsurance() {
-        return p -> Period.between(p.getEndDate().minusMonths(12), LocalDate.now()).getMonths() % p.getInterval() == 0;
+        return p -> Period.between(p.getEndDate().minusMonths(12), LocalDate.now()).getMonths() % p.getPeriod() == 0;
     }
 }

@@ -3,7 +3,9 @@ package pl.dev.household.budget.manager.services;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import pl.dev.household.budget.manager.dao.Household;
 import pl.dev.household.budget.manager.dao.User;
+import pl.dev.household.budget.manager.dao.repository.HouseholdRepository;
 import pl.dev.household.budget.manager.dao.repository.UserRepository;
 import pl.dev.household.budget.manager.domain.UserDTO;
 import pl.dev.household.budget.manager.utils.UserMapper;
@@ -18,10 +20,12 @@ public class UserService {
 
     private ModelMapper modelMapper;
     private UserRepository userRepository;
+    private HouseholdRepository householdRepository;
 
-    public UserService(ModelMapper modelMapper, UserRepository userRepository) {
+    public UserService(ModelMapper modelMapper, UserRepository userRepository, HouseholdRepository householdRepository) {
         this.modelMapper = modelMapper;
         this.userRepository = userRepository;
+        this.householdRepository = householdRepository;
     }
 
     public UserDTO getUser(Integer userId) {
@@ -29,9 +33,9 @@ public class UserService {
     }
 
     public UserDTO updateUser(Integer userId, UserDTO userDTO) {
-        Optional<User> oldUser = userRepository.findById(userId);
+        Optional<User> oldUser = Optional.of(userRepository.findById(userId)).orElse(null);
 
-        if (oldUser.isEmpty() || !oldUser.get().getId().equals(userDTO.getId())) {
+        if (oldUser.isEmpty()) {
             throw new RuntimeException("User cannot be updated!");
         }
 
@@ -50,5 +54,24 @@ public class UserService {
 
     public List<UserDTO> getAllUsersForHousehold(Integer householdId) {
         return userRepository.findAllByHousehold_Id(householdId).stream().map(user -> modelMapper.map(user, UserDTO.class)).peek(userDTO -> userDTO.setPassword("*******")).collect(Collectors.toList());
+    }
+
+    public void addUserToHousehold(Integer householdId, String login) {
+        User dbUser = userRepository.findOneByLogin(login);
+
+        if (dbUser.getHousehold() == null) {
+            Optional<Household> household = Optional.of(householdRepository.findById(householdId)).orElse(null);
+            household.ifPresent(dbUser::setHousehold);
+            userRepository.save(dbUser);
+        }
+    }
+
+    public void removeUserFromHousehold(Integer householdId, String login) {
+        User dbUser = userRepository.findOneByLogin(login);
+
+        if (dbUser.getHousehold() != null && dbUser.getHousehold().getId().equals(householdId)) {
+            dbUser.setHousehold(null);
+            userRepository.save(dbUser);
+        }
     }
 }

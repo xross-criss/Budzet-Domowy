@@ -5,6 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.Goals;
 import pl.dev.household.budget.manager.dao.repository.GoalsRepository;
+import pl.dev.household.budget.manager.dao.repository.HouseholdRepository;
 import pl.dev.household.budget.manager.dictionaries.BalanceType;
 import pl.dev.household.budget.manager.domain.BalanceDTO;
 import pl.dev.household.budget.manager.domain.GoalsDTO;
@@ -26,11 +27,13 @@ public class GoalsService {
     private ModelMapper modelMapper;
     private GoalsRepository goalsRepository;
     private BalanceService balanceService;
+    private HouseholdRepository householdRepository;
 
-    public GoalsService(ModelMapper modelMapper, GoalsRepository goalsRepository, BalanceService balanceService) {
+    public GoalsService(ModelMapper modelMapper, GoalsRepository goalsRepository, BalanceService balanceService, HouseholdRepository householdRepository) {
         this.modelMapper = modelMapper;
         this.goalsRepository = goalsRepository;
         this.balanceService = balanceService;
+        this.householdRepository = householdRepository;
     }
 
     public List<GoalsDTO> getGoals(Integer householdId) {
@@ -52,16 +55,15 @@ public class GoalsService {
         return getGoal(goalId);
     }
 
-    public GoalsDTO updateGoal(Integer householdId, GoalsDTO goal) {
-        Optional<Goals> oldGoal = goalsRepository.findById(goal.getId());
-        if (oldGoal.isEmpty() || !oldGoal.get().getId().equals(goal.getId())) {
-            throw new RuntimeException("Goals cannot be updated!");
+    public void updateGoal(Integer householdId, GoalsDTO goal) {
+        Goals tmpGoal = modelMapper.map(goal, Goals.class);
+
+        if (tmpGoal.getHousehold() == null) {
+            tmpGoal.setHousehold(householdRepository.findById(householdId).get());
         }
 
-        Goals updatedGoal = modelMapper.map(goal, Goals.class);
-        goalsRepository.save(updatedGoal);
+        goalsRepository.save(tmpGoal);
 
-        return getGoal(updatedGoal.getId());
     }
 
     private GoalsDTO countGoalsPercentage(Integer householdId, GoalsDTO goalsDTO) {

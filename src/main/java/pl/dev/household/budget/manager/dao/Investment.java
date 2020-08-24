@@ -29,8 +29,8 @@ public class Investment implements Serializable {
     @Column(name = "category")
     private InvestmentCategory type;
 
-    @Column(name = "interval")
-    private Integer interval;
+    @Column(name = "period")
+    private Integer period;
 
     @Column(name = "start_date")
     private LocalDate startDate;

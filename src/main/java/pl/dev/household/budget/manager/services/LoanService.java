@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.Loan;
+import pl.dev.household.budget.manager.dao.repository.HouseholdRepository;
 import pl.dev.household.budget.manager.dao.repository.LoanRepository;
 import pl.dev.household.budget.manager.domain.LoanDTO;
 import pl.dev.household.budget.manager.domain.ReportIntDTO;
@@ -11,7 +12,6 @@ import pl.dev.household.budget.manager.domain.ReportIntDTO;
 import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -20,10 +20,12 @@ public class LoanService {
 
     private ModelMapper modelMapper;
     private LoanRepository loanRepository;
+    private HouseholdRepository householdRepository;
 
-    public LoanService(ModelMapper modelMapper, LoanRepository loanRepository) {
+    public LoanService(ModelMapper modelMapper, LoanRepository loanRepository, HouseholdRepository householdRepository) {
         this.modelMapper = modelMapper;
         this.loanRepository = loanRepository;
+        this.householdRepository = householdRepository;
     }
 
     public List<LoanDTO> getLoans(Integer householdId) {
@@ -41,16 +43,14 @@ public class LoanService {
         return getLoan(loanId);
     }
 
-    public LoanDTO updateLoan(Integer householdId, LoanDTO loanDTO) {
-        Optional<Loan> oldLoan = loanRepository.findById(loanDTO.getId());
-        if (oldLoan.isEmpty() || !oldLoan.get().getId().equals(loanDTO.getId())) {
-            throw new RuntimeException("Loan cannot be updated!");
+    public void updateLoan(Integer householdId, LoanDTO loanDTO) {
+        Loan updatedLoan = modelMapper.map(loanDTO, Loan.class);
+
+        if (updatedLoan.getHousehold() == null) {
+            updatedLoan.setHousehold(householdRepository.findById(householdId).get());
         }
 
-        Loan updatedLoan = modelMapper.map(loanDTO, Loan.class);
         loanRepository.save(updatedLoan);
-
-        return getLoan(updatedLoan.getId());
     }
 
     public ReportIntDTO countLoansBalance(Integer householdId) {

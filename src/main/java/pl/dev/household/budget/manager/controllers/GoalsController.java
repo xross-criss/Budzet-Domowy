@@ -32,8 +32,8 @@ public class GoalsController {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GoalsDTO> updateGoals(@RequestBody GoalsDTO goal) {
-        return ResponseEntity.ok(goalsService.updateGoal(Security.currentUser().getHousehold().getId(), goal));
+    public void updateGoals(@RequestBody GoalsDTO goal) {
+        goalsService.updateGoal(Security.currentUser().getHousehold().getId(), goal);
     }
 
 }

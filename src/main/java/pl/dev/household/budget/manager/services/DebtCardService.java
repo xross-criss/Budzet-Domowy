@@ -46,9 +46,10 @@ public class DebtCardService {
 
 
     public DebtCardDTO updateDebtCard(Integer householdId, DebtCardDTO debtCardDTO) {
-        Optional<DebtCard> oldDebtCard = debtCardRepository.findById(debtCardDTO.getId());
-        if (oldDebtCard.isEmpty() || !oldDebtCard.get().getId().equals(debtCardDTO.getId())) {
-            throw new RuntimeException("DebtCard cannot be updated!");
+        Optional<DebtCard> oldDebtCard = Optional.of(debtCardRepository.findById(debtCardDTO.getId())).orElse(null);
+
+        if (oldDebtCard.isEmpty()){
+            return addDebtCard(debtCardDTO);
         }
 
         DebtCard updatedDebtCard = modelMapper.map(debtCardDTO, DebtCard.class);

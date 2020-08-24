@@ -5,6 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.Cashflow;
 import pl.dev.household.budget.manager.dao.repository.CashflowRepository;
+import pl.dev.household.budget.manager.dao.repository.HouseholdRepository;
 import pl.dev.household.budget.manager.dao.repository.UserRepository;
 import pl.dev.household.budget.manager.dictionaries.CashflowCategory;
 import pl.dev.household.budget.manager.domain.CashflowDTO;
@@ -26,11 +27,13 @@ public class CashflowService {
     private ModelMapper modelMapper;
     private CashflowRepository cashflowRepository;
     private UserRepository userRepository;
+    private HouseholdRepository householdRepository;
 
-    public CashflowService(ModelMapper modelMapper, CashflowRepository cashflowRepository, UserRepository userRepository) {
+    public CashflowService(ModelMapper modelMapper, CashflowRepository cashflowRepository, UserRepository userRepository, HouseholdRepository householdRepository) {
         this.modelMapper = modelMapper;
         this.cashflowRepository = cashflowRepository;
         this.userRepository = userRepository;
+        this.householdRepository = householdRepository;
     }
 
     public List<CashflowDTO> getCashflows(Integer householdId) {
@@ -60,16 +63,14 @@ public class CashflowService {
     }
 
 
-    public CashflowDTO updateCashflow(Integer householdId, CashflowDTO cashflowDTO) {
-        Optional<Cashflow> oldCashflow = cashflowRepository.findById(cashflowDTO.getId());
-        if (oldCashflow.isEmpty() || !oldCashflow.get().getId().equals(cashflowDTO.getId())) {
-            throw new RuntimeException("Household cannot be updated!");
+    public void updateCashflow(Integer householdId, CashflowDTO cashflowDTO) {
+        Cashflow tmpCashflow = modelMapper.map(cashflowDTO, Cashflow.class);
+
+        if (tmpCashflow.getHousehold() == null) {
+            tmpCashflow.setHousehold(householdRepository.findById(householdId).get());
         }
 
-        Cashflow updatedCashflow = modelMapper.map(cashflowDTO, Cashflow.class);
-        cashflowRepository.save(updatedCashflow);
-
-        return getCashflow(updatedCashflow.getId());
+        cashflowRepository.save(tmpCashflow);
     }
 
     private Predicate<CashflowDTO> getCashflowWithCategoryPredicate(CashflowCategory cashflowCategory) {
@@ -111,6 +112,6 @@ public class CashflowService {
     }
 
     private static Predicate<Cashflow> checkIfMonthIsPeriodicForCashflow() {
-        return p -> Period.between(p.getStartDate(), LocalDate.now()).getMonths() % p.getInterval() == 0;
+        return p -> Period.between(p.getStartDate(), LocalDate.now()).getMonths() % p.getPeriod() == 0;
     }
 }

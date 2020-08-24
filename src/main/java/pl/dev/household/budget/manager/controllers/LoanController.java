@@ -33,8 +33,8 @@ public class LoanController {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LoanDTO> updateLoan(@RequestBody LoanDTO loanDTO) {
-        return ResponseEntity.ok(loanService.updateLoan(Security.currentUser().getHousehold().getId(), loanDTO));
+    public void updateLoan(@RequestBody LoanDTO loanDTO) {
+        loanService.updateLoan(Security.currentUser().getHousehold().getId(), loanDTO);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/report")

@@ -41,5 +41,14 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(Security.currentUser().getId(), userDTO));
     }
 
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/addUser")
+    public void addUserToHousehold(@RequestParam("login") String login) {
+        userService.addUserToHousehold(Security.currentUser().getHousehold().getId(), login);
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/removeUser")
+    public void removeUserFromHousehold(@RequestParam("login") String login) {
+        userService.removeUserFromHousehold(Security.currentUser().getHousehold().getId(), login);
+    }
 
 }

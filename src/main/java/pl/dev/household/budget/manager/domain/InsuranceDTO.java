@@ -5,7 +5,6 @@ import pl.dev.household.budget.manager.dictionaries.InsuranceType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -18,7 +17,7 @@ public class InsuranceDTO {
     private HouseholdDTO household;
     private InsuranceType type;
     private String description;
-    private Integer interval;
+    private Integer period;
     private BigDecimal cost;
     private LocalDate endDate;
     private String name;
