@@ -37,8 +37,8 @@ public class UserController {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/update")
-    public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO userDTO) {
-        return ResponseEntity.ok(userService.updateUser(Security.currentUser().getId(), userDTO));
+    public void updateUser(@RequestBody UserDTO userDTO) {
+        userService.updateUser(Security.currentUser().getId(), userDTO);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/addUser")

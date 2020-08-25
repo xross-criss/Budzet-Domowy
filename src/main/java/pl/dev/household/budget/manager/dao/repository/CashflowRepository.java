@@ -4,9 +4,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import pl.dev.household.budget.manager.dao.Cashflow;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CashflowRepository extends JpaRepository<Cashflow, Integer> {
 
-    public List<Cashflow> findAllByHousehold_Id(Integer householdId);
+    public Optional<List<Cashflow>> findAllByHousehold_Id(Integer householdId);
 
 }

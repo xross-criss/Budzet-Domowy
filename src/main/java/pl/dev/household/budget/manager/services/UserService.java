@@ -8,6 +8,7 @@ import pl.dev.household.budget.manager.dao.User;
 import pl.dev.household.budget.manager.dao.repository.HouseholdRepository;
 import pl.dev.household.budget.manager.dao.repository.UserRepository;
 import pl.dev.household.budget.manager.domain.UserDTO;
+import pl.dev.household.budget.manager.security.util.Security;
 import pl.dev.household.budget.manager.utils.UserMapper;
 
 import java.util.List;
@@ -32,17 +33,14 @@ public class UserService {
         return UserMapper.mapUser(userRepository.findById(userId).get());
     }
 
-    public UserDTO updateUser(Integer userId, UserDTO userDTO) {
-        Optional<User> oldUser = Optional.of(userRepository.findById(userId)).orElse(null);
+    public void updateUser(Integer userId, UserDTO userDTO) {
+        User updatedUser = modelMapper.map(userDTO, User.class);
 
-        if (oldUser.isEmpty()) {
-            throw new RuntimeException("User cannot be updated!");
+        if (updatedUser.getHousehold() == null) {
+            updatedUser.setHousehold(householdRepository.findById(Security.currentUser().getHousehold().getId()).get());
         }
 
-        User updatedUser = modelMapper.map(userDTO, User.class);
         userRepository.save(updatedUser);
-
-        return getUser(userId);
     }
 
     public UserDTO registerUser(UserDTO userDTO) {

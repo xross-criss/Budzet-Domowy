@@ -13,6 +13,8 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.YearMonth;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -81,8 +83,11 @@ public class InsuranceService {
     }
 
     private List<Insurance> aggregateInsurances(Integer householdId) {
-        return insuranceRepository.findAllByHousehold_Id(householdId).stream()
-                .filter(insurance -> insurance.getEndDate().isBefore(YearMonth.now().atEndOfMonth()))
+        Optional<List<Insurance>> optList = Optional.of(insuranceRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+
+        return optList.stream()
+                .flatMap(Collection::stream)
+                .filter(insurance -> YearMonth.now().atEndOfMonth().isBefore(insurance.getEndDate()))
                 .filter(checkIfMonthIsPeriodicForInsurance())
                 .collect(Collectors.toList());
     }

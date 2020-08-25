@@ -71,7 +71,7 @@ public class LoanService {
 
     private List<Loan> aggregateLoans(Integer householdId) {
         return loanRepository.findAllByHousehold_Id(householdId).stream()
-                .filter(investment -> investment.getEndDate().isBefore(YearMonth.now().atEndOfMonth()))
+                .filter(loan -> YearMonth.now().atEndOfMonth().isBefore(loan.getEndDate()))
                 .collect(Collectors.toList());
     }
 }

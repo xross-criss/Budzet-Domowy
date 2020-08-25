@@ -15,6 +15,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.YearMonth;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -105,8 +107,11 @@ public class CashflowService {
     }
 
     private List<Cashflow> aggregateCashflows(Integer householdId) {
-        return cashflowRepository.findAllByHousehold_Id(householdId).stream()
-                .filter(cashflow -> cashflow.getEndDate().isBefore(YearMonth.now().atEndOfMonth()))
+        Optional<List<Cashflow>> optList = Optional.of(cashflowRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+
+        return optList.stream()
+                .flatMap(Collection::stream)
+                .filter(cashflow -> YearMonth.now().atEndOfMonth().isBefore(cashflow.getEndDate()))
                 .filter(checkIfMonthIsPeriodicForCashflow())
                 .collect(Collectors.toList());
     }
