@@ -11,6 +11,7 @@ import pl.dev.household.budget.manager.domain.ReportIntDTO;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +30,10 @@ public class DebtCardService {
     }
 
     public List<DebtCardDTO> getDebtCards(Integer householdId) {
-        return debtCardRepository.findAllByHousehold_Id(householdId).stream()
+        Optional<List<DebtCard>> optList = Optional.of(debtCardRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+
+        return optList.stream()
+                .flatMap(Collection::stream)
                 .map(debtCard ->
                         modelMapper.map(debtCard, DebtCardDTO.class)
                 ).collect(Collectors.toList());
@@ -91,7 +95,12 @@ public class DebtCardService {
     }
 
     public List<DebtCard> aggregateDebtCards(Integer householdId) {
-        return Optional.ofNullable(debtCardRepository.findAllByHousehold_Id(householdId)).orElse(Collections.emptyList());
+        Optional<List<DebtCard>> optList = Optional.of(debtCardRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+
+        return optList.get();
     }
 
+    public void deleteDebtCard(Integer householdId, Integer debtCardId) {
+        debtCardRepository.deleteById(debtCardId);
+    }
 }

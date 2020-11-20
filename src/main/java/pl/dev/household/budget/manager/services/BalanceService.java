@@ -52,7 +52,10 @@ public class BalanceService {
     }
 
     public List<BalanceDTO> getBalancesForHousehold(Integer householdId) {
-        return balanceRepository.findAllByHousehold_Id(householdId).stream()
+        Optional<List<Balance>> optList = Optional.of(balanceRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+
+        return optList.stream()
+                .flatMap(Collection::stream)
                 .map(balance ->
                         modelMapper.map(balance, BalanceDTO.class)
                 ).collect(Collectors.toList());
@@ -148,31 +151,34 @@ public class BalanceService {
     }
 
     private BalanceDTO getSummaryBalanceByMonth(Integer householdId, LocalDate month) {
-        final List<Balance> byHouseholdIdAndGenerationDateBetween = balanceRepository.findByHouseholdIdAndGenerationDateBetween(
+        Optional<List<Balance>> byHouseholdIdAndGenerationDateBetween = balanceRepository.findByHouseholdIdAndGenerationDateBetween(
                 householdId,
                 month.minusMonths(1).plusDays(1),
                 month.plusMonths(1).minusDays(1)
         );
+
         if (byHouseholdIdAndGenerationDateBetween.isEmpty()) {
             return null;
         }
-        return modelMapper.map(byHouseholdIdAndGenerationDateBetween.get(0), BalanceDTO.class);
+        return modelMapper.map(byHouseholdIdAndGenerationDateBetween.get().get(0), BalanceDTO.class);
     }
 
     public List<BalanceDTO> getBalancesForHouseholdNoMonthAgo(Integer householdId, int no) {
         LocalDate startDate = LocalDate.now().minusMonths(no).withDayOfMonth(1).minusDays(1);
         LocalDate endDate = LocalDate.now().minusMonths(no).withDayOfMonth(1).plusMonths(1);
 
-        return sortBalanceList(
+        Optional<List<Balance>> optList = Optional.of(
                 balanceRepository.findByHouseholdIdAndGenerationDateBetween(
                         householdId,
                         startDate,
                         endDate
-                )
-                        .stream()
-                        .map(balance -> modelMapper.map(balance, BalanceDTO.class))
-                        .collect(Collectors.toList())
-        );
+                ).orElse(Collections.emptyList()));
+
+        return sortBalanceList(optList.stream()
+                .flatMap(Collection::stream)
+                .map(balance -> modelMapper.map(balance, BalanceDTO.class))
+                .collect(Collectors.toList()));
+
     }
 
     private List<BalanceDTO> sortBalanceList(List<BalanceDTO> balanceDTOList) {

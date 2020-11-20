@@ -11,6 +11,8 @@ import pl.dev.household.budget.manager.domain.UserDTO;
 import pl.dev.household.budget.manager.security.util.Security;
 import pl.dev.household.budget.manager.utils.UserMapper;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -51,7 +53,9 @@ public class UserService {
     }
 
     public List<UserDTO> getAllUsersForHousehold(Integer householdId) {
-        return userRepository.findAllByHousehold_Id(householdId).stream().map(user -> modelMapper.map(user, UserDTO.class)).peek(userDTO -> userDTO.setPassword("*******")).collect(Collectors.toList());
+        Optional<List<User>> optList = Optional.of(userRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+
+        return optList.stream().flatMap(Collection::stream).map(user -> modelMapper.map(user, UserDTO.class)).peek(userDTO -> userDTO.setPassword("*******")).collect(Collectors.toList());
     }
 
     public void addUserToHousehold(Integer householdId, String login) {

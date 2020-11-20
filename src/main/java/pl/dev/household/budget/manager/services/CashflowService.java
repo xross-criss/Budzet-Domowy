@@ -39,20 +39,24 @@ public class CashflowService {
     }
 
     public List<CashflowDTO> getCashflows(Integer householdId) {
-        return cashflowRepository.findAllByHousehold_Id(householdId).stream()
+        Optional<List<Cashflow>> optList = cashflowRepository.findAllByHousehold_Id(householdId);
+
+        return optList.stream()
+                .flatMap(Collection::stream)
                 .map(cashflow ->
                         modelMapper.map(cashflow, CashflowDTO.class)
                 ).collect(Collectors.toList());
     }
 
     public List<CashflowDTO> getCashflowsWithType(Integer householdId, CashflowCategory cashflowCategory) {
-        List<CashflowDTO> list = cashflowRepository.findAllByHousehold_Id(householdId).stream()
+        Optional<List<Cashflow>> optList = cashflowRepository.findAllByHousehold_Id(householdId);
+
+        return optList.stream()
+                .flatMap(Collection::stream)
                 .map(cashflow ->
                         modelMapper.map(cashflow, CashflowDTO.class)
                 ).filter(getCashflowWithCategoryPredicate(cashflowCategory))
                 .collect(Collectors.toList());
-
-        return list;
     }
 
     public CashflowDTO getCashflow(Integer cashflowId) {

@@ -33,7 +33,10 @@ public class InsuranceService {
     }
 
     public List<InsuranceDTO> getInsurances(Integer householdId) {
-        return insuranceRepository.findAllByHousehold_Id(householdId).stream()
+        Optional<List<Insurance>> optList = Optional.of(insuranceRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+
+        return optList.stream()
+                .flatMap(Collection::stream)
                 .map(insurance -> modelMapper.map(insurance, InsuranceDTO.class))
                 .collect(Collectors.toList());
     }

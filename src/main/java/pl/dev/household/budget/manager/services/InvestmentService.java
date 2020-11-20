@@ -36,7 +36,10 @@ public class InvestmentService {
     }
 
     public List<InvestmentDTO> getInvestments(Integer householdId) {
-        return investmentRepository.findAllByHousehold_Id(householdId).stream()
+        Optional<List<Investment>> optList = Optional.of(investmentRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+
+        return optList.stream()
+                .flatMap(Collection::stream)
                 .map(investment -> modelMapper.map(investment, InvestmentDTO.class))
                 .collect(Collectors.toList());
     }

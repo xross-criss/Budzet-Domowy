@@ -14,10 +14,7 @@ import pl.dev.household.budget.manager.security.util.Security;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -37,8 +34,11 @@ public class GoalsService {
     }
 
     public List<GoalsDTO> getGoals(Integer householdId) {
+        Optional<List<Goals>> optList = Optional.of(goalsRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+
         return countGoalsPercentage(Security.currentUser().getHousehold().getId(),
-                goalsRepository.findAllByHousehold_Id(householdId).stream()
+                optList.stream()
+                        .flatMap(Collection::stream)
                         .map(goal -> modelMapper.map(goal, GoalsDTO.class))
                         .collect(Collectors.toList()));
     }
