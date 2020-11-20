@@ -11,7 +11,10 @@ import pl.dev.household.budget.manager.domain.ReportIntDTO;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,7 +32,10 @@ public class LoanService {
     }
 
     public List<LoanDTO> getLoans(Integer householdId) {
-        return loanRepository.findAllByHousehold_Id(householdId).stream()
+        Optional<List<Loan>> optList = Optional.of(loanRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+
+        return optList.stream()
+                .flatMap(Collection::stream)
                 .map(loan -> modelMapper.map(loan, LoanDTO.class))
                 .collect(Collectors.toList());
     }
@@ -70,8 +76,11 @@ public class LoanService {
     }
 
     private List<Loan> aggregateLoans(Integer householdId) {
-        return loanRepository.findAllByHousehold_Id(householdId).stream()
-                .filter(investment -> investment.getEndDate().isBefore(YearMonth.now().atEndOfMonth()))
+        Optional<List<Loan>> optList = Optional.of(loanRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+
+        return optList.stream()
+                .flatMap(Collection::stream)
+                .filter(loan -> YearMonth.now().atEndOfMonth().isBefore(loan.getEndDate()))
                 .collect(Collectors.toList());
     }
 }

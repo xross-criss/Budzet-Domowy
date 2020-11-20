@@ -10,10 +10,14 @@ import pl.dev.household.budget.manager.domain.InvestmentDTO;
 import pl.dev.household.budget.manager.domain.ReportIntDTO;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.YearMonth;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -32,7 +36,10 @@ public class InvestmentService {
     }
 
     public List<InvestmentDTO> getInvestments(Integer householdId) {
-        return investmentRepository.findAllByHousehold_Id(householdId).stream()
+        Optional<List<Investment>> optList = Optional.of(investmentRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+
+        return optList.stream()
+                .flatMap(Collection::stream)
                 .map(investment -> modelMapper.map(investment, InvestmentDTO.class))
                 .collect(Collectors.toList());
     }
@@ -64,7 +71,7 @@ public class InvestmentService {
 
         if (investmentsList != null && !investmentsList.isEmpty()) {
             for (Investment investment : investmentsList) {
-                incomeTmp = incomeTmp.add(investment.getAmount());
+                incomeTmp = incomeTmp.add(investment.getAmount().multiply(investment.getInvestmentPercentage()).divide(BigDecimal.valueOf(12), 2, RoundingMode.HALF_UP));
             }
         }
 
@@ -77,8 +84,11 @@ public class InvestmentService {
     }
 
     private List<Investment> aggregateInvestments(Integer householdId) {
-        return investmentRepository.findAllByHousehold_Id(householdId).stream()
-                .filter(investment -> investment.getEndDate().isBefore(YearMonth.now().atEndOfMonth()))
+        Optional<List<Investment>> optList = Optional.of(investmentRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+
+        return optList.stream()
+                .flatMap(Collection::stream)
+                .filter(investment -> YearMonth.now().atEndOfMonth().isBefore(investment.getEndDate()))
                 .filter(checkIfMonthIsPeriodicForInvestments())
                 .collect(Collectors.toList());
     }

@@ -44,7 +44,7 @@ public class InsuranceController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/currmonth")
-    public ResponseEntity<List<InsuranceDTO>> getCurrentMonthCashflows() {
+    public ResponseEntity<List<InsuranceDTO>> getCurrentMonthInsurances() {
         return ResponseEntity.ok(insuranceService.aggregateInsurancesForCurrentMonth(Security.currentUser().getHousehold().getId()));
     }
 
