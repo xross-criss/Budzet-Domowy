@@ -1,0 +1,12 @@
+INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (1, 1, 'INCOME', '2020-12-01', '2021-11-30', 1, 100.00, 'wynajem wózka');
+INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (2, 2, 'INCOME', '2020-12-01', '2021-11-30', 1, 100.00, 'wynajem kompa');
+INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (3, 3, 'INCOME', '2020-12-01', '2021-11-30', 1, 100.00, 'wynajem roweru');
+INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (4, 1, 'EXPENSE', '2020-12-01', '2021-11-30', 1, 100.00, 'opłata za prąd');
+INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (5, 2, 'EXPENSE', '2020-12-01', '2021-11-30', 1, 100.00, 'opłata za wode');
+INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (6, 3, 'EXPENSE', '2020-12-01', '2021-11-30', 1, 100.00, 'opłata za internet');
+INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (7, 1, 'EXPENSE', '2020-12-01', '2021-11-30', 0, 100.00, 'lidl');
+INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (8, 2, 'EXPENSE', '2020-12-01', '2021-11-30', 0, 100.00, 'biedra');
+INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (9, 3, 'EXPENSE', '2020-12-01', '2021-11-30', 0, 100.00, 'castorama');
+INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (10, 1, 'INCOME', '2020-12-01', '2021-11-30', 2, 100.00, 'okresowe');
+INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (11, 2, 'INCOME', '2020-12-01', '2021-11-30', 2, 100.00, 'okresowe');
+INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (12, 3, 'INCOME', '2020-12-01', '2021-11-30', 2, 100.00, 'okresowe');

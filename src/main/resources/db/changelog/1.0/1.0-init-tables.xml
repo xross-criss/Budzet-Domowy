@@ -13,7 +13,7 @@
                     type="INT"
                     autoIncrement="true">
                 <constraints primaryKey="true"
-                             primaryKeyName="PK_household_id"/>
+                             primaryKeyName="PK_HOUSEHOLD_ID"/>
             </column>
 
             <column name="population"
@@ -27,7 +27,7 @@
                     type="INT"
                     autoIncrement="true">
                 <constraints primaryKey="true"
-                             primaryKeyName="PK_user_id"/>
+                             primaryKeyName="PK_USER_ID"/>
             </column>
             <column name="household"
                     type="INT">
@@ -74,21 +74,39 @@
                     type="VARCHAR(16)"/>
         </createTable>-->
 
+        <createTable tableName="bank">
+            <column name="id"
+                    type="INT"
+                    autoIncrement="true">
+                <constraints primaryKey="true"
+                             primaryKeyName="PK_bank_id"/>
+            </column>
+
+            <column name="name"
+                    type="VARCHAR(128)"/>
+            <column name="description"
+                    type="VARCHAR(512)"/>
+        </createTable>
+
         <createTable tableName="loan">
             <column name="id"
                     type="INT"
                     autoIncrement="true">
                 <constraints primaryKey="true"
-                             primaryKeyName="PK_loan_id"/>
+                             primaryKeyName="PK_LOAN_ID"/>
             </column>
-            <column name="household"
+            <column name="user"
                     type="INT">
-                <constraints foreignKeyName="FK_LOAN_HOUSEHOLD_ID"
-                             references="household(id)"/>
+                <constraints foreignKeyName="FK_LOAN_USER_ID"
+                             references="user(id)"/>
             </column>
 
             <column name="bank"
-                    type="VARCHAR(64)"/>
+                    type="INT">
+                <constraints foreignKeyName="FK_LOAN_BANK_ID"
+                             references="bank(id)"/>
+            </column>
+
             <column name="annual_loan_percentage"
                     type="NUMERIC(3,2)"/>
             <column name="start_date"
@@ -106,12 +124,12 @@
                     type="INT"
                     autoIncrement="true">
                 <constraints primaryKey="true"
-                             primaryKeyName="PK_cashflow_id"/>
+                             primaryKeyName="PK_CASHFLOW_ID"/>
             </column>
-            <column name="household"
+            <column name="user"
                     type="INT">
-                <constraints foreignKeyName="FK_CASHFLOW_HOUSEHOLD_ID"
-                             references="household(id)"/>
+                <constraints foreignKeyName="FK_CASHFLOW_USER_ID"
+                             references="user(id)"/>
             </column>
 
             <column name="category"
@@ -129,21 +147,37 @@
                     type="VARCHAR(512)"/>
         </createTable>
 
-        <createTable tableName="goals">
+        <createTable tableName="category">
             <column name="id"
                     type="INT"
                     autoIncrement="true">
                 <constraints primaryKey="true"
-                             primaryKeyName="PK_goals_id"/>
+                             primaryKeyName="PK_CATEGORY_ID"/>
             </column>
             <column name="household"
                     type="INT">
-                <constraints foreignKeyName="FK_GOALS_HOUSEHOLD_ID"
+                <constraints foreignKeyName="FK_CATEGORY_HOUSEHOLD_ID"
                              references="household(id)"/>
             </column>
 
             <column name="category"
-                    type="VARCHAR(16)"/>
+                    type="VARCHAR(64)"/>
+            <column name="description"
+                    type="VARCHAR(512)"/>
+        </createTable>
+
+        <createTable tableName="goal">
+            <column name="id"
+                    type="INT"
+                    autoIncrement="true">
+                <constraints primaryKey="true"
+                             primaryKeyName="PK_GOAL_ID"/>
+            </column>
+            <column name="household"
+                    type="INT">
+                <constraints foreignKeyName="FK_GOAL_HOUSEHOLD_ID"
+                             references="household(id)"/>
+            </column>
 
             <column name="amount"
                     type="NUMERIC(8,2)"/>
@@ -153,7 +187,23 @@
                     type="VARCHAR(64)"/>
             <column name="priority"
                     type="INT"/>
-            <!--kiedy się uda zrealizować cel zakupowy będzie polem wyliczalnym bezpośrednio w obiektach aplikacji-->
+        </createTable>
+
+        <createTable tableName="goal_category">
+            <column name="category_id"
+                    type="INT">
+                <constraints primaryKeyName="PK_GOAL_CATEGORY_CATEGORY_ID"
+                             primaryKey="true"
+                             foreignKeyName="FK_GOAL_CATEGORY_CATEGORY_ID"
+                             references="category(id)"/>
+            </column>
+            <column name="goal_id"
+                    type="INT">
+                <constraints primaryKeyName="PK_GOAL_CATEGORY_GOAL_ID"
+                             primaryKey="true"
+                             foreignKeyName="FK_GOAL_CATEGORY_GOAL_ID"
+                             references="goal(id)"/>
+            </column>
         </createTable>
 
         <createTable tableName="investment">
@@ -161,16 +211,13 @@
                     type="INT"
                     autoIncrement="true">
                 <constraints primaryKey="true"
-                             primaryKeyName="PK_investment_id"/>
+                             primaryKeyName="PK_INVESTMENT_ID"/>
             </column>
-            <column name="household"
+            <column name="user"
                     type="INT">
-                <constraints foreignKeyName="FK_INVESTMENT_HOUSEHOLD_ID"
-                             references="household(id)"/>
+                <constraints foreignKeyName="FK_INVESTMENT_USER_ID"
+                             references="user(id)"/>
             </column>
-
-            <column name="category"
-                    type="VARCHAR(16)"/>
 
             <column name="period"
                     type="INT"/>
@@ -186,17 +233,40 @@
                     type="VARCHAR(64)"/>
         </createTable>
 
+        <createTable tableName="investment_category">
+            <column name="category_id"
+                    type="INT">
+                <constraints primaryKeyName="PK_INVESTMENT_CATEGORY_CATEGORY_ID"
+                             primaryKey="true"
+                             foreignKeyName="FK_INVESTMENT_CATEGORY_CATEGORY_ID"
+                             references="category(id)"/>
+            </column>
+            <column name="investment_id"
+                    type="INT">
+                <constraints primaryKeyName="PK_INVESTMENT_CATEGORY_INVESTMENT_ID"
+                             primaryKey="true"
+                             foreignKeyName="FK_INVESTMENT_CATEGORY_INVESTMENT_ID"
+                             references="investment(id)"/>
+            </column>
+        </createTable>
+
         <createTable tableName="debt_card">
             <column name="id"
                     type="INT"
                     autoIncrement="true">
                 <constraints primaryKey="true"
-                             primaryKeyName="PK_debt_card_id"/>
+                             primaryKeyName="PK_DEBT_CARD_ID"/>
             </column>
-            <column name="household"
+            <column name="user"
                     type="INT">
-                <constraints foreignKeyName="FK_DEBT_CARD_HOUSEHOLD_ID"
-                             references="household(id)"/>
+                <constraints foreignKeyName="FK_DEBT_CARD_USER_ID"
+                             references="user(id)"/>
+            </column>
+
+            <column name="bank"
+                    type="INT">
+                <constraints foreignKeyName="FK_DEBT_CARD_BANK_ID"
+                             references="bank(id)"/>
             </column>
 
             <column name="limit"
@@ -207,10 +277,24 @@
                     type="NUMERIC(3,2)"/>
             <column name="annual_percentage"
                     type="NUMERIC(3,2)"/>
-            <column name="bank"
-                    type="VARCHAR(64)"/>
             <column name="name"
                     type="VARCHAR(512)"/>
+        </createTable>
+
+        <createTable tableName="vehicle">
+            <column name="id"
+                    type="INT"
+                    autoIncrement="true">
+                <constraints primaryKey="true"
+                             primaryKeyName="PK_VEHICLE_ID"/>
+            </column>
+
+            <column name="name"
+                    type="VARCHAR(128)"/>
+            <column name="vehicle_tid"
+                    type="VARCHAR(64)"/>
+            <column name="vehicle_lp"
+                    type="VARCHAR(64)"/>
         </createTable>
 
         <createTable tableName="insurance">
@@ -218,12 +302,18 @@
                     type="INT"
                     autoIncrement="true">
                 <constraints primaryKey="true"
-                             primaryKeyName="PK_debt_card_id"/>
+                             primaryKeyName="PK_INSURANCE_ID"/>
             </column>
-            <column name="household"
+            <column name="user"
                     type="INT">
-                <constraints foreignKeyName="FK_INSURANCE_HOUSEHOLD_ID"
-                             references="household(id)"/>
+                <constraints foreignKeyName="FK_INSURANCE_USER_ID"
+                             references="user(id)"/>
+            </column>
+
+            <column name="vehicle"
+                    type="INT">
+                <constraints foreignKeyName="FK_INSURANCE_VEHICLE_ID"
+                             references="vehicle(id)"/>
             </column>
 
             <column name="type"
@@ -237,12 +327,8 @@
                     type="NUMERIC(8,2)"/>
             <column name="end_date"
                     type="DATE"/>
-            <column name="vehicle_tid"
-                    type="DATE"/>
             <column name="name"
                     type="VARCHAR(64)"/>
-            <column name="vehicle_lp"
-                    type="VARCHAR(16)"/>
         </createTable>
 
         <createTable tableName="balance">
@@ -250,7 +336,7 @@
                     type="INT"
                     autoIncrement="true">
                 <constraints primaryKey="true"
-                             primaryKeyName="PK_goals_id"/>
+                             primaryKeyName="PK_BALANCE_ID"/>
             </column>
             <column name="household"
                     type="INT">
@@ -268,6 +354,47 @@
             <column name="income"
                     type="NUMERIC(8,2)"/>
             <column name="balance"
+                    type="NUMERIC(8,2)"/>
+        </createTable>
+
+        <createTable tableName="account">
+            <column name="id"
+                    type="INT"
+                    autoIncrement="true">
+                <constraints primaryKey="true"
+                             primaryKeyName="PK_ACCOUNT_ID"/>
+            </column>
+
+            <column name="user"
+                    type="INT">
+                <constraints foreignKeyName="FK_ACCOUNT_USER_ID"
+                             references="user(id)"/>
+            </column>
+            <column name="bank"
+                    type="INT">
+                <constraints foreignKeyName="FK_ACCOUNT_BANK_ID"
+                             references="bank(id)"/>
+            </column>
+
+            <column name="amount"
+                    type="NUMERIC(8,2)"/>
+        </createTable>
+
+        <createTable tableName="wallet">
+            <column name="id"
+                    type="INT"
+                    autoIncrement="true">
+                <constraints primaryKey="true"
+                             primaryKeyName="PK_WALLET_ID"/>
+            </column>
+
+            <column name="user"
+                    type="INT">
+                <constraints foreignKeyName="FK_WALLET_USER_ID"
+                             references="user(id)"/>
+            </column>
+
+            <column name="amount"
                     type="NUMERIC(8,2)"/>
         </createTable>
     </changeSet>

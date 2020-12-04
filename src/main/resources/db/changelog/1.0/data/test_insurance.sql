@@ -1,0 +1,4 @@
+INSERT INTO test.insurance (id, user, vehicle, type, description, period, cost, end_date, name) VALUES (1, 1, null, 'LIFE', 'AXA', 1, 100.00, '2021-11-30', 'na życie');
+INSERT INTO test.insurance (id, user, vehicle, type, description, period, cost, end_date, name) VALUES (2, 2, null, 'LIFE', 'PZU', 1, 100.00, '2021-11-30', 'na życie');
+INSERT INTO test.insurance (id, user, vehicle, type, description, period, cost, end_date, name) VALUES (3, 3, null, 'LIFE', 'ZUS', 1, 100.00, '2021-11-30', 'na życie');
+INSERT INTO test.insurance (id, user, vehicle, type, description, period, cost, end_date, name) VALUES (4, 1, 1, 'CAR', 'OC i AC', 3, 300.00, '2021-11-30', 'za Toyote');

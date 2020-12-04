@@ -1,0 +1,1 @@
+INSERT INTO test.vehicle (id, name, vehicle_tid, vehicle_lp) VALUES (1, 'Toyota Corolla', '531', 'TSK 26242');
