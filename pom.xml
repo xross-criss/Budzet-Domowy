@@ -204,37 +204,14 @@
 
     <profiles>
         <profile>
-            <id>postgres-dev</id>
-            <properties>
-                <bdb.db.url>
-                    jdbc:postgresql://192.168.99.100:32772/postgres?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=true
-                </bdb.db.url>
-                <bdb.db.userDTO>postgres</bdb.db.userDTO>
-                <bdb.db.password>LoremIpsum</bdb.db.password>
-                <bdb.db.contexts>dev</bdb.db.contexts>
-            </properties>
-        </profile>
-        <profile>
             <id>mysql-dev</id>
             <properties>
                 <bdb.db.driver>com.mysql.cj.jdbc.Driver</bdb.db.driver>
                 <bdb.db.url>
-                    jdbc:mysql://192.168.99.100:32774/test?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=true
+                    jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=true
                 </bdb.db.url>
                 <bdb.db.user>root</bdb.db.user>
                 <bdb.db.password>dupa</bdb.db.password>
-                <bdb.db.contexts>dev</bdb.db.contexts>
-            </properties>
-        </profile>
-        <profile>
-            <id>mysql-dev-gamilon</id>
-            <properties>
-                <bdb.db.driver>com.mysql.cj.jdbc.Driver</bdb.db.driver>
-                <bdb.db.url>
-                    jdbc:mysql://172.16.16.1:3306/dev_budzet?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=true
-                </bdb.db.url>
-                <bdb.db.userDTO>dev_budzet</bdb.db.userDTO>
-                <bdb.db.password>dev_budzet</bdb.db.password>
                 <bdb.db.contexts>dev</bdb.db.contexts>
             </properties>
         </profile>
