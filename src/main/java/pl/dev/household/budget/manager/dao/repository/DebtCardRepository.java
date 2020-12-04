@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface DebtCardRepository extends JpaRepository<DebtCard, Integer> {
 
-    Optional<List<DebtCard>> findAllByHousehold_Id(Integer householdId);
+    Optional<List<DebtCard>> findAllByUserId(Integer userId);
 
 }

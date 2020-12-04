@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface CashflowRepository extends JpaRepository<Cashflow, Integer> {
 
-    public Optional<List<Cashflow>> findAllByHousehold_Id(Integer householdId);
+    public Optional<List<Cashflow>> findAllByUserId(Integer userId);
 
 }

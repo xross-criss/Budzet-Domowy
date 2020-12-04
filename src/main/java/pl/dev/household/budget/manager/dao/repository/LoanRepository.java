@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface LoanRepository extends JpaRepository<Loan, Integer> {
 
-    public Optional<List<Loan>> findAllByHousehold_Id(Integer householdId);
+    public Optional<List<Loan>> findAllByUserId(Integer userId);
 
 }

@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface InsuranceRepository extends JpaRepository<Insurance, Integer> {
 
-    public Optional<List<Insurance>> findAllByHousehold_Id(Integer householdId);
+    public Optional<List<Insurance>> findAllByUserId(Integer userId);
 
 }

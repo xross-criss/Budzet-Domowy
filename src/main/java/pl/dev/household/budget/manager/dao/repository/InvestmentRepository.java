@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface InvestmentRepository extends JpaRepository<Investment, Integer> {
 
-    public Optional<List<Investment>> findAllByHousehold_Id(Integer householdId);
+    public Optional<List<Investment>> findAllByUserId(Integer userId);
 
 }
