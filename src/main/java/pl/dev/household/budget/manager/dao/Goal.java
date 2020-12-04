@@ -7,12 +7,13 @@ import pl.dev.household.budget.manager.dictionaries.GoalCategory;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Set;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "goals")
-public class Goals implements Serializable {
+@Table(name = "goal")
+public class Goal implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,9 +23,12 @@ public class Goals implements Serializable {
     @JoinColumn(name = "household")
     private Household household;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "category")
-    private GoalCategory category;
+    @ManyToMany
+    @JoinTable(
+            name = "goal_category",
+            joinColumns = @JoinColumn(name = "category_id"),
+            inverseJoinColumns = @JoinColumn(name = "goal_id"))
+    Set<Category> category;
 
     @Column(name = "amount")
     private BigDecimal amount;

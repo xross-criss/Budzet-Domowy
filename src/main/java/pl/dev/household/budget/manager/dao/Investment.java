@@ -2,14 +2,12 @@ package pl.dev.household.budget.manager.dao;
 
 import lombok.Getter;
 import lombok.Setter;
-import pl.dev.household.budget.manager.dictionaries.InsuranceType;
-import pl.dev.household.budget.manager.dictionaries.InvestmentCategory;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -22,12 +20,15 @@ public class Investment implements Serializable {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "household")
-    private Household household;
+    @JoinColumn(name = "user")
+    private User user;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "category")
-    private InvestmentCategory type;
+    @ManyToMany
+    @JoinTable(
+            name = "investment_category",
+            joinColumns = @JoinColumn(name = "category_id"),
+            inverseJoinColumns = @JoinColumn(name = "investment_id"))
+    Set<Category> category;
 
     @Column(name = "period")
     private Integer period;

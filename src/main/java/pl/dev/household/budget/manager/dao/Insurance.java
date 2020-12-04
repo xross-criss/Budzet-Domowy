@@ -8,7 +8,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -21,8 +20,12 @@ public class Insurance implements Serializable {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "household")
-    private Household household;
+    @JoinColumn(name = "user")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "vehicle")
+    private Vehicle vehicle;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
@@ -40,13 +43,6 @@ public class Insurance implements Serializable {
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    @Column(name = "vehicle_tid")
-    private String vehicleTID;
-
     @Column(name = "name")
     private String name;
-
-    @Column(name = "vehicle_lp")
-    private String vehicleLP;
-
 }

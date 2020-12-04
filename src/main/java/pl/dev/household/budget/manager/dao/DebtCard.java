@@ -18,8 +18,12 @@ public class DebtCard implements Serializable {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "household")
-    private Household household;
+    @JoinColumn(name = "user")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "bank")
+    private Household bank;
 
     @Column(name = "limit")
     private BigDecimal limit;
@@ -32,9 +36,6 @@ public class DebtCard implements Serializable {
 
     @Column(name = "annual_percentage")
     private BigDecimal annualPercentage;
-
-    @Column(name = "bank")
-    private String bank;
 
     @Column(name = "name")
     private String name;

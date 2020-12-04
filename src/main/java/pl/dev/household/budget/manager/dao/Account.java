@@ -4,15 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "loan")
-public class Loan implements Serializable {
+@Table(name = "account")
+public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,19 +24,7 @@ public class Loan implements Serializable {
     @JoinColumn(name = "bank")
     private Bank bank;
 
-    @Column(name = "annual_loan_percentage")
-    private BigDecimal annualLoanPercentage;
-
-    @Column(name = "start_date")
-    private LocalDate startDate;
-
-    @Column(name = "end_date")
-    private LocalDate endDate;
-
     @Column(name = "amount")
     private BigDecimal amount;
-
-    @Column(name = "installment_amount")
-    private BigDecimal installmentAmount;
 
 }

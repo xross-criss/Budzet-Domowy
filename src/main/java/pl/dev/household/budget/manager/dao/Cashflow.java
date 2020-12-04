@@ -21,8 +21,8 @@ public class Cashflow implements Serializable {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "household")
-    private Household household;
+    @JoinColumn(name = "user")
+    private User user;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category")
