@@ -2,13 +2,11 @@ package pl.dev.household.budget.manager.dao;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.repository.cdi.Eager;
 import pl.dev.household.budget.manager.dictionaries.UserRole;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Getter
 @Setter
