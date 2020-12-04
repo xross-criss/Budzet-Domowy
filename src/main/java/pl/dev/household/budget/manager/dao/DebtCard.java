@@ -23,7 +23,7 @@ public class DebtCard implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "bank")
-    private Household bank;
+    private Bank bank;
 
     @Column(name = "limit")
     private BigDecimal limit;
