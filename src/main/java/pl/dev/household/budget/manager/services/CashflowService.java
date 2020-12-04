@@ -38,8 +38,8 @@ public class CashflowService {
         this.householdRepository = householdRepository;
     }
 
-    public List<CashflowDTO> getCashflows(Integer householdId) {
-        Optional<List<Cashflow>> optList = cashflowRepository.findAllByHousehold_Id(householdId);
+    public List<CashflowDTO> getCashflows(Integer userId) {
+        Optional<List<Cashflow>> optList = cashflowRepository.findAllByUserId(userId);
 
         return optList.stream()
                 .flatMap(Collection::stream)
@@ -48,8 +48,8 @@ public class CashflowService {
                 ).collect(Collectors.toList());
     }
 
-    public List<CashflowDTO> getCashflowsWithType(Integer householdId, CashflowCategory cashflowCategory) {
-        Optional<List<Cashflow>> optList = cashflowRepository.findAllByHousehold_Id(householdId);
+    public List<CashflowDTO> getCashflowsWithType(Integer userId, CashflowCategory cashflowCategory) {
+        Optional<List<Cashflow>> optList = cashflowRepository.findAllByUserId(userId);
 
         return optList.stream()
                 .flatMap(Collection::stream)
@@ -69,11 +69,11 @@ public class CashflowService {
     }
 
 
-    public void updateCashflow(Integer householdId, CashflowDTO cashflowDTO) {
+    public void updateCashflow(Integer userId, CashflowDTO cashflowDTO) {
         Cashflow tmpCashflow = modelMapper.map(cashflowDTO, Cashflow.class);
 
-        if (tmpCashflow.getHousehold() == null) {
-            tmpCashflow.setHousehold(householdRepository.findById(householdId).get());
+        if (tmpCashflow.getUser() == null) {
+            tmpCashflow.setUser(userRepository.findById(userId).get());
         }
 
         cashflowRepository.save(tmpCashflow);
@@ -106,12 +106,12 @@ public class CashflowService {
         return report;
     }
 
-    public List<CashflowDTO> aggregateCashflowForCurrentMonth(Integer householdId) {
-        return aggregateCashflows(householdId).stream().map(cashflow -> modelMapper.map(cashflow, CashflowDTO.class)).collect(Collectors.toList());
+    public List<CashflowDTO> aggregateCashflowForCurrentMonth(Integer userId) {
+        return aggregateCashflows(userId).stream().map(cashflow -> modelMapper.map(cashflow, CashflowDTO.class)).collect(Collectors.toList());
     }
 
-    private List<Cashflow> aggregateCashflows(Integer householdId) {
-        Optional<List<Cashflow>> optList = Optional.of(cashflowRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+    private List<Cashflow> aggregateCashflows(Integer userId) {
+        Optional<List<Cashflow>> optList = Optional.of(cashflowRepository.findAllByUserId(userId).orElse(Collections.emptyList()));
 
         return optList.stream()
                 .flatMap(Collection::stream)

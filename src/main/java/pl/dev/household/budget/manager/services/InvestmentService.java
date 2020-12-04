@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.Investment;
-import pl.dev.household.budget.manager.dao.repository.HouseholdRepository;
 import pl.dev.household.budget.manager.dao.repository.InvestmentRepository;
+import pl.dev.household.budget.manager.dao.repository.UserRepository;
 import pl.dev.household.budget.manager.domain.InvestmentDTO;
 import pl.dev.household.budget.manager.domain.ReportIntDTO;
 
@@ -27,16 +27,16 @@ public class InvestmentService {
 
     private ModelMapper modelMapper;
     private InvestmentRepository investmentRepository;
-    private HouseholdRepository householdRepository;
+    private UserRepository userRepository;
 
-    public InvestmentService(ModelMapper modelMapper, InvestmentRepository investmentRepository, HouseholdRepository householdRepository) {
+    public InvestmentService(ModelMapper modelMapper, InvestmentRepository investmentRepository, UserRepository userRepository) {
         this.modelMapper = modelMapper;
         this.investmentRepository = investmentRepository;
-        this.householdRepository = householdRepository;
+        this.userRepository = userRepository;
     }
 
-    public List<InvestmentDTO> getInvestments(Integer householdId) {
-        Optional<List<Investment>> optList = Optional.of(investmentRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+    public List<InvestmentDTO> getInvestments(Integer userId) {
+        Optional<List<Investment>> optList = Optional.of(investmentRepository.findAllByUserId(userId).orElse(Collections.emptyList()));
 
         return optList.stream()
                 .flatMap(Collection::stream)
@@ -53,11 +53,11 @@ public class InvestmentService {
         return getInvestment(investmentId);
     }
 
-    public void updateInvestment(Integer householdId, InvestmentDTO investmentDTO) {
+    public void updateInvestment(Integer userId, InvestmentDTO investmentDTO) {
         Investment updatedInvestment = modelMapper.map(investmentDTO, Investment.class);
 
-        if (updatedInvestment.getHousehold() == null) {
-            updatedInvestment.setHousehold(householdRepository.findById(householdId).get());
+        if (updatedInvestment.getUser() == null) {
+            updatedInvestment.setUser(userRepository.findById(userId).get());
         }
 
         investmentRepository.save(updatedInvestment);
@@ -79,12 +79,12 @@ public class InvestmentService {
         return report;
     }
 
-    public List<InvestmentDTO> aggregateInvestmentsForCurrentMonth(Integer householdId) {
-        return aggregateInvestments(householdId).stream().map(investment -> modelMapper.map(investment, InvestmentDTO.class)).collect(Collectors.toList());
+    public List<InvestmentDTO> aggregateInvestmentsForCurrentMonth(Integer userId) {
+        return aggregateInvestments(userId).stream().map(investment -> modelMapper.map(investment, InvestmentDTO.class)).collect(Collectors.toList());
     }
 
-    private List<Investment> aggregateInvestments(Integer householdId) {
-        Optional<List<Investment>> optList = Optional.of(investmentRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+    private List<Investment> aggregateInvestments(Integer userId) {
+        Optional<List<Investment>> optList = Optional.of(investmentRepository.findAllByUserId(userId).orElse(Collections.emptyList()));
 
         return optList.stream()
                 .flatMap(Collection::stream)

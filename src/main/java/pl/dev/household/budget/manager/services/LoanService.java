@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.Loan;
 import pl.dev.household.budget.manager.dao.repository.HouseholdRepository;
 import pl.dev.household.budget.manager.dao.repository.LoanRepository;
+import pl.dev.household.budget.manager.dao.repository.UserRepository;
 import pl.dev.household.budget.manager.domain.LoanDTO;
 import pl.dev.household.budget.manager.domain.ReportIntDTO;
 
@@ -23,16 +24,16 @@ public class LoanService {
 
     private ModelMapper modelMapper;
     private LoanRepository loanRepository;
-    private HouseholdRepository householdRepository;
+    private UserRepository userRepository;
 
-    public LoanService(ModelMapper modelMapper, LoanRepository loanRepository, HouseholdRepository householdRepository) {
+    public LoanService(ModelMapper modelMapper, LoanRepository loanRepository, UserRepository userRepository) {
         this.modelMapper = modelMapper;
         this.loanRepository = loanRepository;
-        this.householdRepository = householdRepository;
+        this.userRepository = userRepository;
     }
 
-    public List<LoanDTO> getLoans(Integer householdId) {
-        Optional<List<Loan>> optList = Optional.of(loanRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+    public List<LoanDTO> getLoans(Integer userId) {
+        Optional<List<Loan>> optList = Optional.of(loanRepository.findAllByUserId(userId).orElse(Collections.emptyList()));
 
         return optList.stream()
                 .flatMap(Collection::stream)
@@ -49,21 +50,21 @@ public class LoanService {
         return getLoan(loanId);
     }
 
-    public void updateLoan(Integer householdId, LoanDTO loanDTO) {
+    public void updateLoan(Integer userId, LoanDTO loanDTO) {
         Loan updatedLoan = modelMapper.map(loanDTO, Loan.class);
 
-        if (updatedLoan.getHousehold() == null) {
-            updatedLoan.setHousehold(householdRepository.findById(householdId).get());
+        if (updatedLoan.getUser() == null) {
+            updatedLoan.setUser(userRepository.findById(userId).get());
         }
 
         loanRepository.save(updatedLoan);
     }
 
-    public ReportIntDTO countLoansBalance(Integer householdId) {
+    public ReportIntDTO countLoansBalance(Integer userId) {
         ReportIntDTO report = new ReportIntDTO();
         BigDecimal burdenTmp = BigDecimal.valueOf(0);
 
-        List<Loan> loansList = aggregateLoans(householdId);
+        List<Loan> loansList = aggregateLoans(userId);
 
         if (loansList != null && !loansList.isEmpty()) {
             for (Loan loan : loansList) {
@@ -75,8 +76,8 @@ public class LoanService {
         return report;
     }
 
-    private List<Loan> aggregateLoans(Integer householdId) {
-        Optional<List<Loan>> optList = Optional.of(loanRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+    private List<Loan> aggregateLoans(Integer userId) {
+        Optional<List<Loan>> optList = Optional.of(loanRepository.findAllByUserId(userId).orElse(Collections.emptyList()));
 
         return optList.stream()
                 .flatMap(Collection::stream)

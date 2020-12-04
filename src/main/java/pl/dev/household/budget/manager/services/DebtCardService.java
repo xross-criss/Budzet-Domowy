@@ -29,8 +29,8 @@ public class DebtCardService {
         this.debtCardRepository = debtCardRepository;
     }
 
-    public List<DebtCardDTO> getDebtCards(Integer householdId) {
-        Optional<List<DebtCard>> optList = Optional.of(debtCardRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+    public List<DebtCardDTO> getDebtCards(Integer userId) {
+        Optional<List<DebtCard>> optList = Optional.of(debtCardRepository.findAllByUserId(userId).orElse(Collections.emptyList()));
 
         return optList.stream()
                 .flatMap(Collection::stream)
@@ -50,7 +50,7 @@ public class DebtCardService {
     }
 
 
-    public DebtCardDTO updateDebtCard(Integer householdId, DebtCardDTO debtCardDTO) {
+    public DebtCardDTO updateDebtCard(Integer userId, DebtCardDTO debtCardDTO) {
         Optional<DebtCard> oldDebtCard = Optional.of(debtCardRepository.findById(debtCardDTO.getId())).orElse(null);
 
         if (oldDebtCard.isEmpty()) {
@@ -63,11 +63,11 @@ public class DebtCardService {
         return getDebtCard(updatedDebtCard.getId());
     }
 
-    public ReportIntDTO countDebtCardBalance(Integer householdId) {
+    public ReportIntDTO countDebtCardBalance(Integer userId) {
         ReportIntDTO report = new ReportIntDTO();
         BigDecimal burdenTmp = BigDecimal.valueOf(0);
 
-        List<DebtCard> debtCardsList = aggregateDebtCards(householdId);
+        List<DebtCard> debtCardsList = aggregateDebtCards(userId);
 
         if (debtCardsList != null && !debtCardsList.isEmpty()) {
             for (DebtCard debtCard : debtCardsList) {
@@ -94,13 +94,13 @@ public class DebtCardService {
         return report;
     }
 
-    public List<DebtCard> aggregateDebtCards(Integer householdId) {
-        Optional<List<DebtCard>> optList = Optional.of(debtCardRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+    public List<DebtCard> aggregateDebtCards(Integer userId) {
+        Optional<List<DebtCard>> optList = Optional.of(debtCardRepository.findAllByUserId(userId).orElse(Collections.emptyList()));
 
         return optList.get();
     }
 
-    public void deleteDebtCard(Integer householdId, Integer debtCardId) {
+    public void deleteDebtCard(Integer userId, Integer debtCardId) {
         debtCardRepository.deleteById(debtCardId);
     }
 }

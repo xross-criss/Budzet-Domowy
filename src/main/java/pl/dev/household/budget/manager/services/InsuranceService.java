@@ -32,8 +32,8 @@ public class InsuranceService {
         this.insuranceRepository = insuranceRepository;
     }
 
-    public List<InsuranceDTO> getInsurances(Integer householdId) {
-        Optional<List<Insurance>> optList = Optional.of(insuranceRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+    public List<InsuranceDTO> getInsurances(Integer userId) {
+        Optional<List<Insurance>> optList = Optional.of(insuranceRepository.findAllByUserId(userId).orElse(Collections.emptyList()));
 
         return optList.stream()
                 .flatMap(Collection::stream)
@@ -50,7 +50,7 @@ public class InsuranceService {
         return getInsurance(insuranceId);
     }
 
-    public InsuranceDTO updateInsurance(Integer householdId, InsuranceDTO insuranceDTO) {
+    public InsuranceDTO updateInsurance(Integer userId, InsuranceDTO insuranceDTO) {
         Optional<Insurance> oldInsurance = insuranceRepository.findById(insuranceDTO.getId());
         if (oldInsurance.isEmpty() || !oldInsurance.get().getId().equals(insuranceDTO.getId())) {
             throw new RuntimeException("Insurance cannot be updated!");
@@ -62,11 +62,11 @@ public class InsuranceService {
         return getInsurance(updatedInsurance.getId());
     }
 
-    public ReportIntDTO countInsuranceBalance(Integer householdId) {
+    public ReportIntDTO countInsuranceBalance(Integer userId) {
         ReportIntDTO report = new ReportIntDTO();
         BigDecimal burdenTmp = BigDecimal.valueOf(0);
 
-        List<Insurance> insurancesList = aggregateInsurances(householdId);
+        List<Insurance> insurancesList = aggregateInsurances(userId);
 
         if (insurancesList != null && !insurancesList.isEmpty()) {
             for (Insurance insurance : insurancesList) {
@@ -81,12 +81,12 @@ public class InsuranceService {
         return report;
     }
 
-    public List<InsuranceDTO> aggregateInsurancesForCurrentMonth(Integer householdId) {
-        return aggregateInsurances(householdId).stream().map(insurance -> modelMapper.map(insurance, InsuranceDTO.class)).collect(Collectors.toList());
+    public List<InsuranceDTO> aggregateInsurancesForCurrentMonth(Integer userId) {
+        return aggregateInsurances(userId).stream().map(insurance -> modelMapper.map(insurance, InsuranceDTO.class)).collect(Collectors.toList());
     }
 
-    private List<Insurance> aggregateInsurances(Integer householdId) {
-        Optional<List<Insurance>> optList = Optional.of(insuranceRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+    private List<Insurance> aggregateInsurances(Integer userId) {
+        Optional<List<Insurance>> optList = Optional.of(insuranceRepository.findAllByUserId(userId).orElse(Collections.emptyList()));
 
         return optList.stream()
                 .flatMap(Collection::stream)
