@@ -21,5 +21,6 @@ public class GoalDTO implements Serializable {
     private String name;
     private String description;
     private Integer priority;
+    private Integer percent;
 
 }
