@@ -15,6 +15,7 @@ import java.time.LocalDate;
 public class BalanceDTO implements Serializable {
 
     private Integer id;
+
     private HouseholdDTO household;
     private BalanceType type;
 

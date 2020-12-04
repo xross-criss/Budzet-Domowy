@@ -2,16 +2,17 @@ package pl.dev.household.budget.manager.domain;
 
 import lombok.*;
 
-import java.math.BigDecimal;
+import javax.persistence.*;
 
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReportIntDTO {
+public class BankDTO {
 
-    BigDecimal income;
-    BigDecimal burden;
+    private Integer id;
+    private String name;
+    private String description;
 
 }

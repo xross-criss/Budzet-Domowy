@@ -13,8 +13,10 @@ import java.time.LocalDate;
 public class UserDTO {
 
     private Integer id;
+
     private HouseholdDTO household;
     private UserRole userRole;
+
     private String login;
     private String password;
     private String name;

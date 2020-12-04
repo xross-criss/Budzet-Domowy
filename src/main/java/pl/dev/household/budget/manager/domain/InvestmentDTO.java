@@ -1,22 +1,25 @@
 package pl.dev.household.budget.manager.domain;
 
 import lombok.*;
-import pl.dev.household.budget.manager.dictionaries.InvestmentCategory;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class InvestmentDTO {
+public class InvestmentDTO implements Serializable {
 
     private Integer id;
-    private HouseholdDTO household;
-    private InvestmentCategory type;
-    private Integer period;     //    period of investment in months
+
+    private UserDTO user;
+    Set<CategoryDTO> category;
+
+    private Integer period;
     private LocalDate startDate;
     private LocalDate endDate;
     private BigDecimal investmentPercentage;
