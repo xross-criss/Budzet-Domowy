@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class AuxConfiguration {
 
     @Bean
-    public ModelMapper getModelMapper(){
+    public ModelMapper getModelMapper() {
         return new ModelMapper();
     }
 
