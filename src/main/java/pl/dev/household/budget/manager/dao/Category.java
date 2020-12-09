@@ -2,7 +2,6 @@ package pl.dev.household.budget.manager.dao;
 
 import lombok.Getter;
 import lombok.Setter;
-import pl.dev.household.budget.manager.dao.User;
 
 import javax.persistence.*;
 

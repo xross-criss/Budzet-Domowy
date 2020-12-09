@@ -1,10 +1,7 @@
 package pl.dev.household.budget.manager.domain;
 
 import lombok.*;
-import pl.dev.household.budget.manager.dao.Household;
-import pl.dev.household.budget.manager.dao.User;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 

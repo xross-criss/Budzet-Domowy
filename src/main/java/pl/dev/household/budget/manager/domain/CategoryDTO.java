@@ -1,9 +1,6 @@
 package pl.dev.household.budget.manager.domain;
 
 import lombok.*;
-import pl.dev.household.budget.manager.dao.Household;
-
-import javax.persistence.*;
 
 @Getter
 @Setter
