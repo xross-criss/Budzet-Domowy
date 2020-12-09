@@ -25,12 +25,12 @@ public class CashflowController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<CashflowDTO>> getCashflows() {
-        return ResponseEntity.ok(cashflowService.getCashflows(Security.currentUser().getHousehold().getId()));
+        return ResponseEntity.ok(cashflowService.getCashflows(Security.currentUser().getId()));
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/category")
     public ResponseEntity<List<CashflowDTO>> getCashflowsWithCategory(@RequestParam(name = "cat") String cat) {
-        return ResponseEntity.ok(cashflowService.getCashflowsWithType(Security.currentUser().getHousehold().getId(), CashflowCategory.valueOf(cat)));
+        return ResponseEntity.ok(cashflowService.getCashflowsWithType(Security.currentUser().getId(), CashflowCategory.valueOf(cat)));
     }
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -40,17 +40,17 @@ public class CashflowController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public void updateCashflow(@RequestBody CashflowDTO cashflowDTO) {
-        cashflowService.updateCashflow(Security.currentUser().getHousehold().getId(), cashflowDTO);
+        cashflowService.updateCashflow(Security.currentUser().getId(), cashflowDTO);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/report")
     public ResponseEntity<ReportIntDTO> generateCurrentMonthBalanceReport() {
-        return ResponseEntity.ok(cashflowService.countCashflowBalance(Security.currentUser().getHousehold().getId()));
+        return ResponseEntity.ok(cashflowService.countCashflowBalance(Security.currentUser().getId()));
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/currmonth")
     public ResponseEntity<List<CashflowDTO>> getCurrentMonthCashflows() {
-        return ResponseEntity.ok(cashflowService.aggregateCashflowForCurrentMonth(Security.currentUser().getHousehold().getId()));
+        return ResponseEntity.ok(cashflowService.aggregateCashflowForCurrentMonth(Security.currentUser().getId()));
     }
 
 }

@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.dev.household.budget.manager.domain.CashflowDTO;
 import pl.dev.household.budget.manager.domain.InsuranceDTO;
 import pl.dev.household.budget.manager.domain.ReportIntDTO;
 import pl.dev.household.budget.manager.security.util.Security;
@@ -25,7 +24,7 @@ public class InsuranceController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<InsuranceDTO>> getInsurances() {
-        return ResponseEntity.ok(insuranceService.getInsurances(Security.currentUser().getHousehold().getId()));
+        return ResponseEntity.ok(insuranceService.getInsurances(Security.currentUser().getId()));
     }
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -35,17 +34,17 @@ public class InsuranceController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<InsuranceDTO> updateInsurance(@RequestBody InsuranceDTO insuranceDTO) {
-        return ResponseEntity.ok(insuranceService.updateInsurance(Security.currentUser().getHousehold().getId(), insuranceDTO));
+        return ResponseEntity.ok(insuranceService.updateInsurance(Security.currentUser().getId(), insuranceDTO));
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/report")
     public ResponseEntity<ReportIntDTO> generateCurrentMonthBalanceReport() {
-        return ResponseEntity.ok(insuranceService.countInsuranceBalance(Security.currentUser().getHousehold().getId()));
+        return ResponseEntity.ok(insuranceService.countInsuranceBalance(Security.currentUser().getId()));
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/currmonth")
     public ResponseEntity<List<InsuranceDTO>> getCurrentMonthInsurances() {
-        return ResponseEntity.ok(insuranceService.aggregateInsurancesForCurrentMonth(Security.currentUser().getHousehold().getId()));
+        return ResponseEntity.ok(insuranceService.aggregateInsurancesForCurrentMonth(Security.currentUser().getId()));
     }
 
 }

@@ -24,7 +24,7 @@ public class LoanController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<LoanDTO>> getLoans() {
-        return ResponseEntity.ok(loanService.getLoans(Security.currentUser().getHousehold().getId()));
+        return ResponseEntity.ok(loanService.getLoans(Security.currentUser().getId()));
     }
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -34,12 +34,12 @@ public class LoanController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public void updateLoan(@RequestBody LoanDTO loanDTO) {
-        loanService.updateLoan(Security.currentUser().getHousehold().getId(), loanDTO);
+        loanService.updateLoan(Security.currentUser().getId(), loanDTO);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/report")
     public ResponseEntity<ReportIntDTO> generateCurrentMonthBalanceReport() {
-        return ResponseEntity.ok(loanService.countLoansBalance(Security.currentUser().getHousehold().getId()));
+        return ResponseEntity.ok(loanService.countLoansBalance(Security.currentUser().getId()));
     }
 
 }

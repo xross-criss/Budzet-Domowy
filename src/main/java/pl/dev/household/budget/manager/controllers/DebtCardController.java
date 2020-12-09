@@ -24,7 +24,7 @@ public class DebtCardController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<DebtCardDTO>> getDebtCards() {
-        return ResponseEntity.ok(debtCardService.getDebtCards(Security.currentUser().getHousehold().getId()));
+        return ResponseEntity.ok(debtCardService.getDebtCards(Security.currentUser().getId()));
     }
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -34,17 +34,17 @@ public class DebtCardController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public void updateDebtCard(@RequestBody DebtCardDTO debtCardDTO) {
-        debtCardService.updateDebtCard(Security.currentUser().getHousehold().getId(), debtCardDTO);
+        debtCardService.updateDebtCard(Security.currentUser().getId(), debtCardDTO);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/report")
     public ResponseEntity<ReportIntDTO> generateCurrentMonthBalanceReport() {
-        return ResponseEntity.ok(debtCardService.countDebtCardBalance(Security.currentUser().getHousehold().getId()));
+        return ResponseEntity.ok(debtCardService.countDebtCardBalance(Security.currentUser().getId()));
     }
 
     @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public void deleteDebtCard(@RequestParam(name = "id") Integer id) {
-      debtCardService.deleteDebtCard(Security.currentUser().getHousehold().getId(), id);
+        debtCardService.deleteDebtCard(Security.currentUser().getId(), id);
     }
 
 }
