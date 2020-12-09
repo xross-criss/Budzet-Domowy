@@ -27,4 +27,12 @@ public class BankService {
         return bankRepository.findBankById(bankId).orElse(null);
     }
 
+    public BankDTO saveBank(BankDTO dto) {
+        return modelMapper.map(bankRepository.save(modelMapper.map(dto, Bank.class)), BankDTO.class);
+    }
+
+    public void deleteBank(Integer bankId) {
+        bankRepository.deleteById(bankId);
+    }
+
 }

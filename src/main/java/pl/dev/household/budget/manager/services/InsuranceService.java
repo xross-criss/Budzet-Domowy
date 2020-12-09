@@ -2,9 +2,11 @@ package pl.dev.household.budget.manager.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.Insurance;
 import pl.dev.household.budget.manager.dao.repository.InsuranceRepository;
+import pl.dev.household.budget.manager.dictionaries.InsuranceType;
 import pl.dev.household.budget.manager.domain.InsuranceDTO;
 import pl.dev.household.budget.manager.domain.ReportIntDTO;
 
@@ -35,10 +37,8 @@ public class InsuranceService {
     public List<InsuranceDTO> getInsurances(Integer userId) {
         Optional<List<Insurance>> optList = Optional.of(insuranceRepository.findAllByUserId(userId).orElse(Collections.emptyList()));
 
-        return optList.stream()
-                .flatMap(Collection::stream)
-                .map(insurance -> modelMapper.map(insurance, InsuranceDTO.class))
-                .collect(Collectors.toList());
+        return modelMapper.map(optList, new TypeToken<List<InsuranceDTO>>() {
+        }.getType());
     }
 
     public InsuranceDTO getInsurance(Integer insuranceId) {
@@ -46,6 +46,10 @@ public class InsuranceService {
     }
 
     public InsuranceDTO addInsurance(InsuranceDTO insuranceDTO) {
+        if (!insuranceDTO.getType().equals(InsuranceType.CAR)) {
+            insuranceDTO.setVehicle(null);
+        }
+
         Integer insuranceId = insuranceRepository.save(modelMapper.map(insuranceDTO, Insurance.class)).getId();
         return getInsurance(insuranceId);
     }
