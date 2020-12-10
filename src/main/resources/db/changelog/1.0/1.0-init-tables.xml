@@ -79,7 +79,13 @@
                     type="INT"
                     autoIncrement="true">
                 <constraints primaryKey="true"
-                             primaryKeyName="PK_bank_id"/>
+                             primaryKeyName="PK_BANK_ID"/>
+            </column>
+
+            <column name="household"
+                    type="INT">
+                <constraints foreignKeyName="FK_BANK_HOUSEHOLD_ID"
+                             references="household(id)"/>
             </column>
 
             <column name="name"

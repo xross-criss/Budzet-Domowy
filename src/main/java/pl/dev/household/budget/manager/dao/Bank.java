@@ -15,6 +15,10 @@ public class Bank {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "household")
+    private Household household;
+
     @Column(name = "name")
     private String name;
 
