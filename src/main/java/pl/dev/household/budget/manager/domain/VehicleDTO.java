@@ -10,6 +10,7 @@ import lombok.*;
 public class VehicleDTO {
 
     private Integer id;
+    private UserDTO user;
     private String name;
     private String vehicle_tid;
     private String vehicle_lp;

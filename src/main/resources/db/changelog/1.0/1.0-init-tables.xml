@@ -295,10 +295,16 @@
                              primaryKeyName="PK_VEHICLE_ID"/>
             </column>
 
+            <column name="user"
+                    type="INT">
+                <constraints foreignKeyName="FK_VEHICLE_USER_ID"
+                             references="user(id)"/>
+            </column>
+
             <column name="name"
                     type="VARCHAR(128)"/>
             <column name="vehicle_tid"
-                    type="VARCHAR(64)"/>
+                    type="TIMESTAMP"/>
             <column name="vehicle_lp"
                     type="VARCHAR(64)"/>
         </createTable>
