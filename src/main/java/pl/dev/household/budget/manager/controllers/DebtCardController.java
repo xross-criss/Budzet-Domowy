@@ -23,8 +23,8 @@ public class DebtCardController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<DebtCardDTO>> getDebtCards() {
-        return ResponseEntity.ok(debtCardService.getDebtCards(Security.currentUser().getId()));
+    public ResponseEntity<List<DebtCardDTO>> getDebtCards() throws Exception {
+        return ResponseEntity.ok(debtCardService.getDebtCards(Security.currentUser().getHousehold().getId()));
     }
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -38,8 +38,8 @@ public class DebtCardController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/report")
-    public ResponseEntity<ReportIntDTO> generateCurrentMonthBalanceReport() {
-        return ResponseEntity.ok(debtCardService.countDebtCardBalance(Security.currentUser().getId()));
+    public ResponseEntity<ReportIntDTO> generateCurrentMonthBalanceReport() throws Exception {
+        return ResponseEntity.ok(debtCardService.countDebtCardBalance(Security.currentUser().getHousehold().getId()));
     }
 
     @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)

@@ -22,12 +22,12 @@ public class GoalsController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<GoalDTO>> getGoals() {
+    public ResponseEntity<List<GoalDTO>> getGoals() throws Exception {
         return ResponseEntity.ok(goalsService.getGoals(Security.currentUser().getHousehold().getId()));
     }
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GoalDTO> addGoals(@RequestBody GoalDTO goal) {
+    public ResponseEntity<GoalDTO> addGoals(@RequestBody GoalDTO goal) throws Exception {
         return ResponseEntity.ok(goalsService.addGoal(goal));
     }
 

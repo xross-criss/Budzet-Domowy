@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.dev.household.budget.manager.domain.ReportIntDTO;
 import pl.dev.household.budget.manager.domain.WalletDTO;
 import pl.dev.household.budget.manager.security.util.Security;
 import pl.dev.household.budget.manager.services.WalletService;
@@ -34,6 +35,11 @@ public class WalletController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public void updateWallet(@RequestBody WalletDTO walletDTO) throws Exception {
         walletService.updateWallet(Security.currentUser().getId(), walletDTO);
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/report")
+    public ResponseEntity<ReportIntDTO> generateCurrentMonthBalanceReport() throws Exception {
+        return ResponseEntity.ok(walletService.countWalletBalance(Security.currentUser().getHousehold().getId()));
     }
 
     @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)

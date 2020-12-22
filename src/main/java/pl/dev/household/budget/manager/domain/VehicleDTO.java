@@ -2,6 +2,8 @@ package pl.dev.household.budget.manager.domain;
 
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @ToString
@@ -12,7 +14,7 @@ public class VehicleDTO {
     private Integer id;
     private UserDTO user;
     private String name;
-    private String vehicle_tid;
-    private String vehicle_lp;
+    private LocalDate vehicleTID;
+    private String vehicleLP;
 
 }

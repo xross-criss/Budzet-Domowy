@@ -26,8 +26,8 @@ public class Investment implements Serializable {
     @ManyToMany
     @JoinTable(
             name = "investment_category",
-            joinColumns = @JoinColumn(name = "category_id"),
-            inverseJoinColumns = @JoinColumn(name = "investment_id"))
+            joinColumns = @JoinColumn(name = "investment_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
     Set<Category> category;
 
     @Column(name = "period")

@@ -2,19 +2,19 @@ package pl.dev.household.budget.manager.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.Loan;
+import pl.dev.household.budget.manager.dao.User;
 import pl.dev.household.budget.manager.dao.repository.LoanRepository;
-import pl.dev.household.budget.manager.dao.repository.UserRepository;
 import pl.dev.household.budget.manager.domain.LoanDTO;
 import pl.dev.household.budget.manager.domain.ReportIntDTO;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -23,21 +23,16 @@ public class LoanService {
 
     private ModelMapper modelMapper;
     private LoanRepository loanRepository;
-    private UserRepository userRepository;
+    private UserService userService;
 
-    public LoanService(ModelMapper modelMapper, LoanRepository loanRepository, UserRepository userRepository) {
+    public LoanService(ModelMapper modelMapper, LoanRepository loanRepository, UserService userService) {
         this.modelMapper = modelMapper;
         this.loanRepository = loanRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
-    public List<LoanDTO> getLoans(Integer userId) {
-        Optional<List<Loan>> optList = Optional.of(loanRepository.findAllByUserId(userId).orElse(Collections.emptyList()));
-
-        return optList.stream()
-                .flatMap(Collection::stream)
-                .map(loan -> modelMapper.map(loan, LoanDTO.class))
-                .collect(Collectors.toList());
+    public List<LoanDTO> getLoans(Integer householdId) throws Exception {
+        return getLoansForHouseholdUsers(householdId);
     }
 
     public LoanDTO getLoan(Integer loanId) {
@@ -53,20 +48,20 @@ public class LoanService {
         Loan updatedLoan = modelMapper.map(loanDTO, Loan.class);
 
         if (updatedLoan.getUser() == null) {
-            updatedLoan.setUser(userRepository.findById(userId).get());
+            updatedLoan.setUser(modelMapper.map(userService.getUser(userId), User.class));
         }
 
         loanRepository.save(updatedLoan);
     }
 
-    public ReportIntDTO countLoansBalance(Integer userId) {
+    public ReportIntDTO countLoansBalance(Integer householdId) throws Exception {
         ReportIntDTO report = new ReportIntDTO();
         BigDecimal burdenTmp = BigDecimal.valueOf(0);
 
-        List<Loan> loansList = aggregateLoans(userId);
+        List<LoanDTO> loansList = aggregateLoans(householdId);
 
         if (loansList != null && !loansList.isEmpty()) {
-            for (Loan loan : loansList) {
+            for (LoanDTO loan : loansList) {
                 burdenTmp = burdenTmp.add(loan.getInstallmentAmount());
             }
         }
@@ -75,11 +70,25 @@ public class LoanService {
         return report;
     }
 
-    private List<Loan> aggregateLoans(Integer userId) {
-        Optional<List<Loan>> optList = Optional.of(loanRepository.findAllByUserId(userId).orElse(Collections.emptyList()));
+    private List<LoanDTO> getLoansForHouseholdUsers(Integer householdId) throws Exception {
+        List<User> usersInHousehold = userService.getAllUsersInHouseholdByHousehold(householdId);
 
-        return optList.stream()
-                .flatMap(Collection::stream)
+        if (usersInHousehold.isEmpty()) {
+            throw new Exception("No users in household found!");
+        }
+
+        List<Loan> loanList = new ArrayList<>();
+
+        usersInHousehold.forEach(user -> {
+            loanList.addAll(loanRepository.findAllByUserId(user.getId()).orElse(Collections.emptyList()));
+        });
+
+        return modelMapper.map(loanList, new TypeToken<List<LoanDTO>>() {
+        }.getType());
+    }
+
+    private List<LoanDTO> aggregateLoans(Integer householdId) throws Exception {
+        return getLoansForHouseholdUsers(householdId).stream()
                 .filter(loan -> YearMonth.now().atEndOfMonth().isBefore(loan.getEndDate()))
                 .collect(Collectors.toList());
     }

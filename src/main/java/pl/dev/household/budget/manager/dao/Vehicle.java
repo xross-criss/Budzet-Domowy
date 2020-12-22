@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -23,9 +24,9 @@ public class Vehicle {
     private String name;
 
     @Column(name = "vehicle_tid")
-    private String vehicle_tid;
+    private LocalDate vehicleTID;
 
     @Column(name = "vehicle_lp")
-    private String vehicle_lp;
+    private String vehicleLP;
 
 }

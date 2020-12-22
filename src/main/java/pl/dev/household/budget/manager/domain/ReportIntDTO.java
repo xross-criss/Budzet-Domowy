@@ -13,5 +13,6 @@ public class ReportIntDTO {
 
     BigDecimal income;
     BigDecimal burden;
+    BigDecimal amount;
 
 }

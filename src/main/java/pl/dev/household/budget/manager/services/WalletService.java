@@ -2,13 +2,16 @@ package pl.dev.household.budget.manager.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.User;
 import pl.dev.household.budget.manager.dao.Wallet;
 import pl.dev.household.budget.manager.dao.repository.UserRepository;
 import pl.dev.household.budget.manager.dao.repository.WalletRepository;
+import pl.dev.household.budget.manager.domain.ReportIntDTO;
 import pl.dev.household.budget.manager.domain.WalletDTO;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,22 +47,18 @@ public class WalletService {
     }
 
     public List<WalletDTO> getWalletsInHousehold(Integer householdId) throws Exception {
-        List<User> usersInHousehold = userRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList());
+        List<User> userInHousehold = userRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList());
 
-        if (usersInHousehold.isEmpty()) {
-            throw new Exception("Household not found!");
-        }
+        List<Wallet> walletsInHousehold = new ArrayList<>();
 
-        List<WalletDTO> walletsInHousehold = new ArrayList<>();
+        userInHousehold.forEach(user ->
+                walletsInHousehold.addAll(
+                        walletRepository.findAllByUserId(user.getId())
+                                .orElse(Collections.emptyList()))
+        );
 
-        usersInHousehold.forEach(user -> {
-            Wallet walletTmp = walletRepository.findByUserId(user.getId()).orElse(null);
-            if (walletTmp != null) {
-                walletsInHousehold.add(modelMapper.map(walletTmp, WalletDTO.class));
-            }
-        });
-
-        return walletsInHousehold;
+        return modelMapper.map(walletsInHousehold, new TypeToken<List<WalletDTO>>() {
+        }.getType());
     }
 
     public void updateWallet(Integer userId, WalletDTO walletDTO) throws Exception {
@@ -73,5 +72,21 @@ public class WalletService {
         wallet.setUser(walletTmp.getUser());
 
         walletRepository.save(wallet);
+    }
+
+    public ReportIntDTO countWalletBalance(Integer householdId) throws Exception {
+        List<WalletDTO> walletsInHousehold = getWalletsInHousehold(householdId);
+        ReportIntDTO report = new ReportIntDTO();
+        BigDecimal amount = BigDecimal.valueOf(0);
+
+        if (!walletsInHousehold.isEmpty()) {
+            for (WalletDTO walletDTO : walletsInHousehold) {
+                amount = amount.add(walletDTO.getAmount());
+            }
+        }
+
+        report.setAmount(amount);
+
+        return report;
     }
 }

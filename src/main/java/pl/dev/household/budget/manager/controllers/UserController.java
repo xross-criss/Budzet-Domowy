@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/addUser")
-    public void addUserToHousehold(@RequestParam("login") String login) {
+    public void addUserToHousehold(@RequestParam("login") String login) throws Exception {
         userService.addUserToHousehold(Security.currentUser().getHousehold().getId(), login);
     }
 

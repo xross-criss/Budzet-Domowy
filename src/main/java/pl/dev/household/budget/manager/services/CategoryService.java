@@ -8,6 +8,7 @@ import pl.dev.household.budget.manager.dao.Category;
 import pl.dev.household.budget.manager.dao.repository.CategoryRepository;
 import pl.dev.household.budget.manager.domain.CategoryDTO;
 
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -39,7 +40,7 @@ public class CategoryService {
     }
 
     public List<CategoryDTO> getCategoryList(Integer householdId) {
-        return modelMapper.map(categoryRepository.findCategoriesByHouseholdId(householdId), new TypeToken<List<CategoryDTO>>() {
+        return modelMapper.map(categoryRepository.findCategoriesByHouseholdId(householdId).orElseGet(Collections::emptyList), new TypeToken<List<CategoryDTO>>() {
         }.getType());
     }
 

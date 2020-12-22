@@ -2,15 +2,14 @@ package pl.dev.household.budget.manager.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.Balance;
 import pl.dev.household.budget.manager.dao.repository.BalanceRepository;
 import pl.dev.household.budget.manager.dao.repository.HouseholdRepository;
 import pl.dev.household.budget.manager.dictionaries.BalanceMapType;
 import pl.dev.household.budget.manager.dictionaries.BalanceType;
-import pl.dev.household.budget.manager.domain.BalanceDTO;
-import pl.dev.household.budget.manager.domain.HouseholdDTO;
-import pl.dev.household.budget.manager.domain.ReportIntDTO;
+import pl.dev.household.budget.manager.domain.*;
 import pl.dev.household.budget.manager.utils.HouseholdMapper;
 
 import java.math.BigDecimal;
@@ -30,6 +29,8 @@ public class BalanceService {
     private LoanService loanService;
     private InsuranceService insuranceService;
     private InvestmentService investmentService;
+    private AccountService accountService;
+    private WalletService walletService;
 
     public BalanceService(
             ModelMapper modelMapper,
@@ -39,7 +40,9 @@ public class BalanceService {
             DebtCardService debtCardService,
             LoanService loanService,
             InsuranceService insuranceService,
-            InvestmentService investmentService
+            InvestmentService investmentService,
+            AccountService accountService,
+            WalletService walletService
     ) {
         this.modelMapper = modelMapper;
         this.balanceRepository = balanceRepository;
@@ -49,13 +52,14 @@ public class BalanceService {
         this.loanService = loanService;
         this.insuranceService = insuranceService;
         this.investmentService = investmentService;
+        this.accountService = accountService;
+        this.walletService = walletService;
     }
 
     public List<BalanceDTO> getBalancesForHousehold(Integer householdId) {
-        Optional<List<Balance>> optList = Optional.of(balanceRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+        List<Balance> optList = balanceRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList());
 
         return optList.stream()
-                .flatMap(Collection::stream)
                 .map(balance ->
                         modelMapper.map(balance, BalanceDTO.class)
                 ).collect(Collectors.toList());
@@ -67,31 +71,45 @@ public class BalanceService {
         ).get();
     }
 
-    public BalanceDTO generateAndReturnBalance(Integer householdId) {
+    public BalanceDTO generateAndReturnBalance(Integer householdId) throws Exception {
         return generateAndSave(householdId, BalanceType.GENERATED);
     }
 
-    public BalanceDTO generateAndSave(Integer householdId, BalanceType type) {
+    public BalanceDTO generateAndSave(Integer householdId, BalanceType type) throws Exception {
         LocalDate date = LocalDate.now();
 
         HouseholdDTO householdDTO = householdRepository.findById(householdId).map(household -> modelMapper.map(household, HouseholdDTO.class)).get();
 
-/*        if (type.equals(BalanceType.SUMMARY)) {
-            date = date.minusMonths(1);
-        }*/
-
         BalanceDTO balanceDTO = aggregateAndGenerate(householdDTO, type, date);
+
+        if (type.equals(BalanceType.SUMMARY)) {
+            balanceDTO.setGenerationDate(date.minusMonths(1));
+            addSavings(balanceDTO);
+        }
+
         balanceDTO = modelMapper.map(balanceRepository.save(modelMapper.map(balanceDTO, Balance.class)), BalanceDTO.class);
         return balanceDTO;
     }
 
-    public BalanceDTO aggregateAndGenerate(Integer householdId, BalanceType type, LocalDate date) {
+    private void addSavings(BalanceDTO balanceDTO) throws Exception {
+        BigDecimal balanceResult = balanceDTO.getBalance();
+
+        List<AccountDTO> accountDTOList = accountService.getAccountsInHousehold(balanceDTO.getHousehold().getId());
+        List<WalletDTO> walletDTOList = walletService.getWalletsInHousehold(balanceDTO.getHousehold().getId());
+
+        accountDTOList.forEach(accountDTO -> balanceResult.add(accountDTO.getAmount()));
+        walletDTOList.forEach(walletDTO -> balanceResult.add(walletDTO.getAmount()));
+
+        balanceDTO.setBalance(balanceResult);
+    }
+
+    public BalanceDTO aggregateAndGenerate(Integer householdId, BalanceType type, LocalDate date) throws Exception {
         HouseholdDTO householdDTO = HouseholdMapper.mapHousehold(householdRepository.findById(householdId).get());
 
         return aggregateAndGenerate(householdDTO, type, date);
     }
 
-    private BalanceDTO aggregateAndGenerate(HouseholdDTO householdDTO, BalanceType type, LocalDate date) {
+    private BalanceDTO aggregateAndGenerate(HouseholdDTO householdDTO, BalanceType type, LocalDate date) throws Exception {
         BalanceDTO previousMonthBalance = getSummaryBalanceByMonth(householdDTO.getId(), date.minusMonths(1));
         checkIfBalanceExists(previousMonthBalance);
 
@@ -111,7 +129,7 @@ public class BalanceService {
         return modelMapper.map(finalBalance, BalanceDTO.class);
     }
 
-    private HashMap<BalanceMapType, BigDecimal> resolveCashflowBalance(HouseholdDTO householdDTO, BalanceDTO previousMonthBalance) {
+    private HashMap<BalanceMapType, BigDecimal> resolveCashflowBalance(HouseholdDTO householdDTO, BalanceDTO previousMonthBalance) throws Exception {
 
         BigDecimal balanceResult = previousMonthBalance.getBalance();
         BigDecimal income = BigDecimal.valueOf(0);
@@ -167,17 +185,14 @@ public class BalanceService {
         LocalDate startDate = LocalDate.now().minusMonths(no).withDayOfMonth(1).minusDays(1);
         LocalDate endDate = LocalDate.now().minusMonths(no).withDayOfMonth(1).plusMonths(1);
 
-        Optional<List<Balance>> optList = Optional.of(
-                balanceRepository.findByHouseholdIdAndGenerationDateBetween(
-                        householdId,
-                        startDate,
-                        endDate
-                ).orElse(Collections.emptyList()));
+        List<Balance> optList = balanceRepository.findByHouseholdIdAndGenerationDateBetween(
+                householdId,
+                startDate,
+                endDate
+        ).orElse(Collections.emptyList());
 
-        return sortBalanceList(optList.stream()
-                .flatMap(Collection::stream)
-                .map(balance -> modelMapper.map(balance, BalanceDTO.class))
-                .collect(Collectors.toList()));
+        return sortBalanceList(modelMapper.map(optList, new TypeToken<List<BalanceDTO>>() {
+        }.getType()));
 
     }
 

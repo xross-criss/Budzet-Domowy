@@ -23,8 +23,8 @@ public class InsuranceController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<InsuranceDTO>> getInsurances() {
-        return ResponseEntity.ok(insuranceService.getInsurances(Security.currentUser().getId()));
+    public ResponseEntity<List<InsuranceDTO>> getInsurances() throws Exception {
+        return ResponseEntity.ok(insuranceService.getInsurances(Security.currentUser().getHousehold().getId()));
     }
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -38,13 +38,13 @@ public class InsuranceController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/report")
-    public ResponseEntity<ReportIntDTO> generateCurrentMonthBalanceReport() {
-        return ResponseEntity.ok(insuranceService.countInsuranceBalance(Security.currentUser().getId()));
+    public ResponseEntity<ReportIntDTO> generateCurrentMonthBalanceReport() throws Exception {
+        return ResponseEntity.ok(insuranceService.countInsuranceBalance(Security.currentUser().getHousehold().getId()));
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/currmonth")
-    public ResponseEntity<List<InsuranceDTO>> getCurrentMonthInsurances() {
-        return ResponseEntity.ok(insuranceService.aggregateInsurancesForCurrentMonth(Security.currentUser().getId()));
+    public ResponseEntity<List<InsuranceDTO>> getCurrentMonthInsurances() throws Exception {
+        return ResponseEntity.ok(insuranceService.aggregateInsurancesForCurrentMonth(Security.currentUser().getHousehold().getId()));
     }
 
 }

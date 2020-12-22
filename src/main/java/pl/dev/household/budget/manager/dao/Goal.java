@@ -25,8 +25,8 @@ public class Goal implements Serializable {
     @ManyToMany
     @JoinTable(
             name = "goal_category",
-            joinColumns = @JoinColumn(name = "category_id"),
-            inverseJoinColumns = @JoinColumn(name = "goal_id"))
+            joinColumns = @JoinColumn(name = "goal_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
     Set<Category> category;
 
     @Column(name = "amount")

@@ -33,24 +33,23 @@ public class GoalsService {
         this.householdRepository = householdRepository;
     }
 
-    public List<GoalDTO> getGoals(Integer householdId) {
-        Optional<List<Goal>> optList = Optional.of(goalsRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+    public List<GoalDTO> getGoals(Integer householdId) throws Exception {
+        List<Goal> optList = goalsRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList());
 
         return countGoalsPercentage(Security.currentUser().getHousehold().getId(),
                 optList.stream()
-                        .flatMap(Collection::stream)
                         .map(goal -> modelMapper.map(goal, GoalDTO.class))
                         .collect(Collectors.toList()));
     }
 
-    public GoalDTO getGoal(Integer goalId) {
+    public GoalDTO getGoal(Integer goalId) throws Exception {
         return countGoalsPercentage(
                 Security.currentUser().getHousehold().getId(),
                 modelMapper.map(goalsRepository.findById(goalId), GoalDTO.class
                 ));
     }
 
-    public GoalDTO addGoal(GoalDTO goal) {
+    public GoalDTO addGoal(GoalDTO goal) throws Exception {
         Integer goalId = goalsRepository.save(modelMapper.map(goal, Goal.class)).getId();
         return getGoal(goalId);
     }
@@ -66,11 +65,11 @@ public class GoalsService {
 
     }
 
-    private GoalDTO countGoalsPercentage(Integer householdId, GoalDTO GoalDTO) {
+    private GoalDTO countGoalsPercentage(Integer householdId, GoalDTO GoalDTO) throws Exception {
         return countGoalsPercentage(householdId, Collections.singletonList(GoalDTO)).get(0);
     }
 
-    private List<GoalDTO> countGoalsPercentage(Integer householdId, List<GoalDTO> GoalDTOList) {
+    private List<GoalDTO> countGoalsPercentage(Integer householdId, List<GoalDTO> GoalDTOList) throws Exception {
         BalanceDTO balance = balanceService.aggregateAndGenerate(householdId, BalanceType.GENERATED, LocalDate.now());
         BigDecimal amount = balance.getBalance();
 
@@ -79,7 +78,7 @@ public class GoalsService {
         for (int i = 0; i < GoalDTOList.size(); i++) {
             GoalDTO tmpGoal = GoalDTOList.get(i);
 
-            if (amount.compareTo(BigDecimal.ZERO) == 0) {
+            if (amount.compareTo(BigDecimal.ZERO) <= 0) {
                 tmpGoal.setPercent(0);
             } else {
                 BigDecimal goalAmount = GoalDTOList.get(i).getAmount();
@@ -87,7 +86,8 @@ public class GoalsService {
                     amount = amount.subtract(goalAmount);
                     tmpGoal.setPercent(100);
                 } else {
-                    tmpGoal.setPercent(amount.divide(goalAmount, RoundingMode.CEILING).multiply(BigDecimal.valueOf(100)).intValue());
+                    tmpGoal.setPercent(amount.divide(goalAmount, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).intValue());
+                    amount = BigDecimal.valueOf(0);
                 }
             }
             GoalDTOList.remove(i);

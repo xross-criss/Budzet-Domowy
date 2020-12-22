@@ -9,6 +9,7 @@ import pl.dev.household.budget.manager.dao.repository.BankRepository;
 import pl.dev.household.budget.manager.domain.AccountDTO;
 import pl.dev.household.budget.manager.domain.BankDTO;
 
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -53,7 +54,7 @@ public class BankService {
     }
 
     public List<BankDTO> getBankList(Integer householdId) {
-        return modelMapper.map(bankRepository.findBanksByHouseholdId(householdId), new TypeToken<List<AccountDTO>>() {
+        return modelMapper.map(bankRepository.findBanksByHouseholdId(householdId).orElse(Collections.emptyList()), new TypeToken<List<BankDTO>>() {
         }.getType());
     }
 }

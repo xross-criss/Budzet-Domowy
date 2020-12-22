@@ -2,8 +2,10 @@ package pl.dev.household.budget.manager.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.DebtCard;
+import pl.dev.household.budget.manager.dao.User;
 import pl.dev.household.budget.manager.dao.repository.DebtCardRepository;
 import pl.dev.household.budget.manager.domain.DebtCardDTO;
 import pl.dev.household.budget.manager.domain.ReportIntDTO;
@@ -11,10 +13,7 @@ import pl.dev.household.budget.manager.domain.ReportIntDTO;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -23,20 +22,16 @@ public class DebtCardService {
 
     private ModelMapper modelMapper;
     private DebtCardRepository debtCardRepository;
+    private UserService userService;
 
-    public DebtCardService(ModelMapper modelMapper, DebtCardRepository debtCardRepository) {
+    public DebtCardService(ModelMapper modelMapper, DebtCardRepository debtCardRepository, UserService userService) {
         this.modelMapper = modelMapper;
         this.debtCardRepository = debtCardRepository;
+        this.userService = userService;
     }
 
-    public List<DebtCardDTO> getDebtCards(Integer userId) {
-        Optional<List<DebtCard>> optList = Optional.of(debtCardRepository.findAllByUserId(userId).orElse(Collections.emptyList()));
-
-        return optList.stream()
-                .flatMap(Collection::stream)
-                .map(debtCard ->
-                        modelMapper.map(debtCard, DebtCardDTO.class)
-                ).collect(Collectors.toList());
+    public List<DebtCardDTO> getDebtCards(Integer householdId) throws Exception {
+        return getDebtCardsForHouseholdUsers(householdId);
     }
 
     public DebtCardDTO getDebtCard(Integer debtCardId) {
@@ -51,9 +46,9 @@ public class DebtCardService {
 
 
     public DebtCardDTO updateDebtCard(Integer userId, DebtCardDTO debtCardDTO) {
-        Optional<DebtCard> oldDebtCard = Optional.of(debtCardRepository.findById(debtCardDTO.getId())).orElse(null);
+       DebtCard oldDebtCard = debtCardRepository.findById(debtCardDTO.getId()).orElse(null);
 
-        if (oldDebtCard.isEmpty()) {
+        if (oldDebtCard == null) {
             return addDebtCard(debtCardDTO);
         }
 
@@ -63,27 +58,30 @@ public class DebtCardService {
         return getDebtCard(updatedDebtCard.getId());
     }
 
-    public ReportIntDTO countDebtCardBalance(Integer userId) {
+    public ReportIntDTO countDebtCardBalance(Integer householdId) throws Exception {
         ReportIntDTO report = new ReportIntDTO();
         BigDecimal burdenTmp = BigDecimal.valueOf(0);
 
-        List<DebtCard> debtCardsList = aggregateDebtCards(userId);
+        List<DebtCardDTO> debtCardsList = getDebtCardsForHouseholdUsers(householdId);
 
         if (debtCardsList != null && !debtCardsList.isEmpty()) {
-            for (DebtCard debtCard : debtCardsList) {
+            for (DebtCardDTO debtCard : debtCardsList) {
                 // obliczanie comiesięcznego zobowiązania z różnicy balansu konta karty debetowej
                 if (!debtCard.getBalance().equals(debtCard.getLimit())) {
+                    BigDecimal annualPercentageC = debtCard.getAnnualPercentage().divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP);
                     BigDecimal amount = ((debtCard.getLimit().subtract(debtCard.getBalance()))
-                            .multiply(debtCard.getAnnualPercentage()))
+                            .multiply(annualPercentageC))
                             .divide(BigDecimal.valueOf(12), 2, RoundingMode.HALF_UP);
                     burdenTmp = burdenTmp.add(amount);
                 }
 
                 //obliczanie odnowienia limitu
                 if (LocalDate.now().getMonth().getValue() == 12) {
+                    BigDecimal renewalPercentageC = debtCard.getRenewalPercentage().divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP);
+
                     BigDecimal amount = debtCard.getLimit()
-                            .multiply(debtCard.getRenewalPercentage())
-                            .setScale(2, RoundingMode.CEILING);
+                            .multiply(renewalPercentageC)
+                            .setScale(2, RoundingMode.HALF_UP);
                     burdenTmp = burdenTmp.add(amount);
                 }
             }
@@ -95,12 +93,29 @@ public class DebtCardService {
     }
 
     public List<DebtCard> aggregateDebtCards(Integer userId) {
-        Optional<List<DebtCard>> optList = Optional.of(debtCardRepository.findAllByUserId(userId).orElse(Collections.emptyList()));
+        List<DebtCard> optList = debtCardRepository.findAllByUserId(userId).orElse(Collections.emptyList());
 
-        return optList.get();
+        return optList;
     }
 
     public void deleteDebtCard(Integer userId, Integer debtCardId) {
         debtCardRepository.deleteById(debtCardId);
+    }
+
+    private List<DebtCardDTO> getDebtCardsForHouseholdUsers(Integer householdId) throws Exception {
+        List<User> usersInHousehold = userService.getAllUsersInHouseholdByHousehold(householdId);
+
+        if (usersInHousehold.isEmpty()) {
+            throw new Exception("No users in household found!");
+        }
+
+        List<DebtCard> debtCards = new ArrayList<>();
+
+        usersInHousehold.forEach(user -> {
+            debtCards.addAll(debtCardRepository.findAllByUserId(user.getId()).orElse(Collections.emptyList()));
+        });
+
+        return modelMapper.map(debtCards, new TypeToken<List<DebtCardDTO>>() {
+        }.getType());
     }
 }

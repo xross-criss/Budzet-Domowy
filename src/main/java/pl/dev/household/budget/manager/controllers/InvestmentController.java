@@ -23,8 +23,8 @@ public class InvestmentController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<InvestmentDTO>> getInvestments() {
-        return ResponseEntity.ok(investmentService.getInvestments(Security.currentUser().getId()));
+    public ResponseEntity<List<InvestmentDTO>> getInvestments() throws Exception {
+        return ResponseEntity.ok(investmentService.getInvestments(Security.currentUser().getHousehold().getId()));
     }
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -38,12 +38,12 @@ public class InvestmentController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/report")
-    public ResponseEntity<ReportIntDTO> generateCurrentMonthBalanceReport() {
-        return ResponseEntity.ok(investmentService.countInvestmentBalance(Security.currentUser().getId()));
+    public ResponseEntity<ReportIntDTO> generateCurrentMonthBalanceReport() throws Exception {
+        return ResponseEntity.ok(investmentService.countInvestmentBalance(Security.currentUser().getHousehold().getId()));
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/currmonth")
-    public ResponseEntity<List<InvestmentDTO>> getCurrentMonthCashflows() {
-        return ResponseEntity.ok(investmentService.aggregateInvestmentsForCurrentMonth(Security.currentUser().getId()));
+    public ResponseEntity<List<InvestmentDTO>> getCurrentMonthCashflows() throws Exception {
+        return ResponseEntity.ok(investmentService.aggregateInvestmentsForCurrentMonth(Security.currentUser().getHousehold().getId()));
     }
 }

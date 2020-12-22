@@ -53,17 +53,22 @@ public class UserService {
     }
 
     public List<UserDTO> getAllUsersForHousehold(Integer householdId) {
-        Optional<List<User>> optList = Optional.of(userRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList()));
+        List<User> optList = userRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList());
 
-        return optList.stream().flatMap(Collection::stream).map(user -> modelMapper.map(user, UserDTO.class)).peek(userDTO -> userDTO.setPassword("*******")).collect(Collectors.toList());
+        return optList.stream().map(user -> modelMapper.map(user, UserDTO.class)).peek(userDTO -> userDTO.setPassword("*******")).collect(Collectors.toList());
     }
 
-    public void addUserToHousehold(Integer householdId, String login) {
+    public void addUserToHousehold(Integer householdId, String login) throws Exception {
         User dbUser = userRepository.findOneByLogin(login);
 
         if (dbUser.getHousehold() == null) {
-            Optional<Household> household = Optional.of(householdRepository.findById(householdId)).orElse(null);
-            household.ifPresent(dbUser::setHousehold);
+            Household household = householdRepository.findById(householdId).orElse(null);
+
+            if(household == null){
+                throw new Exception("Household not found!");
+            }
+
+            dbUser.setHousehold(household);
             userRepository.save(dbUser);
         }
     }
@@ -75,5 +80,9 @@ public class UserService {
             dbUser.setHousehold(null);
             userRepository.save(dbUser);
         }
+    }
+
+    public List<User> getAllUsersInHouseholdByHousehold(Integer householdId) {
+        return userRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList());
     }
 }

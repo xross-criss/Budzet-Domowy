@@ -23,8 +23,8 @@ public class AccountController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<AccountDTO>> getAccounts() {
-        return ResponseEntity.ok(accountService.getAccountsDTOForUser(Security.currentUser().getId()));
+    public ResponseEntity<List<AccountDTO>> getAccounts() throws Exception {
+        return ResponseEntity.ok(accountService.getAccountsInHousehold(Security.currentUser().getHousehold().getId()));
     }
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)

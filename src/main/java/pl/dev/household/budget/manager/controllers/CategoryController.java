@@ -22,7 +22,7 @@ public class CategoryController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<CategoryDTO>> getCategorys() {
+    public ResponseEntity<List<CategoryDTO>> getCategories() {
         return ResponseEntity.ok(categoryService.getCategoryList(Security.currentUser().getHousehold().getId()));
     }
 

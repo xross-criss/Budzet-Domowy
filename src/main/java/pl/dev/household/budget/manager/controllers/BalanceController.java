@@ -30,12 +30,12 @@ public class BalanceController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/generate")
-    public ResponseEntity<BalanceDTO> generateSaveAndReturnBalance() {
+    public ResponseEntity<BalanceDTO> generateSaveAndReturnBalance() throws Exception {
         return ResponseEntity.ok(balanceService.generateAndReturnBalance(Security.currentUser().getHousehold().getId()));
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/gen")
-    public ResponseEntity<BalanceDTO> generateAndReturnBalance() {
+    public ResponseEntity<BalanceDTO> generateAndReturnBalance() throws Exception {
         return ResponseEntity.ok(balanceService.generateAndReturnBalance(Security.currentUser().getHousehold().getId()));
     }
 
