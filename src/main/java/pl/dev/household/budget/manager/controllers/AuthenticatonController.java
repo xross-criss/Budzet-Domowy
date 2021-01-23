@@ -33,7 +33,7 @@ public class AuthenticatonController {
     }
 
     @PostMapping
-    public ResponseEntity<TokenDTO> authorize(@RequestBody AuthenticateRequestDTO credentials) {
+    public ResponseEntity<TokenDTO> authorize(@RequestBody AuthenticateRequestDTO credentials) throws Exception {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(credentials.getLogin(), credentials.getPassword());
         Authentication authentication = this.authenticationManager.authenticate(token);
         SecurityContextHolder.getContext().setAuthentication(authentication);

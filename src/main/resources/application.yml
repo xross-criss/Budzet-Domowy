@@ -4,5 +4,21 @@ spring:
     url: @bdb.db.url@
     username: @bdb.db.user@
     password: @bdb.db.password@
-
-logging.level.pl.morecraft.dev.bdb: TRACE
+#  jpa:
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        jdbc:
+#          time_zone: UTC
+#logging.level.pl.morecraft.dev.bdb: TRACE
+#logging:
+#  level:
+#    org:
+#      hibernate:
+#        SQL: DEBUG
+#        type:
+#          descriptor:
+#            sql:
+#              BasicBinder: TRACE
+#logging.level.org.springframework.jdbc.core.JdbcTemplate: DEBUG
+#logging.level.org.springframework.jdbc.core.StatementCreatorUtils: TRACE

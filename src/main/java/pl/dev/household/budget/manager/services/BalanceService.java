@@ -14,6 +14,7 @@ import pl.dev.household.budget.manager.utils.HouseholdMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -91,6 +92,31 @@ public class BalanceService {
         return balanceDTO;
     }
 
+    public void generateAndSaveCronJob(BalanceType type) throws Exception {
+        LocalDate date = LocalDate.now();
+
+        List<HouseholdDTO> household = modelMapper.map(householdRepository.findAll(), new TypeToken<List<HouseholdDTO>>() {
+        }.getType());
+
+        for (HouseholdDTO householdOperator : household) {
+            BalanceDTO balance = aggregateAndGenerate(householdOperator, type, date);
+            balance.setGenerationDate(date);
+            balance.setType(BalanceType.GENERATED);
+
+            if (type.equals(BalanceType.SUMMARY)) {
+                balance.setGenerationDate(LocalDate.now().withDayOfMonth(1).minusDays(1));
+                balance.setType(BalanceType.SUMMARY);
+            } else if (type.equals(BalanceType.PREDICTION)) {
+                balance.setType(BalanceType.PREDICTION);
+                balance.setBalance(balance.getBalance().add(balance.getIncome()).subtract(balance.getBurden()));
+            }
+
+            addSavings(balance);
+
+            balanceRepository.save(modelMapper.map(balance, Balance.class));
+        }
+    }
+
     private void addSavings(BalanceDTO balanceDTO) throws Exception {
         BigDecimal balanceResult = balanceDTO.getBalance();
 
@@ -109,7 +135,7 @@ public class BalanceService {
         return aggregateAndGenerate(householdDTO, type, date);
     }
 
-    private BalanceDTO aggregateAndGenerate(HouseholdDTO householdDTO, BalanceType type, LocalDate date) throws Exception {
+    public BalanceDTO aggregateAndGenerate(HouseholdDTO householdDTO, BalanceType type, LocalDate date) throws Exception {
         BalanceDTO previousMonthBalance = getSummaryBalanceByMonth(householdDTO.getId(), date.minusMonths(1));
         checkIfBalanceExists(previousMonthBalance);
 
@@ -129,7 +155,7 @@ public class BalanceService {
         return modelMapper.map(finalBalance, BalanceDTO.class);
     }
 
-    private HashMap<BalanceMapType, BigDecimal> resolveCashflowBalance(HouseholdDTO householdDTO, BalanceDTO previousMonthBalance) throws Exception {
+    public HashMap<BalanceMapType, BigDecimal> resolveCashflowBalance(HouseholdDTO householdDTO, BalanceDTO previousMonthBalance) throws Exception {
 
         BigDecimal balanceResult = previousMonthBalance.getBalance();
         BigDecimal income = BigDecimal.valueOf(0);
@@ -160,7 +186,7 @@ public class BalanceService {
         return balanceMap;
     }
 
-    private void checkIfBalanceExists(BalanceDTO previousMonthBalance) {
+    public void checkIfBalanceExists(BalanceDTO previousMonthBalance) {
         if (previousMonthBalance == null) {
             previousMonthBalance.setBalance(BigDecimal.valueOf(0));
             previousMonthBalance.setBurden(BigDecimal.valueOf(0));
@@ -168,24 +194,27 @@ public class BalanceService {
         }
     }
 
-    private BalanceDTO getSummaryBalanceByMonth(Integer householdId, LocalDate month) {
-        Optional<List<Balance>> byHouseholdIdAndGenerationDateBetween = balanceRepository.findByHouseholdIdAndGenerationDateBetween(
+    public BalanceDTO getSummaryBalanceByMonth(Integer householdId, LocalDate month) {
+        List<Balance> byHouseholdIdAndGenerationDateBetween = balanceRepository.findByHouseholdIdAndGenerationDateIsGreaterThanEqualAndGenerationDateIsLessThanEqual(
                 householdId,
                 month.minusMonths(1).plusDays(1),
                 month.plusMonths(1).minusDays(1)
-        );
+        ).orElse(Collections.emptyList());
 
         if (byHouseholdIdAndGenerationDateBetween.isEmpty()) {
             return null;
         }
-        return modelMapper.map(byHouseholdIdAndGenerationDateBetween.get().get(0), BalanceDTO.class);
+        return modelMapper.map(byHouseholdIdAndGenerationDateBetween.get(0), BalanceDTO.class);
     }
 
     public List<BalanceDTO> getBalancesForHouseholdNoMonthAgo(Integer householdId, int no) {
-        LocalDate startDate = LocalDate.now().minusMonths(no).withDayOfMonth(1).minusDays(1);
-        LocalDate endDate = LocalDate.now().minusMonths(no).withDayOfMonth(1).plusMonths(1);
+        LocalDate startDate = LocalDate.now().minusMonths(no).withDayOfMonth(1);
+        LocalDate endDate = LocalDate.now().minusMonths(no).withDayOfMonth(1).plusMonths(1).minusDays(1);
 
-        List<Balance> optList = balanceRepository.findByHouseholdIdAndGenerationDateBetween(
+//        LocalDate startDate = LocalDate.now().minusMonths(no).withDayOfMonth(1).minusDays(1);
+//        LocalDate endDate = LocalDate.now().minusMonths(no).withDayOfMonth(1).plusMonths(1);
+
+        List<Balance> optList = balanceRepository.findByHouseholdIdAndGenerationDateIsGreaterThanEqualAndGenerationDateIsLessThanEqual(
                 householdId,
                 startDate,
                 endDate

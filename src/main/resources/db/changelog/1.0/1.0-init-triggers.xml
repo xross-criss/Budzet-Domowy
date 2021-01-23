@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="1.0-init-triggers" author="Krzysztof Kwiatkowski">
+
+        <sql endDelimiter="/">
+            CREATE TRIGGER before_insert_on_user
+            BEFORE INSERT
+            ON user
+            FOR EACH ROW
+            BEGIN
+            INSERT INTO user_hist(user_id, operation, operation_date, household, household_old, role, login, password, name,
+            email, role_old, login_old, password_old, name_old, email_old)
+            VALUES (NEW.id,
+            'INSERT',
+            NOW(),
+            NEW.household,
+            null,
+            NEW.role,
+            NEW.login,
+            NEW.password,
+            NEW.name,
+            NEW.email,
+            null,
+            null,
+            null,
+            null,
+            null);
+            END;/
+
+            CREATE TRIGGER before_update_on_user
+            BEFORE UPDATE
+            ON user
+            FOR EACH ROW
+            BEGIN
+            INSERT INTO user_hist(user_id, operation, operation_date, household, household_old, role, login, password, name,
+            email, role_old, login_old, password_old, name_old, email_old)
+            VALUES (OLD.id,
+            'UPDATE',
+            NOW(),
+            NEW.household,
+            OLD.household,
+            NEW.role,
+            NEW.login,
+            NEW.password,
+            NEW.name,
+            NEW.email,
+            OLD.role,
+            OLD.login,
+            OLD.password,
+            OLD.name,
+            OLD.email);
+            END;/
+
+
+            CREATE TRIGGER before_delete_on_user
+            BEFORE DELETE
+            ON user
+            FOR EACH ROW
+            BEGIN
+            INSERT INTO user_hist(user_id, operation, operation_date, household, household_old, role, login, password, name,
+            email, role_old, login_old, password_old, name_old, email_old)
+            VALUES (OLD.id,
+            'DELETE',
+            NOW(),
+            null,
+            OLD.household,
+            null,
+            null,
+            null,
+            null,
+            null,
+            OLD.role,
+            OLD.login,
+            OLD.password,
+            OLD.name,
+            OLD.email);
+            END;/
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

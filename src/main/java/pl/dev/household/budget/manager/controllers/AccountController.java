@@ -8,6 +8,7 @@ import pl.dev.household.budget.manager.domain.AccountDTO;
 import pl.dev.household.budget.manager.domain.ReportIntDTO;
 import pl.dev.household.budget.manager.security.util.Security;
 import pl.dev.household.budget.manager.services.AccountService;
+import pl.dev.household.budget.manager.services.UserService;
 
 import java.util.List;
 
@@ -17,9 +18,11 @@ import java.util.List;
 public class AccountController {
 
     private AccountService accountService;
+    private UserService userService;
 
-    public AccountController(AccountService accountService) {
+    public AccountController(AccountService accountService, UserService userService) {
         this.accountService = accountService;
+        this.userService = userService;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -34,7 +37,7 @@ public class AccountController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public void updateAccount(@RequestBody AccountDTO accountDTO) throws Exception {
-        accountService.updateAccount(accountDTO);
+        accountService.updateAccount(accountDTO, Security.currentUser());
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/report")

@@ -48,7 +48,7 @@ public class LoanService {
         Loan updatedLoan = modelMapper.map(loanDTO, Loan.class);
 
         if (updatedLoan.getUser() == null) {
-            updatedLoan.setUser(modelMapper.map(userService.getUser(userId), User.class));
+            updatedLoan.setUser(modelMapper.map(userService.getUserDetails(userId), User.class));
         }
 
         loanRepository.save(updatedLoan);

@@ -34,7 +34,7 @@ public class WalletController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public void updateWallet(@RequestBody WalletDTO walletDTO) throws Exception {
-        walletService.updateWallet(Security.currentUser().getId(), walletDTO);
+        walletService.updateWallet(Security.currentUser(), walletDTO);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/report")

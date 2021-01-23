@@ -61,15 +61,12 @@ public class WalletService {
         }.getType());
     }
 
-    public void updateWallet(Integer userId, WalletDTO walletDTO) throws Exception {
-        Wallet walletTmp = walletRepository.findById(walletDTO.getId()).orElse(null);
-
-        if (!walletTmp.getUser().getId().equals(userId)) {
-            throw new Exception("Wallet doesnt belong to User!");
-        }
-
+    public void updateWallet(User user, WalletDTO walletDTO) throws Exception {
         Wallet wallet = modelMapper.map(walletDTO, Wallet.class);
-        wallet.setUser(walletTmp.getUser());
+
+        if (wallet.getUser() == null || wallet.getId() == null) {
+            wallet.setUser(user);
+        }
 
         walletRepository.save(wallet);
     }

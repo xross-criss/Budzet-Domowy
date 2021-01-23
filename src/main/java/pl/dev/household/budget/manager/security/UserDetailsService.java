@@ -1,5 +1,6 @@
 package pl.dev.household.budget.manager.security;
 
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ public class UserDetailsService implements org.springframework.security.core.use
         this.userDetailsServiceInternal = userDetailsServiceInternal;
     }
 
+    @SneakyThrows
     @Override
     @Transactional
     public UserDetails loadUserByUsername(final String login) {

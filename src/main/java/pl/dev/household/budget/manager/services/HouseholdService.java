@@ -16,10 +16,12 @@ public class HouseholdService {
 
     private ModelMapper modelMapper;
     private HouseholdRepository householdRepository;
+    private UserService userService;
 
-    public HouseholdService(ModelMapper modelMapper, HouseholdRepository householdRepository) {
+    public HouseholdService(ModelMapper modelMapper, HouseholdRepository householdRepository, UserService userService) {
         this.modelMapper = modelMapper;
         this.householdRepository = householdRepository;
+        this.userService = userService;
     }
 
     public HouseholdDTO getHousehold(Integer householdId) {
@@ -39,9 +41,11 @@ public class HouseholdService {
         return getHousehold(householdId);
     }
 
-    public HouseholdDTO addHousehold(HouseholdDTO householdDTO) {
+    public HouseholdDTO addHousehold(HouseholdDTO householdDTO, Integer userId) throws Exception {
         Household newHousehold = modelMapper.map(householdDTO, Household.class);
         householdRepository.save(newHousehold);
+
+        userService.addUserToHousehold(newHousehold.getId(), userId);
 
         return getHousehold(newHousehold.getId());
     }

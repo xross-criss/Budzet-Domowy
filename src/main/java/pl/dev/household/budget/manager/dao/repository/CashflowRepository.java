@@ -12,5 +12,13 @@ public interface CashflowRepository extends JpaRepository<Cashflow, Integer> {
 
     public Optional<List<Cashflow>> findAllByUserIdAndPeriodNotLike(Integer userId, Integer period);
 
+    public Optional<List<Cashflow>> findByUserIdAndStartDateIsGreaterThanEqualAndStartDateIsLessThanEqualAndPeriodLike(
+            Integer userId,
+            LocalDate startDate_dateStart,
+            LocalDate startDate_dateEnd,
+            Integer period
+    );
+
     public Optional<List<Cashflow>> findAllByUserIdAndStartDateBetweenAndPeriodLike(Integer userId, LocalDate startDate, LocalDate endDate, Integer period);
+
 }

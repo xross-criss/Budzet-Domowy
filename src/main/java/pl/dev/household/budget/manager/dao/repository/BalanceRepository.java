@@ -14,6 +14,10 @@ public interface BalanceRepository extends JpaRepository<Balance, Integer> {
 
     public Optional<Balance> findById(@NotNull Integer balanceId);
 
-    public Optional<List<Balance>> findByHouseholdIdAndGenerationDateBetween(Integer householdId, LocalDate generationDate_dateStart, LocalDate generationDate_dateEnd);
+    public Optional<List<Balance>> findByHouseholdIdAndGenerationDateIsGreaterThanEqualAndGenerationDateIsLessThanEqual(
+            Integer householdId,
+            LocalDate generationDate_dateStart,
+            LocalDate generationDate_dateEnd
+    );
 
 }

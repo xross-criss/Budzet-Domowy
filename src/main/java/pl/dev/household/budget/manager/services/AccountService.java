@@ -64,15 +64,20 @@ public class AccountService {
         accountRepository.deleteById(accountId);
     }
 
-    public void updateAccount(AccountDTO accountDTO) throws Exception {
-        Account accountTmp = accountRepository.findByIdAndUserId(accountDTO.getId(), accountDTO.getUser().getId()).orElse(null);
-
-        if (accountTmp == null || accountTmp.getUser() == null) {
-            throw new Exception("Account to be updated not found");
-        }
-
+    public void updateAccount(AccountDTO accountDTO, User user) throws Exception {
         Account account = modelMapper.map(accountDTO, Account.class);
-        account.setUser(accountTmp.getUser());
+
+        if (accountDTO.getId() == null) {
+            Account accountTmp = accountRepository.findByIdAndUserId(accountDTO.getId(), accountDTO.getUser().getId()).orElse(null);
+
+            if (accountTmp == null || accountTmp.getUser() == null) {
+                throw new Exception("Account to be updated not found");
+            }
+
+            account.setUser(accountTmp.getUser());
+        } else {
+            account.setUser(user);
+        }
 
         accountRepository.save(account);
     }

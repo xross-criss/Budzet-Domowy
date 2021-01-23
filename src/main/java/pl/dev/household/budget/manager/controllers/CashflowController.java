@@ -55,7 +55,7 @@ public class CashflowController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/month")
-    public ResponseEntity<List<CashflowDTO>> getBalancesForHouseholdNoMonthAgo(@RequestParam(name = "no") int no) {
+    public ResponseEntity<List<CashflowDTO>> getCashflowsForHouseholdNoMonthAgo(@RequestParam(name = "no") int no) {
         return ResponseEntity.ok(cashflowService.getCashflowsForHouseholdNoMonthAgo(Security.currentUser().getHousehold().getId(), no));
     }
 

@@ -52,7 +52,7 @@ public class InvestmentService {
         Investment updatedInvestment = modelMapper.map(investmentDTO, Investment.class);
 
         if (updatedInvestment.getUser() == null) {
-            updatedInvestment.setUser(modelMapper.map(userService.getUser(userId), User.class));
+            updatedInvestment.setUser(modelMapper.map(userService.getUserDetails(userId), User.class));
         }
 
         investmentRepository.save(updatedInvestment);

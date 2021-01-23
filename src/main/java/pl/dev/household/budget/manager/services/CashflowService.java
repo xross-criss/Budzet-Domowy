@@ -4,12 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
+import pl.dev.household.budget.manager.dao.Balance;
 import pl.dev.household.budget.manager.dao.Cashflow;
 import pl.dev.household.budget.manager.dao.User;
 import pl.dev.household.budget.manager.dao.repository.CashflowRepository;
 import pl.dev.household.budget.manager.dao.repository.HouseholdRepository;
 import pl.dev.household.budget.manager.dao.repository.UserRepository;
 import pl.dev.household.budget.manager.dictionaries.CashflowCategory;
+import pl.dev.household.budget.manager.domain.BalanceDTO;
 import pl.dev.household.budget.manager.domain.CashflowDTO;
 import pl.dev.household.budget.manager.domain.ReportIntDTO;
 
@@ -152,21 +154,24 @@ public class CashflowService {
     }
 
     public List<CashflowDTO> getCashflowsForHouseholdNoMonthAgo(Integer householdId, int no) {
-        LocalDate startDate = LocalDate.now().minusMonths(no).withDayOfMonth(1).minusDays(1);
-        LocalDate endDate = LocalDate.now().minusMonths(no).withDayOfMonth(1).plusMonths(1);
+        LocalDate startDate = LocalDate.now().minusMonths(no).withDayOfMonth(1);
+        LocalDate endDate = LocalDate.now().minusMonths(no).withDayOfMonth(1).plusMonths(1).minusDays(1);
 
         List<User> usersInHousehold = userService.getAllUsersInHouseholdByHousehold(householdId);
-        List<Cashflow> cashflowList = new ArrayList<>();
 
-        usersInHousehold.forEach(user -> cashflowList.addAll(
-                cashflowRepository.findAllByUserIdAndStartDateBetweenAndPeriodLike(
-                        user.getId(),
-                        startDate,
-                        endDate,
-                        0
-                ).orElse(Collections.emptyList())));
+        List<Cashflow> optList = new ArrayList<>();
 
-        return sortCashflowList(modelMapper.map(cashflowList, new TypeToken<List<CashflowDTO>>() {
+        usersInHousehold.forEach(user -> {
+            optList.addAll(cashflowRepository.findByUserIdAndStartDateIsGreaterThanEqualAndStartDateIsLessThanEqualAndPeriodLike(
+                    user.getId(),
+                    startDate,
+                    endDate,
+                    0
+            ).orElse(Collections.emptyList()));
+        });
+
+
+        return sortCashflowList(modelMapper.map(optList, new TypeToken<List<CashflowDTO>>() {
         }.getType()));
 
     }

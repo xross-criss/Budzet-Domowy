@@ -409,6 +409,55 @@
             <column name="amount"
                     type="NUMERIC(8,2)"/>
         </createTable>
+
+        <createTable tableName="user_hist">
+            <column name="id"
+                    type="INT"
+                    autoIncrement="true">
+                <constraints primaryKey="true"
+                             primaryKeyName="PK_USER_HIST_ID"/>
+            </column>
+
+            <column name="user_id"
+                    type="INT"/>
+            <column name="operation"
+                    type="VARCHAR(256)"/>
+            <column name="operation_date"
+                    type="TIMESTAMP"/>
+
+            <column name="household"
+                    type="INT">
+                <constraints foreignKeyName="FK_USER_HIST_HOUSEHOLD_ID"
+                             references="household(id)"/>
+            </column>
+            <column name="household_old"
+                    type="INT">
+                <constraints foreignKeyName="FK_USER_HIST_HOUSEHOLD_OLD_ID"
+                             references="household(id)"/>
+            </column>
+
+            <column name="role"
+                    type="VARCHAR(16)"/>
+            <column name="login"
+                    type="VARCHAR(32)"/>
+            <column name="password"
+                    type="VARCHAR(256)"/>
+            <column name="name"
+                    type="VARCHAR(64)"/>
+            <column name="email"
+                    type="VARCHAR(128)"/>
+
+            <column name="role_old"
+                    type="VARCHAR(16)"/>
+            <column name="login_old"
+                    type="VARCHAR(32)"/>
+            <column name="password_old"
+                    type="VARCHAR(256)"/>
+            <column name="name_old"
+                    type="VARCHAR(64)"/>
+            <column name="email_old"
+                    type="VARCHAR(128)"/>
+        </createTable>
     </changeSet>
 
 </databaseChangeLog>

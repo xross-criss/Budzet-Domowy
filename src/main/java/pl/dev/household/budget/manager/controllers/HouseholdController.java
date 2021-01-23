@@ -25,8 +25,8 @@ public class HouseholdController {
     }
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HouseholdDTO> addHousehold(@RequestBody HouseholdDTO householdDTO) {
-        return ResponseEntity.ok(householdService.addHousehold(householdDTO));
+    public ResponseEntity<HouseholdDTO> addHousehold(@RequestBody HouseholdDTO householdDTO) throws Exception {
+        return ResponseEntity.ok(householdService.addHousehold(householdDTO, Security.currentUser().getId()));
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)

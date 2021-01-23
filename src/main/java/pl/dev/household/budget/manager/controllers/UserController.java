@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.dev.household.budget.manager.domain.PasswordDTO;
 import pl.dev.household.budget.manager.domain.UserDTO;
 import pl.dev.household.budget.manager.security.util.Security;
 import pl.dev.household.budget.manager.services.UserService;
@@ -23,7 +24,7 @@ public class UserController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/details")
     public ResponseEntity<UserDTO> getUser() {
-        return ResponseEntity.ok(userService.getUser(Security.currentUser().getId()));
+        return ResponseEntity.ok(userService.getUserDetails(Security.currentUser().getId()));
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/household")
@@ -47,8 +48,13 @@ public class UserController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/removeUser")
-    public void removeUserFromHousehold(@RequestParam("login") String login) {
+    public void removeUserFromHousehold(@RequestParam("login") String login) throws Exception {
         userService.removeUserFromHousehold(Security.currentUser().getHousehold().getId(), login);
+    }
+
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/changePassword")
+    public void changeUserPassword(@RequestBody PasswordDTO passwordDTO){
+        userService.changePassword(Security.currentUser(), passwordDTO);
     }
 
 }

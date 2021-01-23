@@ -23,8 +23,13 @@ public class UserDetailsServiceInternal {
     }
 
     @Transactional
-    public UserDetails loadUserByUsername(final String login) {
-        User userFromDatabase = userRepository.findOneByLogin(login);
+    public UserDetails loadUserByUsername(final String login) throws Exception {
+        User userFromDatabase = userRepository.findOneByLogin(login).orElse(null);
+
+        if (userFromDatabase == null){
+            throw new Exception("User not found!");
+        }
+
         checkUser(userFromDatabase, login);
         return new UserDetailsWrapper(userFromDatabase);
     }
