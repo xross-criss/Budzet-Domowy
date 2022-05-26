@@ -29,14 +29,15 @@ public class HouseholdService {
     }
 
     public HouseholdDTO updateHousehold(Integer householdId, HouseholdDTO householdDTO) {
+        Household oldHousehold = householdRepository.findById(householdId).get();
 
-        Optional<Household> oldHousehold = householdRepository.findById(householdId);
-        if (oldHousehold.isEmpty() || !oldHousehold.get().getId().equals(householdDTO.getId())) {
-            throw new RuntimeException("Household cannot be updated!");
-        }
-
-        Household updatedHousehold = modelMapper.map(householdDTO, Household.class);
-        householdRepository.save(updatedHousehold);
+        oldHousehold.setCost(householdDTO.getCost());
+//        if (oldHousehold.isEmpty() || !oldHousehold.get().getId().equals(householdDTO.getId())) {
+//            throw new RuntimeException("Household cannot be updated!");
+//        }
+//
+//        Household updatedHousehold = modelMapper.map(householdDTO, Household.class);
+        householdRepository.save(oldHousehold);
 
         return getHousehold(householdId);
     }

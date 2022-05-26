@@ -5,6 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.Category;
+import pl.dev.household.budget.manager.dao.Household;
 import pl.dev.household.budget.manager.dao.repository.CategoryRepository;
 import pl.dev.household.budget.manager.domain.CategoryDTO;
 
@@ -44,15 +45,9 @@ public class CategoryService {
         }.getType());
     }
 
-    public void updateCategory(CategoryDTO categoryDTO) throws Exception {
-        Category categoryTmp = categoryRepository.findById(categoryDTO.getId()).orElse(null);
-
-        if (categoryTmp == null) {
-            throw new Exception("category to be updated not found!");
-        }
-
+    public void updateCategory(Household household, CategoryDTO categoryDTO) throws Exception {
         Category category = modelMapper.map(categoryDTO, Category.class);
-        category.setHousehold(categoryTmp.getHousehold());
+        category.setHousehold(household);
 
         categoryRepository.save(category);
     }

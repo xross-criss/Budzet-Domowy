@@ -1,3 +1,4 @@
 INSERT INTO test.debt_card (id, user, bank, `limit`, balance, renewal_percentage, annual_percentage, name) VALUES (1, 1, 1, 1000.00, 500.00, 2.00, 2.00, 'karta debetowa');
 INSERT INTO test.debt_card (id, user, bank, `limit`, balance, renewal_percentage, annual_percentage, name) VALUES (2, 2, 2, 1000.00, 500.00, 2.00, 2.00, 'karta debetowa');
 INSERT INTO test.debt_card (id, user, bank, `limit`, balance, renewal_percentage, annual_percentage, name) VALUES (3, 3, 3, 1000.00, 500.00, 2.00, 2.00, 'karta debetowa');
+INSERT INTO test.debt_card (id, user, bank, `limit`, balance, renewal_percentage, annual_percentage, name) VALUES (4, 4, 1, 1000.00, 500.00, 2.00, 2.00, 'karta debetowa');

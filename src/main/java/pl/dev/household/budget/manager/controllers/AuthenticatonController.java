@@ -15,6 +15,7 @@ import pl.dev.household.budget.manager.domain.TokenDTO;
 import pl.dev.household.budget.manager.security.UserDetailsServiceInternal;
 import pl.dev.household.budget.manager.security.UserDetailsWrapper;
 import pl.dev.household.budget.manager.security.xauth.TokenProvider;
+import pl.dev.household.budget.manager.services.UserService;
 
 
 @Slf4j
@@ -25,15 +26,24 @@ public class AuthenticatonController {
     private TokenProvider tokenProvider;
     private AuthenticationManager authenticationManager;
     private UserDetailsServiceInternal userDetailsService;
+    private UserService userService;
 
-    public AuthenticatonController(TokenProvider tokenProvider, AuthenticationManager authenticationManager, UserDetailsServiceInternal userDetailsService) {
+    public AuthenticatonController(
+            TokenProvider tokenProvider,
+            AuthenticationManager authenticationManager,
+            UserDetailsServiceInternal userDetailsService,
+            UserService userService
+    ) {
         this.tokenProvider = tokenProvider;
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
+        this.userService = userService;
     }
 
     @PostMapping
     public ResponseEntity<TokenDTO> authorize(@RequestBody AuthenticateRequestDTO credentials) throws Exception {
+        userService.checkUserPassword(credentials);
+
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(credentials.getLogin(), credentials.getPassword());
         Authentication authentication = this.authenticationManager.authenticate(token);
         SecurityContextHolder.getContext().setAuthentication(authentication);

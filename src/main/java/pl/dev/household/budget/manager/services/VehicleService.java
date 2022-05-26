@@ -64,15 +64,20 @@ public class VehicleService {
         return vehiclesInHousehold;
     }
 
-    public void updateVehicle(VehicleDTO vehicleDTO) throws Exception {
-        Vehicle vehicleTmp = vehicleRepository.findById(vehicleDTO.getId()).orElse(null);
-
-        if (vehicleTmp == null) {
-            throw new Exception("Vehicle not found!");
-        }
-
+    public void updateVehicle(User user, VehicleDTO vehicleDTO) throws Exception {
         Vehicle vehicle = modelMapper.map(vehicleDTO, Vehicle.class);
-        vehicle.setUser(vehicleTmp.getUser());
+
+        if (vehicleDTO.getId() != null) {
+            Vehicle vehicleTmp = vehicleRepository.findById(vehicleDTO.getId()).orElse(null);
+
+            if (vehicleTmp == null) {
+                throw new Exception("Vehicle not found!");
+            }
+
+            vehicle.setUser(vehicleTmp.getUser());
+        } else {
+            vehicle.setUser(user);
+        }
 
         vehicleRepository.save(vehicle);
     }

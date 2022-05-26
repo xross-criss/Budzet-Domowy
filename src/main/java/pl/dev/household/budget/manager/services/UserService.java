@@ -11,11 +11,16 @@ import pl.dev.household.budget.manager.dao.UserHist;
 import pl.dev.household.budget.manager.dao.repository.HouseholdRepository;
 import pl.dev.household.budget.manager.dao.repository.UserHistRepository;
 import pl.dev.household.budget.manager.dao.repository.UserRepository;
+import pl.dev.household.budget.manager.dictionaries.UserRole;
 import pl.dev.household.budget.manager.domain.*;
 import pl.dev.household.budget.manager.security.exception.PasswordException;
+import pl.dev.household.budget.manager.security.exception.PasswordIncorrectException;
+import pl.dev.household.budget.manager.security.exception.UserNotFoundException;
 import pl.dev.household.budget.manager.security.util.Security;
 import pl.dev.household.budget.manager.utils.UserMapper;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -54,14 +59,24 @@ public class UserService {
         return UserMapper.mapUser(userRepository.findById(userId).get());
     }
 
-    public void updateUser(Integer userId, UserDTO userDTO) {
-        User updatedUser = modelMapper.map(userDTO, User.class);
-
-        if (updatedUser.getHousehold() == null) {
-            updatedUser.setHousehold(householdRepository.findById(Security.currentUser().getHousehold().getId()).get());
+    private UserDTO getUserByLogin(String login) {
+        User user = userRepository.findOneByLogin(login).orElse(null);
+        if (user == null){
+            throw new UserNotFoundException("User login not found!");
         }
+        return UserMapper.mapUser(user);
+    }
 
-        userRepository.save(updatedUser);
+    public void updateUser(Integer userId, UserDTO userDTO) {
+        User oldUser = userRepository.getOne(userId);
+        oldUser.setName(userDTO.getName());
+        oldUser.setEmail(userDTO.getEmail());
+
+//        if (updatedUser.getHousehold() == null) {
+//            updatedUser.setHousehold(householdRepository.findById(Security.currentUser().getHousehold().getId()).get());
+//        }
+
+        userRepository.save(oldUser);
     }
 
     public UserDTO registerUser(UserDTO userDTO) {
@@ -93,23 +108,30 @@ public class UserService {
         if (dbUser == null) {
             throw new Exception("User not found!");
         }
+        //6253
 
         assignHouseholdToUser(householdId, dbUser);
     }
 
     private void assignHouseholdToUser(Integer householdId, User dbUser) throws Exception {
+        Household household;
+
         if (dbUser.getHousehold() == null) {
-            Household household = householdRepository.findById(householdId).orElse(null);
+            household = householdRepository.findById(householdId).orElse(null);
+        } else {
+            household = householdRepository.findById(dbUser.getHousehold().getId()).orElse(null);
 
-            if (household == null) {
-                throw new Exception("Household not found!");
-            }
-
-            dbUser.setHousehold(household);
-            userRepository.save(dbUser);
-
-            reassignUserData(dbUser.getId(), householdId);
         }
+
+        if (household == null) {
+            throw new Exception("Household not found!");
+        }
+
+        dbUser.setHousehold(household);
+        dbUser.setUserRole(UserRole.MEMBER);
+        userRepository.save(dbUser);
+
+        //reassignUserData(dbUser.getId(), householdId);
     }
 
     private void reassignUserData(Integer userId, Integer householdId) throws Exception {
@@ -197,7 +219,34 @@ public class UserService {
         return userDTO;
     }
 
+    public void checkUserPassword(AuthenticateRequestDTO credentials) {
+        UserDTO userDTO = getUserByLogin(credentials.getLogin());
+
+        String hashedPassword = DigestUtils.md5Hex(credentials.getPassword());
+
+        if (!userDTO.getPassword().equals(hashedPassword)){
+            throw new PasswordIncorrectException("Password is incorrect!");
+        }
+    }
+
 //    public <T> List<T> hideUserPassword(List<T> dtoList){
-//        return dtoList.stream().map(t -> t.)
+//
+//        return dtoList.stream().map(t -> {
+//           Object x = t;
+//            try {
+//                if(x instanceof List) {
+//
+//                }
+//                if(x instanceof Array) {
+//
+//                }
+//                Field password = x.getClass().getField("password");
+//                password.setAccessible(true);
+//                password = x.getClass().getField("password");
+//                password.set(password, "dddd");
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        });
 //    }
 }

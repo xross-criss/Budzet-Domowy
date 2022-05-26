@@ -1,4 +1,6 @@
-INSERT INTO test.insurance (id, user, vehicle, type, description, period, cost, end_date, name) VALUES (1, 1, null, 'LIFE', 'AXA', 1, 100.00, '2021-11-30', 'na życie');
-INSERT INTO test.insurance (id, user, vehicle, type, description, period, cost, end_date, name) VALUES (2, 2, null, 'LIFE', 'PZU', 1, 200.00, '2021-11-30', 'na życie');
+INSERT INTO test.insurance (id, user, vehicle, type, description, period, cost, end_date, name) VALUES (1, 1, null, 'LIFE', 'AXA', 1, 100.00, '2021-01-31', 'na życie');
+INSERT INTO test.insurance (id, user, vehicle, type, description, period, cost, end_date, name) VALUES (2, 2, null, 'LIFE', 'PZU', 1, 200.00, '2021-01-01', 'na życie');
 INSERT INTO test.insurance (id, user, vehicle, type, description, period, cost, end_date, name) VALUES (3, 3, null, 'LIFE', 'ZUS', 1, 300.00, '2021-11-30', 'na życie');
-INSERT INTO test.insurance (id, user, vehicle, type, description, period, cost, end_date, name) VALUES (4, 1, 1, 'CAR', 'OC i AC', 3, 400.00, '2021-11-30', 'za Toyote');
+INSERT INTO test.insurance (id, user, vehicle, type, description, period, cost, end_date, name) VALUES (4, 1, 1, 'CAR', 'OC i AC', 3, 400.00, '2021-12-01', 'za Toyote');
+INSERT INTO test.insurance (id, user, vehicle, type, description, period, cost, end_date, name) VALUES (5, 4, null, 'LIFE', 'ZUS', 1, 300.00, '2021-11-30', 'na życie');
+INSERT INTO test.insurance (id, user, vehicle, type, description, period, cost, end_date, name) VALUES (6, 4, 3, 'CAR', 'OC i AC', 3, 400.00, '2021-11-01', 'za Multiple');

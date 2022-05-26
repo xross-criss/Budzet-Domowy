@@ -5,6 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import pl.dev.household.budget.manager.dao.Bank;
+import pl.dev.household.budget.manager.dao.Household;
 import pl.dev.household.budget.manager.dao.repository.BankRepository;
 import pl.dev.household.budget.manager.domain.AccountDTO;
 import pl.dev.household.budget.manager.domain.BankDTO;
@@ -40,15 +41,9 @@ public class BankService {
         bankRepository.deleteById(bankId);
     }
 
-    public void updateBank(BankDTO bankDTO) throws Exception {
-        Bank bankTmp = bankRepository.findBankById(bankDTO.getId()).orElse(null);
-
-        if (bankTmp == null) {
-            throw new Exception("No Bank to be updated found!");
-        }
-
+    public void updateBank(Household household, BankDTO bankDTO) throws Exception {
         Bank bank = modelMapper.map(bankDTO, Bank.class);
-        bank.setHousehold(bankTmp.getHousehold());
+        bank.setHousehold(household);
 
         bankRepository.save(bank);
     }

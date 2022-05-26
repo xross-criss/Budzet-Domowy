@@ -55,9 +55,11 @@ public class InsuranceService {
     }
 
     public InsuranceDTO updateInsurance(Integer userId, InsuranceDTO insuranceDTO) {
-        Optional<Insurance> oldInsurance = insuranceRepository.findById(insuranceDTO.getId());
-        if (oldInsurance.isEmpty() || !oldInsurance.get().getId().equals(insuranceDTO.getId())) {
-            throw new RuntimeException("Insurance cannot be updated!");
+        if (insuranceDTO.getId() != null) {
+            Optional<Insurance> oldInsurance = insuranceRepository.findById(insuranceDTO.getId());
+            if (oldInsurance.isEmpty() || !oldInsurance.get().getId().equals(insuranceDTO.getId())) {
+                throw new RuntimeException("Insurance cannot be updated!");
+            }
         }
 
         Insurance updatedInsurance = modelMapper.map(insuranceDTO, Insurance.class);

@@ -34,7 +34,7 @@ public class BankController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public void updateBank(@RequestBody BankDTO bankDTO) throws Exception {
-        bankService.updateBank(bankDTO);
+        bankService.updateBank(Security.currentUser().getHousehold(), bankDTO);
     }
 
     @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)

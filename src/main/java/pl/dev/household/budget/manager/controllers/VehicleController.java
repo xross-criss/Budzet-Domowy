@@ -33,7 +33,7 @@ public class VehicleController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public void updateVehicle(@RequestBody VehicleDTO vehicleDTO) throws Exception {
-        vehicleService.updateVehicle(vehicleDTO);
+        vehicleService.updateVehicle(Security.currentUser(), vehicleDTO);
     }
 
     @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)

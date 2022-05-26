@@ -1,5 +1,6 @@
 package pl.dev.household.budget.manager.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import pl.dev.household.budget.manager.dictionaries.UserRole;
 
@@ -18,6 +19,7 @@ public class UserDTO {
     private UserRole userRole;
 
     private String login;
+    @JsonIgnore
     private String password;
     private String name;
     private String email;

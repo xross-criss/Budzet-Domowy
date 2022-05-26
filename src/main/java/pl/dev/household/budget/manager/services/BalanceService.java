@@ -1,5 +1,8 @@
 package pl.dev.household.budget.manager.services;
 
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -18,44 +21,46 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Value
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class BalanceService {
 
-    private ModelMapper modelMapper;
-    private BalanceRepository balanceRepository;
-    private HouseholdRepository householdRepository;
-    private CashflowService cashflowService;
-    private DebtCardService debtCardService;
-    private LoanService loanService;
-    private InsuranceService insuranceService;
-    private InvestmentService investmentService;
-    private AccountService accountService;
-    private WalletService walletService;
+    ModelMapper modelMapper;
+    BalanceRepository balanceRepository;
+    HouseholdRepository householdRepository;
+    CashflowService cashflowService;
+    DebtCardService debtCardService;
+    LoanService loanService;
+    InsuranceService insuranceService;
+    InvestmentService investmentService;
+    AccountService accountService;
+    WalletService walletService;
 
-    public BalanceService(
-            ModelMapper modelMapper,
-            BalanceRepository balanceRepository,
-            HouseholdRepository householdRepository,
-            CashflowService cashflowService,
-            DebtCardService debtCardService,
-            LoanService loanService,
-            InsuranceService insuranceService,
-            InvestmentService investmentService,
-            AccountService accountService,
-            WalletService walletService
-    ) {
-        this.modelMapper = modelMapper;
-        this.balanceRepository = balanceRepository;
-        this.householdRepository = householdRepository;
-        this.cashflowService = cashflowService;
-        this.debtCardService = debtCardService;
-        this.loanService = loanService;
-        this.insuranceService = insuranceService;
-        this.investmentService = investmentService;
-        this.accountService = accountService;
-        this.walletService = walletService;
-    }
+//    public BalanceService(
+//            ModelMapper modelMapper,
+//            BalanceRepository balanceRepository,
+//            HouseholdRepository householdRepository,
+//            CashflowService cashflowService,
+//            DebtCardService debtCardService,
+//            LoanService loanService,
+//            InsuranceService insuranceService,
+//            InvestmentService investmentService,
+//            AccountService accountService,
+//            WalletService walletService
+//    ) {
+//        this.modelMapper = modelMapper;
+//        this.balanceRepository = balanceRepository;
+//        this.householdRepository = householdRepository;
+//        this.cashflowService = cashflowService;
+//        this.debtCardService = debtCardService;
+//        this.loanService = loanService;
+//        this.insuranceService = insuranceService;
+//        this.investmentService = investmentService;
+//        this.accountService = accountService;
+//        this.walletService = walletService;
+//    }
 
     public List<BalanceDTO> getBalancesForHousehold(Integer householdId) {
         List<Balance> optList = balanceRepository.findAllByHousehold_Id(householdId).orElse(Collections.emptyList());

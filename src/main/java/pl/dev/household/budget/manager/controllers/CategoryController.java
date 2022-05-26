@@ -33,7 +33,7 @@ public class CategoryController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public void updateCategory(@RequestBody CategoryDTO categoryDTO) throws Exception {
-        categoryService.updateCategory(categoryDTO);
+        categoryService.updateCategory(Security.currentUser().getHousehold() ,categoryDTO);
     }
 
     @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)

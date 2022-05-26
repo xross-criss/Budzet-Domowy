@@ -10,3 +10,13 @@ INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amo
 INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (10, 1, 'INCOME', '2020-12-01', '2021-11-30', 2, 100.00, 'okresowe');
 INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (11, 2, 'INCOME', '2020-12-01', '2021-11-30', 2, 100.00, 'okresowe');
 INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (12, 3, 'INCOME', '2020-12-01', '2021-11-30', 2, 100.00, 'okresowe');
+INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (13, 4, 'EXPENSE', '2020-12-01', '2021-11-30', 1, 100.00, 'daj');
+INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (14, 4, 'INCOME', '2020-12-01', '2021-11-30', 1, 100.00, 'dej');
+INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (15, 1, 'EXPENSE', '2021-01-01', '2021-01-01', 0, 100.00, 'lidl');
+INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (16, 2, 'EXPENSE', '2021-01-01', '2021-01-01', 0, 100.00, 'biedra');
+INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (17, 3, 'EXPENSE', '2021-01-01', '2021-01-01', 0, 100.00, 'castorama');
+INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (18, 1, 'EXPENSE', '2021-02-01', '2021-02-01', 0, 100.00, 'auchan');
+INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (19, 2, 'EXPENSE', '2021-02-01', '2021-02-01', 0, 100.00, 'piotr');
+INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (20, 3, 'EXPENSE', '2021-02-01', '2021-02-01', 0, 100.00, 'lewiatan');
+INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (21, 4, 'EXPENSE', '2021-01-01', '2021-01-01', 0, 100.00, 'leroy');
+INSERT INTO test.cashflow (id, user, category, start_date, end_date, period, amount, description) VALUES (22, 4, 'EXPENSE', '2021-02-01', '2021-02-01', 0, 100.00, 'makro');
